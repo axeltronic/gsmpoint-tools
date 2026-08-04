@@ -587,3 +587,45 @@ buttonList.appendChild(div);
 
 
 }
+
+function markButtonTested(index){
+
+
+if(
+testedButtons.includes(index)
+)
+return;
+
+
+
+testedButtons.push(index);
+
+
+
+let item =
+document.getElementById(
+"test-"+index
+);
+
+
+
+if(item){
+
+item.classList.add(
+"active"
+);
+
+}
+
+
+
+progress.innerHTML =
+
+testedButtons.length +
+" / " +
+buttonNames.length +
+" botones probados";
+
+
+
+}
