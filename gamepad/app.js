@@ -3,7 +3,9 @@ let gamepadIndex = null;
 const status = document.getElementById("connection-status");
 const emptyState = document.getElementById("empty-state");
 const testerUI = document.getElementById("tester-ui");
-
+const controllerName = document.getElementById("controller-name");
+const buttons = document.getElementById("buttons");
+const axes = document.getElementById("axes");
 
 // Cuando conecta un joystick
 window.addEventListener("gamepadconnected", (event) => {
