@@ -297,7 +297,7 @@ update();
 
 
 // =====================
-// BOTONES
+// BOTONES (CORREGIDO)
 // =====================
 
 
@@ -385,7 +385,9 @@ markButtonTested(index);
 
 element.classList.remove("pressed");
 
-});
+} // <--- ESTE CIERRE FALTABA
+
+}); // <--- Y ESTE TAMBIÉN
 
 
 }
