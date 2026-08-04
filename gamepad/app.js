@@ -68,8 +68,7 @@ controllerType.innerHTML =
 
 
 
-controllerImage.src =
-"assets/" + type + ".svg";
+loadControllerSVG(type);
 
 
 
@@ -503,5 +502,33 @@ Ejes:
 ${gp.axes.length}
 
 `;
+
+}
+
+async function loadControllerSVG(type){
+
+
+const response =
+await fetch(
+"assets/" + type + ".svg"
+);
+
+
+
+const svg =
+await response.text();
+
+
+
+gamepadContainer.innerHTML =
+svg;
+
+
+
+console.log(
+"SVG cargado:",
+type
+);
+
 
 }
