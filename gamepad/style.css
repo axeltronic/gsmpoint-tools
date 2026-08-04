@@ -1,11 +1,10 @@
 *{
 
-box-sizing:border-box;
 margin:0;
 padding:0;
+box-sizing:border-box;
 
 }
-
 
 
 body{
@@ -22,7 +21,6 @@ text-align:center;
 
 
 
-
 header{
 
 padding:50px 20px;
@@ -35,11 +33,11 @@ header a{
 
 display:block;
 
-margin-bottom:30px;
-
-color:#2563eb;
+margin-bottom:25px;
 
 text-decoration:none;
+
+color:#2563eb;
 
 }
 
@@ -66,6 +64,7 @@ color:#64748b;
 
 
 
+
 main{
 
 width:min(1000px,92%);
@@ -76,15 +75,17 @@ margin:auto;
 
 
 
+
+
 .status{
 
 background:white;
 
-border:1px solid #e2e8f0;
-
 padding:15px;
 
 border-radius:15px;
+
+border:1px solid #e2e8f0;
 
 margin-bottom:30px;
 
@@ -112,12 +113,6 @@ margin-bottom:30px;
 
 
 
-.controller-info h2{
-
-font-size:22px;
-
-}
-
 
 
 .controller-info p{
@@ -134,17 +129,19 @@ color:#64748b;
 
 background:white;
 
+border:1px solid #e2e8f0;
+
 border-radius:30px;
 
 padding:40px;
-
-border:1px solid #e2e8f0;
 
 }
 
 
 
-.gamepad-svg{
+
+
+.gamepad-svg svg{
 
 width:min(600px,100%);
 
@@ -158,11 +155,11 @@ height:auto;
 
 .info-box{
 
-background:white;
-
 margin-top:25px;
 
 padding:25px;
+
+background:white;
 
 border-radius:20px;
 
@@ -194,20 +191,31 @@ cursor:pointer;
 
 }
 
-.pressed {
 
-    fill:#2563eb !important;
 
-    stroke:#1d4ed8 !important;
+
+/* ===================== */
+/* BOTONES ACTIVOS */
+/* ===================== */
+
+
+.pressed{
+
+fill:#2563eb !important;
+
+stroke:#1d4ed8 !important;
 
 }
 
 
-.pressed text {
 
-    fill:white !important;
+.pressed text{
+
+fill:white !important;
 
 }
+
+
 
 
 #stick-left,
@@ -215,13 +223,17 @@ cursor:pointer;
 
 transition:.05s;
 
+transform-origin:center;
+
 }
+
+
 
 
 
 #trigger-l2,
 #trigger-r2{
 
-transition:.05s;
+transition:.1s;
 
 }
