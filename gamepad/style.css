@@ -194,11 +194,18 @@ cursor:pointer;
 
 }
 
-.pressed{
+.pressed {
 
-fill:#2563eb !important;
+    fill:#2563eb !important;
 
-stroke:#1d4ed8 !important;
+    stroke:#1d4ed8 !important;
+
+}
+
+
+.pressed text {
+
+    fill:white !important;
 
 }
 
