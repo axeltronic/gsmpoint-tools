@@ -193,3 +193,28 @@ font-size:16px;
 cursor:pointer;
 
 }
+
+.pressed{
+
+fill:#2563eb !important;
+
+stroke:#1d4ed8 !important;
+
+}
+
+
+#stick-left,
+#stick-right{
+
+transition:.05s;
+
+}
+
+
+
+#trigger-l2,
+#trigger-r2{
+
+transition:.05s;
+
+}
