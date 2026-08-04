@@ -14,7 +14,7 @@ Gamepad Tester | GSMPoint Tools
 
 
 <meta name="description"
-content="Tester de joystick online. Probá botones, sticks, gatillos y vibración desde el navegador.">
+content="Probá tu joystick PS4, PS5, Xbox, Switch o genérico desde el navegador.">
 
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,6 @@ content="Tester de joystick online. Probá botones, sticks, gatillos y vibració
 <body>
 
 
-
 <header>
 
 
@@ -49,13 +48,11 @@ content="Tester de joystick online. Probá botones, sticks, gatillos y vibració
 
 
 <p>
-Probá tu joystick USB o Bluetooth
+Probá tu joystick USB o Bluetooth directamente desde el navegador.
 </p>
 
 
-
 </header>
-
 
 
 
@@ -68,7 +65,7 @@ Probá tu joystick USB o Bluetooth
 class="status">
 
 
-Buscando joystick...
+Esperando joystick...
 
 
 </div>
@@ -82,19 +79,15 @@ class="hidden">
 
 
 
-
-
 <div class="controller-info">
 
 
 <h2 id="controller-name">
-
 </h2>
 
 
-<span id="connection-type">
-
-</span>
+<p id="controller-type">
+</p>
 
 
 </div>
@@ -103,54 +96,13 @@ class="hidden">
 
 
 
-
-
-
-<div class="gamepad-container">
+<div class="controller-view">
 
 
 <img 
-src="assets/dualshock.svg"
 class="gamepad-svg"
->
-
-
-
-
-<!-- BOTONES ACCIÓN -->
-
-
-<div class="button triangle"
-id="triangle">
-
-△
-
-</div>
-
-
-
-<div class="button circle"
-id="circle">
-
-○
-
-</div>
-
-
-
-<div class="button square"
-id="square">
-
-□
-
-</div>
-
-
-
-<div class="button cross"
-id="cross">
-
-✕
+src="assets/generic.svg"
+alt="Gamepad">
 
 
 </div>
@@ -159,125 +111,24 @@ id="cross">
 
 
 
-
-
-<!-- STICKS -->
-
-
-<div class="stick left-stick">
-
-
-<div class="stick-inner"
-id="left-stick">
-
-</div>
-
-
-<span id="left-percent">
-0%
-</span>
-
-
-</div>
-
-
-
-
-
-
-<div class="stick right-stick">
-
-
-<div class="stick-inner"
-id="right-stick">
-
-</div>
-
-
-<span id="right-percent">
-0%
-</span>
-
-
-</div>
-
-
-
-
-
-
-
-<!-- GATILLOS -->
-
-
-<div class="trigger l2">
-
-
-<div class="trigger-fill"
-id="l2">
-
-</div>
-
-
-<span>L2</span>
-
-
-</div>
-
-
-
-
-<div class="trigger r2">
-
-
-<div class="trigger-fill"
-id="r2">
-
-</div>
-
-
-<span>R2</span>
-
-
-</div>
-
-
-
-
-
-
-</div>
-
-
-
-
-
-
-
-
-<div class="tests">
+<div class="info-box">
 
 
 <h3>
-Entradas detectadas
+Información
 </h3>
 
 
-<div id="button-list">
+<p id="details">
+
+Conectá un joystick para comenzar.
+
+</p>
+
 
 </div>
 
 
-</div>
-
-
-
-
-
-
-
-
-<div class="actions">
 
 
 <button id="vibrate">
@@ -285,10 +136,6 @@ Entradas detectadas
 🔊 Probar vibración
 
 </button>
-
-
-</div>
-
 
 
 
