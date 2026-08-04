@@ -41,6 +41,35 @@ const vibrationButton =
 document.getElementById("vibrate");
 
 
+const buttonNames = [
+
+"✕",
+"○",
+"□",
+"△",
+
+"L1",
+"R1",
+
+"L2",
+"R2",
+
+"Share",
+"Options",
+
+"L3",
+"R3",
+
+"↑",
+"↓",
+"←",
+"→",
+
+"Touchpad"
+
+];
+
+
 
 
 
