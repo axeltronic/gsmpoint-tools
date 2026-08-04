@@ -1,17 +1,23 @@
 let gamepadIndex = null;
 
+let activeController = null;
+
 
 const status =
 document.getElementById("connection-status");
 
+
 const tester =
 document.getElementById("tester");
+
 
 const controllerName =
 document.getElementById("controller-name");
 
+
 const controllerType =
 document.getElementById("controller-type");
+
 
 const controllerImage =
 document.querySelector(".gamepad-svg");
@@ -19,25 +25,31 @@ document.querySelector(".gamepad-svg");
 const details =
 document.getElementById("details");
 
-const vibrationButton =
-document.getElementById("vibrate");
 
 
+let svgDoc = null;
+
+
+
+
+// ===============================
+// CONEXIÓN
+// ===============================
 
 
 window.addEventListener(
 "gamepadconnected",
-(event)=>{
+(e)=>{
 
 
-const gp = event.gamepad;
+activeController = e.gamepad;
+
+gamepadIndex = e.gamepad.index;
 
 
-gamepadIndex = gp.index;
 
-
-const type =
-detectController(gp);
+let type =
+detectController(e.gamepad);
 
 
 
@@ -47,7 +59,7 @@ status.innerHTML =
 
 
 controllerName.innerHTML =
-gp.id;
+e.gamepad.id;
 
 
 
@@ -67,12 +79,13 @@ tester.classList.remove(
 
 
 
-startLoop();
+console.log(
+e.gamepad
+);
 
 
 
 });
-
 
 
 
@@ -84,6 +97,8 @@ window.addEventListener(
 
 
 gamepadIndex=null;
+
+activeController=null;
 
 
 status.innerHTML =
@@ -102,11 +117,17 @@ tester.classList.add(
 
 
 
-function detectController(gamepad){
+
+// ===============================
+// DETECCIÓN
+// ===============================
 
 
-const id =
-gamepad.id.toLowerCase();
+function detectController(gp){
+
+
+let id =
+gp.id.toLowerCase();
 
 
 
@@ -114,7 +135,8 @@ if(
 id.includes("sony") ||
 id.includes("054c") ||
 id.includes("dualshock") ||
-id.includes("dualsense")
+id.includes("dualsense") ||
+id.includes("wireless controller")
 ){
 
 return "playstation";
@@ -125,8 +147,7 @@ return "playstation";
 
 if(
 id.includes("xbox") ||
-id.includes("microsoft") ||
-id.includes("xinput")
+id.includes("microsoft")
 ){
 
 return "xbox";
@@ -148,19 +169,6 @@ return "switch";
 
 return "generic";
 
-}
-
-
-
-
-
-function startLoop(){
-
-
-requestAnimationFrame(
-updateGamepad
-);
-
 
 }
 
@@ -168,13 +176,20 @@ updateGamepad
 
 
 
-function updateGamepad(){
+
+
+// ===============================
+// LOOP
+// ===============================
+
+
+function update(){
 
 
 if(gamepadIndex !== null){
 
 
-const gp =
+let gp =
 navigator.getGamepads()
 [gamepadIndex];
 
@@ -185,48 +200,101 @@ if(gp){
 
 updateButtons(gp);
 
-
 updateSticks(gp);
 
+updateTriggers(gp);
 
-updateInfo(gp);
-
-
-}
-
+showInfo(gp);
 
 
 }
 
 
 
-requestAnimationFrame(
-updateGamepad
-);
+}
+
+
+requestAnimationFrame(update);
 
 
 }
 
 
+update();
 
 
 
 
+
+
+
+// ===============================
+// BOTONES
+// ===============================
 
 
 function updateButtons(gp){
+
+
+
+const map = {
+
+
+0:"button-cross",
+
+1:"button-circle",
+
+2:"button-square",
+
+3:"button-triangle",
+
+
+4:"button-l1",
+
+5:"button-r1"
+
+
+};
+
 
 
 gp.buttons.forEach(
 (button,index)=>{
 
 
+let id =
+map[index];
+
+
+if(!id)
+return;
+
+
+
+let element =
+document.getElementById(id);
+
+
+
+if(!element)
+return;
+
+
+
+
 if(button.pressed){
 
 
-console.log(
-"Botón:",
-index
+element.classList.add(
+"pressed"
+);
+
+
+}else{
+
+
+element.classList.remove(
+"pressed"
 );
 
 
@@ -244,41 +312,60 @@ index
 
 
 
+// ===============================
+// STICKS
+// ===============================
+
 
 function updateSticks(gp){
 
 
-const lx =
+let lx =
 gp.axes[0] || 0;
 
 
-const ly =
+let ly =
 gp.axes[1] || 0;
 
 
-const rx =
+
+let rx =
 gp.axes[2] || 0;
 
 
-const ry =
+let ry =
 gp.axes[3] || 0;
 
 
 
-const left =
-Math.round(
-Math.sqrt(
-lx*lx + ly*ly
-)*100
+
+
+moveStick(
+"stick-left",
+lx,
+ly
 );
 
 
 
-const right =
+moveStick(
+"stick-right",
+rx,
+ry
+);
+
+
+
+let leftPercent =
 Math.round(
-Math.sqrt(
-rx*rx + ry*ry
-)*100
+Math.sqrt(lx*lx+ly*ly)*100
+);
+
+
+
+let rightPercent =
+Math.round(
+Math.sqrt(rx*rx+ry*ry)*100
 );
 
 
@@ -286,27 +373,14 @@ rx*rx + ry*ry
 details.innerHTML = `
 
 Stick izquierdo:
-${left}%
+${leftPercent}%
 
 
 <br>
 
 Stick derecho:
-${right}%
+${rightPercent}%
 
-
-<br><br>
-
-
-Botones:
-${gp.buttons.length}
-
-
-<br>
-
-
-Ejes:
-${gp.axes.length}
 
 `;
 
@@ -318,52 +392,116 @@ ${gp.axes.length}
 
 
 
-
-function updateInfo(gp){
-
-console.log(gp);
-
-}
+function moveStick(id,x,y){
 
 
 
+let stick =
+document.getElementById(id);
 
 
 
-
-
-vibrationButton.addEventListener(
-"click",
-()=>{
-
-
-const gp =
-navigator.getGamepads()
-[gamepadIndex];
+if(!stick)
+return;
 
 
 
-if(
-gp &&
-gp.vibrationActuator
-){
+let moveX =
+x*18;
 
 
-gp.vibrationActuator.playEffect(
-"dual-rumble",
-{
+let moveY =
+y*18;
 
-duration:1000,
 
-strongMagnitude:1,
 
-weakMagnitude:.7
+stick.style.transform =
+`translate(${moveX}px,${moveY}px)`;
+
+
 
 }
 
+
+
+
+
+
+
+// ===============================
+// GATILLOS
+// ===============================
+
+
+function updateTriggers(gp){
+
+
+let l2 =
+gp.buttons[6]?.value || 0;
+
+
+let r2 =
+gp.buttons[7]?.value || 0;
+
+
+
+let left =
+document.getElementById(
+"trigger-l2"
 );
 
 
+
+let right =
+document.getElementById(
+"trigger-r2"
+);
+
+
+
+
+if(left){
+
+left.style.opacity =
+0.4 + l2;
+
 }
 
-});
+
+
+if(right){
+
+right.style.opacity =
+0.4 + r2;
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+function showInfo(gp){
+
+
+details.innerHTML += `
+
+<br><br>
+
+Botones:
+${gp.buttons.length}
+
+
+<br>
+
+Ejes:
+${gp.axes.length}
+
+`;
+
+}
