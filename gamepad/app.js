@@ -551,3 +551,38 @@ weakMagnitude:1
 
 
 });
+
+function createButtonList(){
+
+
+buttonList.innerHTML="";
+
+
+buttonNames.forEach(
+(name,index)=>{
+
+
+let div =
+document.createElement("div");
+
+
+div.className =
+"test-button";
+
+
+div.id =
+"test-"+index;
+
+
+div.innerHTML =
+name;
+
+
+buttonList.appendChild(div);
+
+
+
+});
+
+
+}
