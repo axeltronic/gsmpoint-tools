@@ -532,3 +532,88 @@ type
 
 
 }
+
+vibrationButton.addEventListener(
+"click",
+()=>{
+
+
+const gp =
+navigator.getGamepads()[gamepadIndex];
+
+
+if(!gp){
+
+alert("No hay joystick conectado");
+return;
+
+}
+
+
+
+// Chrome usa este método en algunos mandos
+if(gp.vibrationActuator){
+
+
+gp.vibrationActuator.playEffect(
+"dual-rumble",
+{
+
+startDelay:0,
+
+duration:1000,
+
+weakMagnitude:1.0,
+
+strongMagnitude:1.0
+
+}
+
+)
+.then(()=>{
+
+console.log("Vibración activada");
+
+})
+.catch(err=>{
+
+console.log(
+"Error vibración:",
+err
+);
+
+});
+
+
+return;
+
+}
+
+
+
+
+// Algunos navegadores usan hapticActuators
+
+if(gp.hapticActuators){
+
+
+gp.hapticActuators[0]
+.pulse(
+1,
+1000
+);
+
+
+return;
+
+}
+
+
+
+alert(
+"Este navegador o mando no permite vibración."
+);
+
+
+
+});
