@@ -3,9 +3,11 @@ let gamepadIndex = null;
 const status = document.getElementById("connection-status");
 const emptyState = document.getElementById("empty-state");
 const testerUI = document.getElementById("tester-ui");
+
 const controllerName = document.getElementById("controller-name");
 const buttons = document.getElementById("buttons");
 const axes = document.getElementById("axes");
+
 
 // Cuando conecta un joystick
 window.addEventListener("gamepadconnected", (event) => {
@@ -21,6 +23,10 @@ window.addEventListener("gamepadconnected", (event) => {
     emptyState.classList.add("hidden");
 
     testerUI.classList.remove("hidden");
+
+
+    controllerName.innerHTML =
+    event.gamepad.id;
 
 
     console.log("Conectado:", event.gamepad);
@@ -47,7 +53,7 @@ window.addEventListener("gamepaddisconnected", () => {
 });
 
 
-// Loop del joystick
+// Actualizar datos del joystick
 function update(){
 
     if(gamepadIndex !== null){
@@ -58,7 +64,33 @@ function update(){
 
         if(gamepad){
 
-            console.log(gamepad);
+            let pressedButtons = [];
+
+
+            gamepad.buttons.forEach((button,index)=>{
+
+                if(button.pressed){
+
+                    pressedButtons.push(index);
+
+                }
+
+            });
+
+
+            buttons.innerHTML =
+            pressedButtons.length
+            ?
+            pressedButtons.join(" | ")
+            :
+            "Ninguno";
+
+
+            axes.innerHTML =
+            gamepad.axes
+            .map(value => value.toFixed(2))
+            .join(" | ");
+
 
         }
 
