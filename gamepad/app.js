@@ -1,36 +1,56 @@
 let gamepadIndex = null;
 
-const status = document.getElementById("connection-status");
-const tester = document.getElementById("tester");
-
-const controllerName = document.getElementById("controller-name");
-const controllerType = document.getElementById("controller-type");
-
-const gamepadContainer = document.getElementById("gamepad-container");
-
-const details = document.getElementById("details");
 
 
+const status =
+document.getElementById("connection-status");
+
+
+const tester =
+document.getElementById("tester");
+
+
+const controllerName =
+document.getElementById("controller-name");
+
+
+const controllerType =
+document.getElementById("controller-type");
+
+
+const gamepadContainer =
+document.getElementById("gamepad-container");
+
+
+const details =
+document.getElementById("details");
+
+
+const vibrationButton =
+document.getElementById("vibrate");
 
 
 
-// =============================
-// CONEXIÓN DEL GAMEPAD
-// =============================
+
+
+
+// =====================
+// CONEXION
+// =====================
+
 
 window.addEventListener(
 "gamepadconnected",
-(event)=>{
+(e)=>{
 
 
-const gamepad = event.gamepad;
-
-
-gamepadIndex = gamepad.index;
+gamepadIndex =
+e.gamepad.index;
 
 
 
-const type = detectController(gamepad);
+let type =
+detectController(e.gamepad);
 
 
 
@@ -40,7 +60,7 @@ status.innerHTML =
 
 
 controllerName.innerHTML =
-gamepad.id;
+e.gamepad.id;
 
 
 
@@ -59,13 +79,6 @@ loadControllerSVG(type);
 
 
 
-console.log(
-"Conectado:",
-gamepad
-);
-
-
-
 });
 
 
@@ -73,16 +86,14 @@ gamepad
 
 
 
-// =============================
-// DESCONEXIÓN
-// =============================
+
 
 window.addEventListener(
 "gamepaddisconnected",
 ()=>{
 
 
-gamepadIndex = null;
+gamepadIndex=null;
 
 
 status.innerHTML =
@@ -102,52 +113,38 @@ tester.classList.add(
 
 
 
-// =============================
-// DETECTAR TIPO DE MANDO
-// =============================
 
-function detectController(gamepad){
+function detectController(gp){
 
 
-const id =
-gamepad.id.toLowerCase();
+let id =
+gp.id.toLowerCase();
 
 
 
 if(
 id.includes("sony") ||
-id.includes("054c") ||
 id.includes("dualshock") ||
 id.includes("dualsense") ||
-id.includes("wireless controller")
-){
-
+id.includes("054c")
+)
 return "playstation";
-
-}
 
 
 
 if(
 id.includes("xbox") ||
-id.includes("microsoft") ||
-id.includes("xinput")
-){
-
+id.includes("microsoft")
+)
 return "xbox";
-
-}
 
 
 
 if(
-id.includes("nintendo") ||
-id.includes("switch")
-){
-
+id.includes("switch") ||
+id.includes("nintendo")
+)
 return "switch";
-
-}
 
 
 
@@ -162,25 +159,22 @@ return "generic";
 
 
 
+// =====================
+// SVG INLINE
+// =====================
 
-// =============================
-// CARGAR SVG INLINE
-// =============================
 
 async function loadControllerSVG(type){
 
 
-try{
-
-
-const response =
+let response =
 await fetch(
-"assets/" + type + ".svg"
+"assets/"+type+".svg"
 );
 
 
 
-const svg =
+let svg =
 await response.text();
 
 
@@ -191,92 +185,46 @@ svg;
 
 
 console.log(
-"SVG cargado:",
-type
-);
-
-
-
-initSVGControls();
-
-
-
-}
-catch(error){
-
-
-console.error(
-"Error cargando SVG:",
-error
+"SVG cargado"
 );
 
 
 }
 
 
-}
 
 
 
 
 
 
+// =====================
+// LOOP
+// =====================
 
-// =============================
-// INICIALIZAR SVG
-// =============================
-
-function initSVGControls(){
-
-
-const parts =
-document.querySelectorAll(
-".gamepad-part"
-);
-
-
-
-console.log(
-"Partes SVG encontradas:",
-parts.length
-);
-
-
-
-}
-
-
-
-
-
-
-
-// =============================
-// LOOP PRINCIPAL
-// =============================
 
 function update(){
 
 
-if(gamepadIndex !== null){
+if(gamepadIndex!==null){
 
 
-const gamepad =
+let gp =
 navigator.getGamepads()
 [gamepadIndex];
 
 
 
-if(gamepad){
+if(gp){
 
 
-updateButtons(gamepad);
+updateButtons(gp);
 
 
-updateSticks(gamepad);
+updateSticks(gp);
 
 
-updateInfo(gamepad);
+updateTriggers(gp);
 
 
 }
@@ -303,15 +251,17 @@ update();
 
 
 
-// =============================
+
+// =====================
 // BOTONES
-// =============================
-
-function updateButtons(gamepad){
+// =====================
 
 
+function updateButtons(gp){
 
-const buttonMap = {
+
+
+const map={
 
 
 0:"button-cross",
@@ -322,13 +272,33 @@ const buttonMap = {
 
 3:"button-triangle",
 
+
 4:"button-l1",
 
 5:"button-r1",
 
+
 6:"trigger-l2",
 
-7:"trigger-r2"
+7:"trigger-r2",
+
+
+8:"button-share",
+
+9:"button-options",
+
+10:"button-l3",
+
+11:"button-r3",
+
+
+12:"dpad-up",
+
+13:"dpad-down",
+
+14:"dpad-left",
+
+15:"dpad-right"
 
 
 };
@@ -336,13 +306,13 @@ const buttonMap = {
 
 
 
-gamepad.buttons.forEach(
+
+gp.buttons.forEach(
 (button,index)=>{
 
 
-const id =
-buttonMap[index];
-
+let id =
+map[index];
 
 
 if(!id)
@@ -350,7 +320,7 @@ return;
 
 
 
-const element =
+let element =
 document.getElementById(id);
 
 
@@ -360,24 +330,13 @@ return;
 
 
 
-if(button.pressed){
+if(button.pressed)
 
+element.classList.add("pressed");
 
-element.classList.add(
-"pressed"
-);
+else
 
-
-
-}else{
-
-
-element.classList.remove(
-"pressed"
-);
-
-
-}
+element.classList.remove("pressed");
 
 
 
@@ -393,86 +352,27 @@ element.classList.remove(
 
 
 
-// =============================
+// =====================
 // STICKS
-// =============================
-
-function updateSticks(gamepad){
+// =====================
 
 
-const lx =
-gamepad.axes[0] || 0;
-
-
-const ly =
-gamepad.axes[1] || 0;
-
-
-const rx =
-gamepad.axes[2] || 0;
-
-
-const ry =
-gamepad.axes[3] || 0;
-
+function updateSticks(gp){
 
 
 moveStick(
 "stick-left",
-lx,
-ly
+gp.axes[0],
+gp.axes[1]
 );
 
 
 
 moveStick(
 "stick-right",
-rx,
-ry
+gp.axes[2],
+gp.axes[3]
 );
-
-
-
-const left =
-Math.round(
-Math.sqrt(lx*lx + ly*ly)
-*100
-);
-
-
-
-const right =
-Math.round(
-Math.sqrt(rx*rx + ry*ry)
-*100
-);
-
-
-
-details.innerHTML = `
-
-Stick izquierdo:
-${left}%
-
-
-<br>
-
-Stick derecho:
-${right}%
-
-
-<br><br>
-
-Botones:
-${gamepad.buttons.length}
-
-
-<br>
-
-Ejes:
-${gamepad.axes.length}
-
-`;
 
 
 
@@ -480,13 +380,10 @@ ${gamepad.axes.length}
 
 
 
-
-
-
 function moveStick(id,x,y){
 
 
-const stick =
+let stick =
 document.getElementById(id);
 
 
@@ -514,16 +411,99 @@ ${y*18}px
 
 
 
-// =============================
-// INFORMACIÓN
-// =============================
 
-function updateInfo(gamepad){
+// =====================
+// TRIGGERS
+// =====================
 
 
-console.log(
-gamepad
+function updateTriggers(gp){
+
+
+let l2 =
+gp.buttons[6]?.value || 0;
+
+
+let r2 =
+gp.buttons[7]?.value || 0;
+
+
+
+
+let left =
+document.getElementById(
+"trigger-l2"
+);
+
+
+let right =
+document.getElementById(
+"trigger-r2"
+);
+
+
+
+if(left)
+
+left.style.opacity =
+0.3+l2;
+
+
+
+if(right)
+
+right.style.opacity =
+0.3+r2;
+
+
+
+}
+
+
+
+
+
+
+
+
+// =====================
+// VIBRACION
+// =====================
+
+
+vibrationButton.addEventListener(
+"click",
+()=>{
+
+
+let gp =
+navigator.getGamepads()
+[gamepadIndex];
+
+
+
+if(
+gp &&
+gp.vibrationActuator
+){
+
+
+gp.vibrationActuator.playEffect(
+"dual-rumble",
+{
+
+duration:800,
+
+strongMagnitude:1,
+
+weakMagnitude:1
+
+}
+
 );
 
 
 }
+
+
+});
