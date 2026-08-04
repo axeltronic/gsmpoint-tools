@@ -19,7 +19,9 @@ content="Probá botones, sticks, gatillos y vibración de tu joystick desde el n
 
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -36,12 +38,16 @@ Probá tu joystick directamente desde el navegador.
 </header>
 
 
+
 <main>
 
 
 <div id="connection-status" class="status-disconnected">
+
 Ningún joystick conectado
+
 </div>
+
 
 
 
@@ -59,23 +65,112 @@ Conectá un joystick y presioná cualquier botón para comenzar.
 
 
 
+
+
 <div id="tester-ui" class="hidden">
 
 
-<h2 id="controller-name">
-</h2>
+
+<h2 id="controller-name"></h2>
+
+
+
+<div class="controller">
+
+
+
+<div class="shoulder left">
+L1
+</div>
+
+
+<div class="shoulder right">
+R1
+</div>
+
+
+
+
+<div class="face-buttons">
+
+
+<button id="btn-3">
+△
+</button>
+
+
+<button id="btn-2">
+□
+</button>
+
+
+<button id="btn-1">
+○
+</button>
+
+
+<button id="btn-0">
+✕
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="sticks">
+
+
+<div class="stick">
+
+<div id="stick-left">
+🕹️
+</div>
+
+<span>
+L
+</span>
+
+</div>
+
+
+
+<div class="stick">
+
+<div id="stick-right">
+🕹️
+</div>
+
+<span>
+R
+</span>
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
 
 
 
 <div class="info-box">
 
-<h3>🎮 Botones</h3>
+<h3>🎮 Botones detectados</h3>
 
 <p id="buttons">
 Ninguno
 </p>
 
 </div>
+
 
 
 
@@ -95,10 +190,13 @@ Ninguno
 </div>
 
 
+
 </main>
 
 
+
 <script src="app.js"></script>
+
 
 </body>
 </html>
