@@ -25,6 +25,9 @@ document.getElementById("gamepad-container");
 const details =
 document.getElementById("details");
 
+const vibrationButton =
+document.getElementById("vibrate");
+
 
 
 let svgDoc = null;
