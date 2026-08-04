@@ -374,15 +374,16 @@ return;
 
 
 
-if(button.pressed)
+if(button.pressed){
 
 element.classList.add("pressed");
 
-else
+markButtonTested(index);
+
+
+}else{
 
 element.classList.remove("pressed");
-
-
 
 });
 
