@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gamepad Tester | GSMPoint Tools</title>
+
+<title>
+Gamepad Tester | GSMPoint Tools
+</title>
+
 
 <meta name="description"
-content="Probá botones, sticks, gatillos y vibración de tu joystick desde el navegador.">
+content="Tester de joystick online. Probá botones, sticks, gatillos y vibración desde el navegador.">
+
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+
 <link rel="stylesheet" href="style.css">
+
 
 </head>
 
@@ -23,43 +34,42 @@ content="Probá botones, sticks, gatillos y vibración de tu joystick desde el n
 <body>
 
 
+
 <header>
+
 
 <a href="../">
 ← Volver a GSMPoint Tools
 </a>
 
-<h1>🎮 Gamepad Tester</h1>
+
+<h1>
+🎮 Gamepad Tester
+</h1>
+
 
 <p>
-Probá tu joystick directamente desde el navegador.
+Probá tu joystick USB o Bluetooth
 </p>
 
+
+
 </header>
+
+
 
 
 
 <main>
 
 
-<div id="connection-status" class="status-disconnected">
 
-Ningún joystick conectado
-
-</div>
+<div id="connection-status"
+class="status">
 
 
+Buscando joystick...
 
-
-<div id="empty-state">
-
-<div class="icon">
-🎮
-</div>
-
-<p>
-Conectá un joystick y presioná cualquier botón para comenzar.
-</p>
 
 </div>
 
@@ -67,50 +77,213 @@ Conectá un joystick y presioná cualquier botón para comenzar.
 
 
 
-<div id="tester-ui" class="hidden">
+<section id="tester"
+class="hidden">
 
 
 
-<h2 id="controller-name"></h2>
 
 
-
-<div class="controller">
-
+<div class="controller-info">
 
 
-<div class="shoulder left">
-L1
+<h2 id="controller-name">
+
+</h2>
+
+
+<span id="connection-type">
+
+</span>
+
+
 </div>
 
 
-<div class="shoulder right">
-R1
-</div>
 
 
 
 
-<div class="face-buttons">
 
 
-<button id="btn-3">
+<div class="gamepad-container">
+
+
+<img 
+src="assets/dualshock.svg"
+class="gamepad-svg"
+>
+
+
+
+
+<!-- BOTONES ACCIÓN -->
+
+
+<div class="button triangle"
+id="triangle">
+
 △
-</button>
+
+</div>
 
 
-<button id="btn-2">
-□
-</button>
 
+<div class="button circle"
+id="circle">
 
-<button id="btn-1">
 ○
-</button>
+
+</div>
 
 
-<button id="btn-0">
+
+<div class="button square"
+id="square">
+
+□
+
+</div>
+
+
+
+<div class="button cross"
+id="cross">
+
 ✕
+
+
+</div>
+
+
+
+
+
+
+
+<!-- STICKS -->
+
+
+<div class="stick left-stick">
+
+
+<div class="stick-inner"
+id="left-stick">
+
+</div>
+
+
+<span id="left-percent">
+0%
+</span>
+
+
+</div>
+
+
+
+
+
+
+<div class="stick right-stick">
+
+
+<div class="stick-inner"
+id="right-stick">
+
+</div>
+
+
+<span id="right-percent">
+0%
+</span>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- GATILLOS -->
+
+
+<div class="trigger l2">
+
+
+<div class="trigger-fill"
+id="l2">
+
+</div>
+
+
+<span>L2</span>
+
+
+</div>
+
+
+
+
+<div class="trigger r2">
+
+
+<div class="trigger-fill"
+id="r2">
+
+</div>
+
+
+<span>R2</span>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="tests">
+
+
+<h3>
+Entradas detectadas
+</h3>
+
+
+<div id="button-list">
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="actions">
+
+
+<button id="vibrate">
+
+🔊 Probar vibración
+
 </button>
 
 
@@ -120,74 +293,7 @@ R1
 
 
 
-<div class="sticks">
-
-
-<div class="stick">
-
-<div id="stick-left">
-🕹️
-</div>
-
-<span>
-L
-</span>
-
-</div>
-
-
-
-<div class="stick">
-
-<div id="stick-right">
-🕹️
-</div>
-
-<span>
-R
-</span>
-
-</div>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<div class="info-box">
-
-<h3>🎮 Botones detectados</h3>
-
-<p id="buttons">
-Ninguno
-</p>
-
-</div>
-
-
-
-
-
-<div class="info-box">
-
-<h3>🕹️ Ejes analógicos</h3>
-
-<p id="axes">
--
-</p>
-
-</div>
-
-
-
-</div>
+</section>
 
 
 
@@ -195,8 +301,11 @@ Ninguno
 
 
 
+
+
 <script src="app.js"></script>
 
 
 </body>
+
 </html>
