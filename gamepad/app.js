@@ -19,8 +19,8 @@ const controllerType =
 document.getElementById("controller-type");
 
 
-const controllerImage =
-document.querySelector(".gamepad-svg");
+const gamepadContainer =
+document.getElementById("gamepad-container");
 
 const details =
 document.getElementById("details");
