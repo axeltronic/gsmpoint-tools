@@ -18,6 +18,17 @@ const controllerType =
 document.getElementById("controller-type");
 
 
+const progress =
+document.getElementById("test-progress");
+
+
+const buttonList =
+document.getElementById("button-list");
+
+
+let testedButtons = [];
+
+
 const gamepadContainer =
 document.getElementById("gamepad-container");
 
