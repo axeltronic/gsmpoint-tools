@@ -2,51 +2,25 @@ let gamepadIndex = null;
 
 
 const status =
-document.getElementById(
-"connection-status"
-);
-
+document.getElementById("connection-status");
 
 const tester =
-document.getElementById(
-"tester"
-);
-
-
+document.getElementById("tester");
 
 const controllerName =
-document.getElementById(
-"controller-name"
-);
-
-
+document.getElementById("controller-name");
 
 const controllerType =
-document.getElementById(
-"controller-type"
-);
-
-
+document.getElementById("controller-type");
 
 const controllerImage =
-document.querySelector(
-".gamepad-svg"
-);
-
-
+document.querySelector(".gamepad-svg");
 
 const details =
-document.getElementById(
-"details"
-);
-
-
+document.getElementById("details");
 
 const vibrationButton =
-document.getElementById(
-"vibrate"
-);
-
+document.getElementById("vibrate");
 
 
 
@@ -56,18 +30,14 @@ window.addEventListener(
 (event)=>{
 
 
-const gamepad =
-event.gamepad;
+const gp = event.gamepad;
 
 
-gamepadIndex =
-gamepad.index;
-
+gamepadIndex = gp.index;
 
 
 const type =
-detectController(gamepad);
-
+detectController(gp);
 
 
 
@@ -77,36 +47,17 @@ status.innerHTML =
 
 
 controllerName.innerHTML =
-gamepad.id;
+gp.id;
 
 
 
 controllerType.innerHTML =
-"Tipo detectado: " + type;
+"Layout: " + type;
 
 
 
 controllerImage.src =
 "assets/" + type + ".svg";
-
-
-
-details.innerHTML = `
-
-Índice:
-${gamepad.index}
-
-<br>
-
-Botones:
-${gamepad.buttons.length}
-
-<br>
-
-Ejes:
-${gamepad.axes.length}
-
-`;
 
 
 
@@ -116,14 +67,11 @@ tester.classList.remove(
 
 
 
-console.log(
-gamepad
-);
+startLoop();
 
 
 
 });
-
 
 
 
@@ -135,7 +83,7 @@ window.addEventListener(
 ()=>{
 
 
-gamepadIndex = null;
+gamepadIndex=null;
 
 
 status.innerHTML =
@@ -154,8 +102,6 @@ tester.classList.add(
 
 
 
-
-
 function detectController(gamepad){
 
 
@@ -164,22 +110,16 @@ gamepad.id.toLowerCase();
 
 
 
-
-
 if(
 id.includes("sony") ||
 id.includes("054c") ||
 id.includes("dualshock") ||
-id.includes("dualsense") ||
-id.includes("wireless controller")
+id.includes("dualsense")
 ){
 
 return "playstation";
 
 }
-
-
-
 
 
 
@@ -195,9 +135,6 @@ return "xbox";
 
 
 
-
-
-
 if(
 id.includes("nintendo") ||
 id.includes("switch")
@@ -209,13 +146,185 @@ return "switch";
 
 
 
-
-
-
 return "generic";
+
+}
+
+
+
+
+
+function startLoop(){
+
+
+requestAnimationFrame(
+updateGamepad
+);
 
 
 }
+
+
+
+
+
+function updateGamepad(){
+
+
+if(gamepadIndex !== null){
+
+
+const gp =
+navigator.getGamepads()
+[gamepadIndex];
+
+
+
+if(gp){
+
+
+updateButtons(gp);
+
+
+updateSticks(gp);
+
+
+updateInfo(gp);
+
+
+}
+
+
+
+}
+
+
+
+requestAnimationFrame(
+updateGamepad
+);
+
+
+}
+
+
+
+
+
+
+
+
+function updateButtons(gp){
+
+
+gp.buttons.forEach(
+(button,index)=>{
+
+
+if(button.pressed){
+
+
+console.log(
+"Botón:",
+index
+);
+
+
+}
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+function updateSticks(gp){
+
+
+const lx =
+gp.axes[0] || 0;
+
+
+const ly =
+gp.axes[1] || 0;
+
+
+const rx =
+gp.axes[2] || 0;
+
+
+const ry =
+gp.axes[3] || 0;
+
+
+
+const left =
+Math.round(
+Math.sqrt(
+lx*lx + ly*ly
+)*100
+);
+
+
+
+const right =
+Math.round(
+Math.sqrt(
+rx*rx + ry*ry
+)*100
+);
+
+
+
+details.innerHTML = `
+
+Stick izquierdo:
+${left}%
+
+
+<br>
+
+Stick derecho:
+${right}%
+
+
+<br><br>
+
+
+Botones:
+${gp.buttons.length}
+
+
+<br>
+
+
+Ejes:
+${gp.axes.length}
+
+`;
+
+
+
+}
+
+
+
+
+
+
+function updateInfo(gp){
+
+console.log(gp);
+
+}
+
 
 
 
@@ -228,12 +337,9 @@ vibrationButton.addEventListener(
 ()=>{
 
 
-const gamepads =
-navigator.getGamepads();
-
-
 const gp =
-gamepads[gamepadIndex];
+navigator.getGamepads()
+[gamepadIndex];
 
 
 
@@ -247,26 +353,17 @@ gp.vibrationActuator.playEffect(
 "dual-rumble",
 {
 
-duration:800,
+duration:1000,
 
 strongMagnitude:1,
 
-weakMagnitude:.5
+weakMagnitude:.7
 
 }
-);
 
-
-}else{
-
-
-alert(
-"Este mando no soporta vibración desde el navegador."
 );
 
 
 }
-
-
 
 });
