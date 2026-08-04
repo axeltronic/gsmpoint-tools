@@ -2,63 +2,73 @@ let gamepadIndex = null;
 
 
 const status =
-document.getElementById("connection-status");
+document.getElementById(
+"connection-status"
+);
 
-const emptyState =
-document.getElementById("empty-state");
 
-const testerUI =
-document.getElementById("tester-ui");
+const tester =
+document.getElementById(
+"tester"
+);
+
 
 
 const controllerName =
-document.getElementById("controller-name");
-
-
-const buttons =
-document.getElementById("buttons");
-
-
-const axes =
-document.getElementById("axes");
+document.getElementById(
+"controller-name"
+);
 
 
 
-const visualButtons = [
-
-document.getElementById("btn-0"),
-document.getElementById("btn-1"),
-document.getElementById("btn-2"),
-document.getElementById("btn-3")
-
-];
+const controllerType =
+document.getElementById(
+"controller-type"
+);
 
 
 
-
-// conexión
-
-window.addEventListener("gamepadconnected", (event)=>{
-
-
-connectGamepad(event.gamepad);
+const controllerImage =
+document.querySelector(
+".gamepad-svg"
+);
 
 
-});
+
+const details =
+document.getElementById(
+"details"
+);
+
+
+
+const vibrationButton =
+document.getElementById(
+"vibrate"
+);
 
 
 
 
 
-function connectGamepad(gamepad){
+window.addEventListener(
+"gamepadconnected",
+(event)=>{
+
+
+const gamepad =
+event.gamepad;
 
 
 gamepadIndex =
 gamepad.index;
 
 
-status.className =
-"status-connected";
+
+const type =
+detectController(gamepad);
+
+
 
 
 status.innerHTML =
@@ -66,43 +76,75 @@ status.innerHTML =
 
 
 
-emptyState.classList.add("hidden");
-
-
-testerUI.classList.remove("hidden");
-
-
-
 controllerName.innerHTML =
 gamepad.id;
 
 
-}
+
+controllerType.innerHTML =
+"Tipo detectado: " + type;
+
+
+
+controllerImage.src =
+"assets/" + type + ".svg";
+
+
+
+details.innerHTML = `
+
+Índice:
+${gamepad.index}
+
+<br>
+
+Botones:
+${gamepad.buttons.length}
+
+<br>
+
+Ejes:
+${gamepad.axes.length}
+
+`;
+
+
+
+tester.classList.remove(
+"hidden"
+);
+
+
+
+console.log(
+gamepad
+);
+
+
+
+});
 
 
 
 
-// desconexión
 
-window.addEventListener("gamepaddisconnected", ()=>{
+
+
+window.addEventListener(
+"gamepaddisconnected",
+()=>{
 
 
 gamepadIndex = null;
 
 
-status.className =
-"status-disconnected";
-
-
 status.innerHTML =
-"Ningún joystick conectado";
+"❌ Joystick desconectado";
 
 
-
-emptyState.classList.remove("hidden");
-
-
-testerUI.classList.add("hidden");
+tester.classList.add(
+"hidden"
+);
 
 
 });
@@ -113,57 +155,114 @@ testerUI.classList.add("hidden");
 
 
 
-function update(){
+
+function detectController(gamepad){
 
 
-if(gamepadIndex !== null){
-
-
-const gamepad =
-navigator.getGamepads()[gamepadIndex];
-
-
-
-if(gamepad){
-
-
-
-let pressedButtons = [];
+const id =
+gamepad.id.toLowerCase();
 
 
 
 
 
-gamepad.buttons.forEach((button,index)=>{
+if(
+id.includes("sony") ||
+id.includes("054c") ||
+id.includes("dualshock") ||
+id.includes("dualsense") ||
+id.includes("wireless controller")
+){
 
-
-
-if(button.pressed){
-
-pressedButtons.push(index);
+return "playstation";
 
 }
 
 
 
-if(visualButtons[index]){
 
 
-if(button.pressed){
+
+if(
+id.includes("xbox") ||
+id.includes("microsoft") ||
+id.includes("xinput")
+){
+
+return "xbox";
+
+}
 
 
-visualButtons[index]
-.classList.add("pressed");
+
+
+
+
+if(
+id.includes("nintendo") ||
+id.includes("switch")
+){
+
+return "switch";
+
+}
+
+
+
+
+
+
+return "generic";
+
+
+}
+
+
+
+
+
+
+
+vibrationButton.addEventListener(
+"click",
+()=>{
+
+
+const gamepads =
+navigator.getGamepads();
+
+
+const gp =
+gamepads[gamepadIndex];
+
+
+
+if(
+gp &&
+gp.vibrationActuator
+){
+
+
+gp.vibrationActuator.playEffect(
+"dual-rumble",
+{
+
+duration:800,
+
+strongMagnitude:1,
+
+weakMagnitude:.5
+
+}
+);
 
 
 }else{
 
 
-visualButtons[index]
-.classList.remove("pressed");
-
-
-}
+alert(
+"Este mando no soporta vibración desde el navegador."
+);
 
 
 }
@@ -171,43 +270,3 @@ visualButtons[index]
 
 
 });
-
-
-
-
-
-buttons.innerHTML =
-pressedButtons.length
-?
-pressedButtons.join(" | ")
-:
-"Ninguno";
-
-
-
-
-
-axes.innerHTML =
-gamepad.axes
-.map(value=>value.toFixed(2))
-.join(" | ");
-
-
-
-
-}
-
-
-
-}
-
-
-
-requestAnimationFrame(update);
-
-
-}
-
-
-
-update();
