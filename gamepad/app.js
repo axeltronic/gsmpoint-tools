@@ -121,9 +121,14 @@ function createRing(id){
 
     }
 
-    stickHistory[id] = segments;
+    ringSegments[
+    id === "ring-l"
+        ? "stick-l"
+        : "stick-r"
+] = segments;
 
 }
+
 function update() {
   if (gamepadIndex !== null) {
     let gp = navigator.getGamepads()[gamepadIndex];
@@ -138,8 +143,8 @@ function update() {
   requestAnimationFrame(update);
 }
 
-createRing("stick-l");
-createRing("stick-r");
+createRing("ring-l");
+createRing("ring-r");
 
 update();
 
