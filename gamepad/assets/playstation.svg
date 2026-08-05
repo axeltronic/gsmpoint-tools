@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+    <defs>
+        <!-- Gradientes -->
+        <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1a1a2e" />
+            <stop offset="100%" stop-color="#16213e" />
+        </linearGradient>
+        
+        <radialGradient id="stickGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#e2e8f0" />
+            <stop offset="100%" stop-color="#94a3b8" />
+        </radialGradient>
+        
+        <radialGradient id="stickShadow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(0,0,0,0.15)" />
+            <stop offset="100%" stop-color="rgba(0,0,0,0)" />
+        </radialGradient>
+        
+        <linearGradient id="buttonGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#f8fafc" />
+            <stop offset="100%" stop-color="#e2e8f0" />
+        </linearGradient>
+        
+        <linearGradient id="dpadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#475569" />
+            <stop offset="100%" stop-color="#334155" />
+        </linearGradient>
+        
+        <!-- Sombras -->
+        <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="130%">
+            <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="rgba(0,0,0,0.3)" />
+        </filter>
+        
+        <filter id="innerGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+            <feOffset dx="0" dy="0" />
+            <feComposite in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowDiff" />
+            <feFlood flood-color="rgba(255,255,255,0.1)" />
+            <feComposite in2="shadowDiff" operator="in" />
+            <feComposite in2="SourceGraphic" operator="over" />
+        </filter>
+        
+        <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- CUERPO PRINCIPAL con gradiente y sombra -->
+    <g filter="url(#dropShadow)">
+        <path d="
+            M170 70
+            C90 90 50 190 90 300
+            C110 350 170 350 210 300
+            C260 270 340 270 390 300
+            C430 350 490 350 510 300
+            C550 190 510 90 430 70
+            C350 40 250 40 170 70Z
+        " 
+        fill="url(#bodyGrad)" 
+        stroke="#2a2a4a" 
+        stroke-width="2" />
+    </g>
+
+    <!-- DETALLES DECORATIVOS del cuerpo -->
+    <path d="
+        M170 70
+        C90 90 50 190 90 300
+        C110 350 170 350 210 300
+        C260 270 340 270 390 300
+        C430 350 490 350 510 300
+        C550 190 510 90 430 70
+        C350 40 250 40 170 70Z
+    " 
+    fill="none" 
+    stroke="rgba(255,255,255,0.05)" 
+    stroke-width="40" />
+
+    <!-- TOUCHPAD con vidrio esmerilado -->
+    <rect x="245" y="85" width="110" height="55" rx="20" 
+          fill="rgba(255,255,255,0.06)" 
+          stroke="rgba(255,255,255,0.15)" 
+          stroke-width="2" />
+    
+    <!-- Línea decorativa touchpad -->
+    <rect x="265" y="100" width="70" height="2" rx="1" 
+          fill="rgba(255,255,255,0.08)" />
+    <rect x="265" y="108" width="40" height="2" rx="1" 
+          fill="rgba(255,255,255,0.05)" />
+    <rect x="265" y="116" width="55" height="2" rx="1" 
+          fill="rgba(255,255,255,0.08)" />
+
+    <!-- D-PAD con gradiente oscuro -->
+    <g id="dpad" fill="url(#dpadGrad)" filter="url(#innerGlow)">
+        <rect x="120" y="170" width="40" height="110" rx="8" />
+        <rect x="85" y="205" width="110" height="40" rx="8" />
+    </g>
+    
+    <!-- Centro del D-PAD (detalle) -->
+    <circle cx="140" cy="225" r="10" fill="rgba(255,255,255,0.05)" />
+
+    <!-- BOTONES PLAYSTATION con diseño moderno -->
+    
+    <!-- Cuadrado -->
+    <g id="button-square" class="btn" data-btn="square">
+        <circle cx="390" cy="210" r="24" fill="url(#buttonGrad)" stroke="#cbd5e1" stroke-width="2" />
+        <circle cx="390" cy="210" r="18" fill="none" stroke="#e2e8f0" stroke-width="1" />
+        <text x="390" y="218" text-anchor="middle" font-size="22" font-weight="600" fill="#475569" font-family="Inter, sans-serif">□</text>
+    </g>
+
+    <!-- Triángulo -->
+    <g id="button-triangle" class="btn" data-btn="triangle">
+        <circle cx="430" cy="170" r="24" fill="url(#buttonGrad)" stroke="#cbd5e1" stroke-width="2" />
+        <circle cx="430" cy="170" r="18" fill="none" stroke="#e2e8f0" stroke-width="1" />
+        <text x="430" y="178" text-anchor="middle" font-size="22" font-weight="600" fill="#475569" font-family="Inter, sans-serif">△</text>
+    </g>
+
+    <!-- Círculo -->
+    <g id="button-circle" class="btn" data-btn="circle">
+        <circle cx="470" cy="210" r="24" fill="url(#buttonGrad)" stroke="#cbd5e1" stroke-width="2" />
+        <circle cx="470" cy="210" r="18" fill="none" stroke="#e2e8f0" stroke-width="1" />
+        <text x="470" y="218" text-anchor="middle" font-size="22" font-weight="600" fill="#475569" font-family="Inter, sans-serif">○</text>
+    </g>
+
+    <!-- Cruz -->
+    <g id="button-cross" class="btn" data-btn="cross">
+        <circle cx="430" cy="250" r="24" fill="url(#buttonGrad)" stroke="#cbd5e1" stroke-width="2" />
+        <circle cx="430" cy="250" r="18" fill="none" stroke="#e2e8f0" stroke-width="1" />
+        <text x="430" y="258" text-anchor="middle" font-size="22" font-weight="600" fill="#475569" font-family="Inter, sans-serif">✕</text>
+    </g>
+
+    <!-- STICK IZQUIERDO con base y sombra -->
+    <g>
+        <!-- Base del stick (anillo) -->
+        <circle cx="220" cy="250" r="52" fill="rgba(0,0,0,0.15)" />
+        <circle cx="220" cy="250" r="50" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+        
+        <!-- Anillo interior decorativo -->
+        <circle cx="220" cy="250" r="38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+        
+        <!-- Stick móvil -->
+        <circle id="stick-left" cx="220" cy="250" r="28" fill="url(#stickGrad)" filter="url(#dropShadow)" />
+        <circle id="stick-left-center" cx="220" cy="250" r="10" fill="rgba(255,255,255,0.3)" />
+    </g>
+
+    <!-- STICK DERECHO -->
+    <g>
+        <circle cx="380" cy="250" r="52" fill="rgba(0,0,0,0.15)" />
+        <circle cx="380" cy="250" r="50" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+        <circle cx="380" cy="250" r="38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+        
+        <circle id="stick-right" cx="380" cy="250" r="28" fill="url(#stickGrad)" filter="url(#dropShadow)" />
+        <circle id="stick-right-center" cx="380" cy="250" r="10" fill="rgba(255,255,255,0.3)" />
+    </g>
+
+    <!-- BOTONES SUPERIORES L1/R1 -->
+    
+    <!-- L1 -->
+    <g id="button-l1" class="btn" data-btn="l1">
+        <rect x="130" y="55" width="90" height="38" rx="18" 
+              fill="url(#buttonGrad)" stroke="#cbd5e1" stroke-width="2" />
+        <text x="175" y="80" text-anchor="middle" font-size="12" font-weight="700" 
+              fill="#64748b" font-family="Inter, sans-serif">L1</text>
+    </g>
+
+    <!-- R1 -->
+    <g id="button-r1" class="btn" data-btn="r1">
+        <rect x="380" y="55" width="90" height="38" rx="18" 
+              fill="url(#buttonGrad)" stroke="#cbd5e1" stroke-width="2" />
+        <text x="425" y="80" text-anchor="middle" font-size="12" font-weight="700" 
+              fill="#64748b" font-family="Inter, sans-serif">R1</text>
+    </g>
+
+    <!-- GATILLOS L2/R2 -->
+    
+    <!-- L2 -->
+    <g>
+        <rect id="trigger-l2" x="125" y="20" width="100" height="28" rx="14" 
+              fill="#475569" stroke="#334155" stroke-width="2" opacity="0.5" />
+        <text x="175" y="40" text-anchor="middle" font-size="11" font-weight="700" 
+              fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif">L2</text>
+    </g>
+
+    <!-- R2 -->
+    <g>
+        <rect id="trigger-r2" x="375" y="20" width="100" height="28" rx="14" 
+              fill="#475569" stroke="#334155" stroke-width="2" opacity="0.5" />
+        <text x="425" y="40" text-anchor="middle" font-size="11" font-weight="700" 
+              fill="rgba(255,255,255,0.4)" font-family="Inter, sans-serif">R2</text>
+    </g>
+
+    <!-- BOTONES CENTRALES (Share / Options) -->
+    <rect x="270" y="168" width="12" height="12" rx="6" 
+          fill="#475569" stroke="#334155" stroke-width="1.5" />
+    <rect x="318" y="168" width="12" height="12" rx="6" 
+          fill="#475569" stroke="#334155" stroke-width="1.5" />
+
+    <!-- BOTÓN HOME (PS) -->
+    <circle cx="300" cy="155" r="16" 
+            fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5" />
+    <text x="300" y="160" text-anchor="middle" font-size="14" font-weight="700" 
+          fill="rgba(255,255,255,0.2)" font-family="Inter, sans-serif">PS</text>
+
+</svg>
