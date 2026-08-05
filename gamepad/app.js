@@ -308,6 +308,8 @@ if (ring && history) {
 
 }
 
+}
+
 // Gatillos (L2/R2) analógicos
 function updateTriggers(gp) {
   const l2 = gp.buttons[6]?.value || 0;
