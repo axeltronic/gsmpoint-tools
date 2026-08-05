@@ -163,6 +163,32 @@ function updateButtons(gp) {
   }
 }
 
+/* ===========================
+   STICKS
+=========================== */
+
+function updateSticks(gp) {
+
+  updateStick(
+    "stick-l",
+    "knob-l",
+    "dial-l-progress",
+    "dial-l-txt",
+    gp.axes[0],
+    gp.axes[1]
+  );
+
+  updateStick(
+    "stick-r",
+    "knob-r",
+    "dial-r-progress",
+    "dial-r-txt",
+    gp.axes[2],
+    gp.axes[3]
+  );
+
+}
+
 function updateStick(containerId, knobId, progressId, textId, x, y) {
 
   const container = document.getElementById(containerId);
