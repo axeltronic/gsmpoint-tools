@@ -71,6 +71,11 @@ function createButtonChips() {
 =========================== */
 
 const stickHistory = {
+    "stick-l": new Array(720).fill(false),
+    "stick-r": new Array(720).fill(false)
+};
+
+const ringSegments = {
     "stick-l": [],
     "stick-r": []
 };
