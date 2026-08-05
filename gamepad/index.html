@@ -59,13 +59,31 @@
 <!-- STICK IZQUIERDO -->
 <div class="stick" id="stick-l">
 <div class="dial">
-<svg viewbox="0 0 100 100">
-<circle class="dial-bg" cx="50" cy="50" r="46"></circle>
-<circle class="dial-check" cx="50" cy="50" r="46"></circle>
-<circle class="dial-progress" cx="50" cy="50" id="dial-l-progress" r="46"></circle>
-<line class="dial-line" id="dial-l-line" x1="50" x2="50" y1="50" y2="4"></line>
-<circle class="dial-dot" cx="50" cy="4" id="dial-l-dot" r="3"></circle>
-<text id="dial-l-txt" text-anchor="middle" x="50" y="53">0%</text>
+<svg viewBox="0 0 100 100">
+
+    <g id="ring-l" class="ring"></g>
+
+    <circle class="dial-bg" cx="50" cy="50" r="46"></circle>
+
+    <circle class="dial-check" cx="50" cy="50" r="46"></circle>
+
+    <circle class="dial-progress" id="dial-l-progress" cx="50" cy="50" r="46"></circle>
+
+    <line class="dial-line" id="dial-l-line"
+          x1="50" y1="50"
+          x2="50" y2="4"></line>
+
+    <circle class="dial-dot"
+            id="dial-l-dot"
+            cx="50"
+            cy="4"
+            r="3"></circle>
+
+    <text id="dial-l-txt"
+          x="50"
+          y="53"
+          text-anchor="middle">0%</text>
+
 </svg>
 </div>
 <div class="knob" id="knob-l"></div>
@@ -73,13 +91,34 @@
 <!-- STICK DERECHO -->
 <div class="stick" id="stick-r">
 <div class="dial">
-<svg viewbox="0 0 100 100">
-<circle class="dial-bg" cx="50" cy="50" r="46"></circle>
-<circle class="dial-check" cx="50" cy="50" r="46"></circle>
-<circle class="dial-progress" cx="50" cy="50" id="dial-r-progress" r="46"></circle>
-<line class="dial-line" id="dial-r-line" x1="50" x2="50" y1="50" y2="4"></line>
-<circle class="dial-dot" cx="50" cy="4" id="dial-r-dot" r="3"></circle>
-<text id="dial-r-txt" text-anchor="middle" x="50" y="53">0%</text>
+<svg viewBox="0 0 100 100">
+
+    <g id="ring-r" class="ring"></g>
+
+    <circle class="dial-bg" cx="50" cy="50" r="46"></circle>
+
+    <circle class="dial-check" cx="50" cy="50" r="46"></circle>
+
+    <circle class="dial-progress" id="dial-r-progress" cx="50" cy="50" r="46"></circle>
+
+    <line class="dial-line"
+          id="dial-r-line"
+          x1="50"
+          y1="50"
+          x2="50"
+          y2="4"></line>
+
+    <circle class="dial-dot"
+            id="dial-r-dot"
+            cx="50"
+            cy="4"
+            r="3"></circle>
+
+    <text id="dial-r-txt"
+          x="50"
+          y="53"
+          text-anchor="middle">0%</text>
+
 </svg>
 </div>
 <div class="knob" id="knob-r"></div>
