@@ -126,18 +126,23 @@ function createRing(id){
 
 }
 
-// Loop de actualización
 function update() {
   if (gamepadIndex !== null) {
     let gp = navigator.getGamepads()[gamepadIndex];
+
     if (gp) {
       updateButtons(gp);
       updateSticks(gp);
       updateTriggers(gp);
     }
   }
+
   requestAnimationFrame(update);
 }
+
+createRing("stick-l");
+createRing("stick-r");
+
 update();
 
 // Botones
@@ -156,29 +161,6 @@ function updateButtons(gp) {
       element.classList.remove("pressed");
     }
   }
-}
-
-// Sticks con knob y dial
-function updateSticks(gp) {
-
-  updateStick(
-    "stick-l",
-    "knob-l",
-    "dial-l-progress",
-    "dial-l-txt",
-    gp.axes[0],
-    gp.axes[1]
-  );
-
-  updateStick(
-    "stick-r",
-    "knob-r",
-    "dial-r-progress",
-    "dial-r-txt",
-    gp.axes[2],
-    gp.axes[3]
-  );
-
 }
 
 function updateStick(containerId, knobId, progressId, textId, x, y) {
@@ -218,29 +200,28 @@ function updateStick(containerId, knobId, progressId, textId, x, y) {
   text.textContent =
     Math.round(magnitude * 100) + "%";
 
+  /* progreso circular */
+
   if (progress) {
 
-    const circumference =
-      2 * Math.PI * 46;
+    const circumference = 2 * Math.PI * 46;
 
-    progress.style.strokeDasharray =
-      circumference;
+    progress.style.strokeDasharray = circumference;
 
     progress.style.strokeDashoffset =
-      circumference -
-      (circumference * magnitude);
+      circumference - (circumference * magnitude);
 
   }
+
+  /* dirección */
 
   const angle = Math.atan2(y, x);
 
   const radius = 46;
 
-  const px =
-    50 + Math.cos(angle) * radius;
+  const px = 50 + Math.cos(angle) * radius;
 
-  const py =
-    50 + Math.sin(angle) * radius;
+  const py = 50 + Math.sin(angle) * radius;
 
   if (dot) {
 
@@ -253,6 +234,39 @@ function updateStick(containerId, knobId, progressId, textId, x, y) {
 
     line.setAttribute("x2", px);
     line.setAttribute("y2", py);
+
+  }
+
+  /* ===========================
+     NUEVO ANILLO DE CHECKPOINTS
+  ============================ */
+
+  const ring = stickHistory[containerId];
+
+  if (ring && ring.length) {
+
+    const current = Math.floor(
+      ((angle + Math.PI) / (Math.PI * 2)) * ring.length
+    );
+
+    const distance = Math.floor(
+      magnitude * 10
+    );
+
+    ring.forEach(segment => {
+      segment.classList.remove("current");
+    });
+
+    for (let i = -distance; i <= distance; i++) {
+
+      const index =
+        (current + i + ring.length) % ring.length;
+
+      ring[index].classList.add("visited");
+
+    }
+
+    ring[current].classList.add("current");
 
   }
 
