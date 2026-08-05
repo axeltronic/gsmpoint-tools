@@ -8,362 +8,392 @@ const progressSpan = document.getElementById("progress");
 const chipsContainer = document.getElementById("chips");
 const vibeNote = document.getElementById("vibe-note");
 
-// Nombres para los chips de botones probados
 const buttonNames = [
-  "✕", "○", "□", "△",      // 0-3
-  "L1", "R1",              // 4-5
-  "L2", "R2",              // 6-7
-  "Share", "Options",      // 8-9
-  "L3", "R3",              // 10-11
-  "↑", "↓", "←", "→",      // 12-15
-  "Home"                   // 16
+    "✕","○","□","△",
+    "L1","R1",
+    "L2","R2",
+    "Share","Options",
+    "L3","R3",
+    "↑","↓","←","→",
+    "Home"
 ];
 
 let testedButtons = [];
 
-// Conexión
-window.addEventListener("gamepadconnected", (e) => {
-  gamepadIndex = e.gamepad.index;
-  let type = detectController(e.gamepad);
+/* =====================================
+   STICK DATA
+===================================== */
 
-  status.innerHTML = "✅ Joystick conectado";
-  controllerName.innerHTML = e.gamepad.id;
-  controllerType.innerHTML = "Layout: " + type;
+const stickData = {
 
-  tester.classList.remove("hidden");
-  createButtonChips();   // crea los chips iniciales
-});
+    "stick-l":{
 
-window.addEventListener("gamepaddisconnected", () => {
-  gamepadIndex = null;
-  status.innerHTML = "❌ Joystick desconectado";
-  tester.classList.add("hidden");
-  testedButtons = [];
-  progressSpan.textContent = "0";
-  chipsContainer.innerHTML = "";
-});
+        visited:new Array(180).fill(false),
+        segments:[],
+        coverage:0
 
-function detectController(gp) {
-  let id = gp.id.toLowerCase();
-  if (id.includes("sony") || id.includes("dualshock") || id.includes("dualsense") || id.includes("054c"))
-    return "playstation";
-  if (id.includes("xbox") || id.includes("microsoft"))
-    return "xbox";
-  if (id.includes("switch") || id.includes("nintendo"))
-    return "switch";
-  return "generic";
-}
+    },
 
-// Crear chips de botones
-function createButtonChips() {
-  chipsContainer.innerHTML = "";
-  buttonNames.forEach((name, index) => {
-    let chip = document.createElement("span");
-    chip.className = "chip";
-    chip.id = "chip-" + index;
-    chip.textContent = name;
-    chipsContainer.appendChild(chip);
-  });
-}
+    "stick-r":{
 
-/* ===========================
-   STICK PRO RING
-=========================== */
+        visited:new Array(180).fill(false),
+        segments:[],
+        coverage:0
 
-const stickHistory = {
-    "stick-l": new Array(720).fill(false),
-    "stick-r": new Array(720).fill(false)
+    }
+
 };
 
-const ringSegments = {
-    "stick-l": [],
-    "stick-r": []
-};
+/* =====================================
+   GAMEPAD
+===================================== */
 
-function createRing(id){
+window.addEventListener("gamepadconnected",e=>{
 
-    const svg = document.getElementById(id);
+    gamepadIndex=e.gamepad.index;
 
-    if(!svg) return;
+    status.innerHTML="✅ Joystick conectado";
 
-    const NS = "http://www.w3.org/2000/svg";
+    controllerName.textContent=e.gamepad.id;
 
-    const segments = [];
+    controllerType.textContent=
+        "Layout: "+detectController(e.gamepad);
 
-    const total = 180;
+    tester.classList.remove("hidden");
 
-    const inner = 42;
-    const outer = 48;
+    createButtonChips();
+
+});
+
+window.addEventListener("gamepaddisconnected",()=>{
+
+    gamepadIndex=null;
+
+    tester.classList.add("hidden");
+
+    status.innerHTML="❌ Joystick desconectado";
+
+    testedButtons=[];
+
+    progressSpan.textContent="0";
+
+    chipsContainer.innerHTML="";
+
+});
+
+/* =====================================
+   CONTROLLER TYPE
+===================================== */
+
+function detectController(gp){
+
+    const id=gp.id.toLowerCase();
+
+    if(
+        id.includes("sony") ||
+        id.includes("dualshock") ||
+        id.includes("dualsense") ||
+        id.includes("054c")
+    ) return "playstation";
+
+    if(
+        id.includes("xbox") ||
+        id.includes("microsoft")
+    ) return "xbox";
+
+    if(
+        id.includes("switch") ||
+        id.includes("nintendo")
+    ) return "switch";
+
+    return "generic";
+
+}
+
+/* =====================================
+   BUTTON CHIPS
+===================================== */
+
+function createButtonChips(){
+
+    chipsContainer.innerHTML="";
+
+    buttonNames.forEach((name,index)=>{
+
+        const chip=document.createElement("span");
+
+        chip.className="chip";
+
+        chip.id="chip-"+index;
+
+        chip.textContent=name;
+
+        chipsContainer.appendChild(chip);
+
+    });
+
+}
+
+/* =====================================
+   CREATE RING
+===================================== */
+
+function createRing(ringId,stickId){
+
+    const group=document.getElementById(ringId);
+
+    if(!group) return;
+
+    const NS="http://www.w3.org/2000/svg";
+
+    const total=180;
+
+    const inner=42;
+
+    const outer=48;
 
     for(let i=0;i<total;i++){
 
-        const a = (i / total) * Math.PI * 2 - Math.PI/2;
+        const a=(i/total)*Math.PI*2-Math.PI/2;
 
-        const x1 = 50 + Math.cos(a) * inner;
-        const y1 = 50 + Math.sin(a) * inner;
+        const x1=50+Math.cos(a)*inner;
 
-        const x2 = 50 + Math.cos(a) * outer;
-        const y2 = 50 + Math.sin(a) * outer;
+        const y1=50+Math.sin(a)*inner;
 
-        const line = document.createElementNS(NS,"line");
+        const x2=50+Math.cos(a)*outer;
+
+        const y2=50+Math.sin(a)*outer;
+
+        const line=document.createElementNS(NS,"line");
 
         line.setAttribute("x1",x1);
+
         line.setAttribute("y1",y1);
 
         line.setAttribute("x2",x2);
+
         line.setAttribute("y2",y2);
 
         line.classList.add("checkpoint");
 
-        svg.appendChild(line);
+        group.appendChild(line);
 
-        segments.push(line);
+        stickData[stickId].segments.push(line);
 
     }
 
-    ringSegments[
-    id === "ring-l"
-        ? "stick-l"
-        : "stick-r"
-] = segments;
-
 }
 
-function update() {
-  if (gamepadIndex !== null) {
-    let gp = navigator.getGamepads()[gamepadIndex];
+createRing("ring-l","stick-l");
+createRing("ring-r","stick-r");
 
-    if (gp) {
-      updateButtons(gp);
-      updateSticks(gp);
-      updateTriggers(gp);
+/* =====================================
+   MAIN LOOP
+===================================== */
+
+function update(){
+
+    if(gamepadIndex!==null){
+
+        const gp=navigator.getGamepads()[gamepadIndex];
+
+        if(gp){
+
+            updateButtons(gp);
+
+            updateSticks(gp);
+
+            updateTriggers(gp);
+
+        }
+
     }
-  }
 
-  requestAnimationFrame(update);
+    requestAnimationFrame(update);
+
 }
-
-createRing("ring-l");
-createRing("ring-r");
 
 update();
 
-// Botones
-function updateButtons(gp) {
-  // Iteramos sobre los índices que usamos (0-16)
-  for (let i = 0; i <= 16; i++) {
-    let button = gp.buttons[i];
-    if (!button) continue;
-    let element = document.querySelector(`[data-btn="${i}"]`);
-    if (!element) continue;
+/* =====================================
+   BUTTONS
+===================================== */
 
-    if (button.pressed) {
-      element.classList.add("pressed");
-      markButtonTested(i);
-    } else {
-      element.classList.remove("pressed");
+function updateButtons(gp){
+
+    for(let i=0;i<=16;i++){
+
+        const button=gp.buttons[i];
+
+        if(!button) continue;
+
+        const element=document.querySelector(`[data-btn="${i}"]`);
+
+        if(!element) continue;
+
+        if(button.pressed){
+
+            element.classList.add("pressed");
+
+            markButtonTested(i);
+
+        }else{
+
+            element.classList.remove("pressed");
+
+        }
+
     }
-  }
+
 }
 
-/* ===========================
+/* =====================================
    STICKS
-=========================== */
+===================================== */
 
-function updateSticks(gp) {
+function updateSticks(gp){
 
-  updateStick(
-    "stick-l",
-    "knob-l",
-    "dial-l-progress",
-    "dial-l-txt",
-    gp.axes[0],
-    gp.axes[1]
-  );
+    updateStick(
+        "stick-l",
+        "knob-l",
+        "dial-l-line",
+        "dial-l-dot",
+        "dial-l-txt",
+        gp.axes[0],
+        gp.axes[1]
+    );
 
-  updateStick(
-    "stick-r",
-    "knob-r",
-    "dial-r-progress",
-    "dial-r-txt",
-    gp.axes[2],
-    gp.axes[3]
-  );
+    updateStick(
+        "stick-r",
+        "knob-r",
+        "dial-r-line",
+        "dial-r-dot",
+        "dial-r-txt",
+        gp.axes[2],
+        gp.axes[3]
+    );
 
 }
 
-function updateStick(containerId, knobId, progressId, textId, x, y) {
+function updateStick(
 
-  const container = document.getElementById(containerId);
-  const knob = document.getElementById(knobId);
+    stickId,
+    knobId,
+    lineId,
+    dotId,
+    textId,
+    x,
+    y
 
-  const progress = document.getElementById(progressId);
-  const text = document.getElementById(textId);
+){
 
-  const dot = document.getElementById(
-    progressId.replace("progress", "dot")
-  );
+    x=Number.isFinite(x)?x:0;
+    y=Number.isFinite(y)?y:0;
 
-  const line = document.getElementById(
-    progressId.replace("progress", "line")
-  );
+    const knob=document.getElementById(knobId);
+    const line=document.getElementById(lineId);
+    const dot=document.getElementById(dotId);
+    const txt=document.getElementById(textId);
 
-  if (!container || !knob) return;
+    const stick=document.getElementById(stickId);
 
-  x = Number.isFinite(x) ? x : 0;
-  y = Number.isFinite(y) ? y : 0;
+    if(!stick) return;
 
-  const maxMove = container.offsetWidth * 0.25;
+    const radiusMove=stick.offsetWidth*0.25;
 
-  const dx = x * maxMove;
-  const dy = y * maxMove;
+    const dx=x*radiusMove;
+    const dy=y*radiusMove;
 
-  knob.style.transform =
-    `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    knob.style.transform=
+    `translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px))`;
 
-  const magnitude = Math.min(
-    Math.sqrt(x * x + y * y),
-    1
-  );
+    const magnitude=Math.min(
+        Math.sqrt(x*x+y*y),
+        1
+    );
 
-  text.textContent =
-    Math.round(magnitude * 100) + "%";
+    /* porcentaje */
 
-  /* progreso circular */
+    if(txt){
 
-  if (progress) {
+        const visited=
+        stickData[stickId].visited.filter(Boolean).length;
 
-    const circumference = 2 * Math.PI * 46;
+        txt.textContent=
+        Math.round((visited/180)*100)+"%";
 
-    progress.style.strokeDasharray = circumference;
+    }
 
-    progress.style.strokeDashoffset =
-      circumference - (circumference * magnitude);
+    /* dirección */
 
-  }
+    const angle=Math.atan2(y,x);
 
-  /* dirección */
+    const r=46;
 
-  const angle = Math.atan2(y, x);
+    const px=50+Math.cos(angle)*r;
+    const py=50+Math.sin(angle)*r;
 
-  const radius = 46;
+    if(line){
 
-  const px = 50 + Math.cos(angle) * radius;
+        line.setAttribute("x2",px);
 
-  const py = 50 + Math.sin(angle) * radius;
+        line.setAttribute("y2",py);
 
-  if (dot) {
+    }
 
-    dot.setAttribute("cx", px);
-    dot.setAttribute("cy", py);
+    if(dot){
 
-  }
+        dot.setAttribute("cx",px);
 
-  if (line) {
+        dot.setAttribute("cy",py);
 
-    line.setAttribute("x2", px);
-    line.setAttribute("y2", py);
+    }
 
-  }
+    /* zona muerta */
 
-  /* ===========================
-     NUEVO ANILLO DE CHECKPOINTS
-  ============================ */
+    if(magnitude<0.15)
+        return;
 
-const ring = ringSegments[containerId];
-const history = stickHistory[containerId];
+    /* checkpoint actual */
 
-if (ring && history) {
+    let deg=
+        (angle*180/Math.PI+450)%360;
 
-    // grado actual
-    let deg =
-        (angle * 180 / Math.PI + 450) % 360;
+    let index=
+        Math.round(deg/2);
 
-    // usamos 720 checkpoints
-    let index =
-        Math.floor(deg * 2);
+    if(index>=180)
+        index=0;
 
-    history[index] = true;
+    stickData[stickId].visited[index]=true;
 
-    // también marcamos vecinos
-    history[(index + 1) % 720] = true;
-    history[(index + 719) % 720] = true;
+    /* vecinos */
 
-    for (let i = 0; i < ring.length; i++) {
+    stickData[stickId].visited[
+        (index+179)%180
+    ]=true;
 
-        if (history[i * 4]) {
-            ring[i].classList.add("visited");
-        }
+    stickData[stickId].visited[
+        (index+1)%180
+    ]=true;
 
-        else{
-            ring[i].classList.remove("visited");
-        }
+    /* repintar */
+
+    const ring=
+        stickData[stickId].segments;
+
+    for(let i=0;i<180;i++){
 
         ring[i].classList.remove("current");
 
+        if(stickData[stickId].visited[i]){
+
+            ring[i].classList.add("visited");
+
+        }
+
     }
 
-    ring[Math.floor(index / 4)]
-        .classList.add("current");
+    ring[index].classList.add("current");
 
 }
-
-}
-
-// Gatillos (L2/R2) analógicos
-function updateTriggers(gp) {
-  const l2 = gp.buttons[6]?.value || 0;
-  const r2 = gp.buttons[7]?.value || 0;
-
-  const l2Btn = document.querySelector('[data-btn="6"]');
-  const r2Btn = document.querySelector('[data-btn="7"]');
-  if (l2Btn) {
-    l2Btn.style.transform = `translateY(${l2 * 6}px)`;
-    if (l2 > 0.1) l2Btn.classList.add("pressed");
-    else l2Btn.classList.remove("pressed");
-  }
-  if (r2Btn) {
-    r2Btn.style.transform = `translateY(${r2 * 6}px)`;
-    if (r2 > 0.1) r2Btn.classList.add("pressed");
-    else r2Btn.classList.remove("pressed");
-  }
-}
-
-// Progreso de botones probados
-function markButtonTested(index) {
-  if (testedButtons.includes(index)) return;
-  testedButtons.push(index);
-
-  let chip = document.getElementById("chip-" + index);
-  if (chip) {
-    chip.classList.add("active");
-  }
-
-  progressSpan.textContent = testedButtons.length;
-}
-
-// Vibración con tres intensidades
-document.querySelectorAll(".vibe-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    let gp = navigator.getGamepads()[gamepadIndex];
-    if (!gp || !gp.vibrationActuator) {
-      vibeNote.textContent = "Vibración no soportada";
-      return;
-    }
-    const type = btn.dataset.vibe;
-    let params = { duration: 500, strongMagnitude: 0, weakMagnitude: 0 };
-    if (type === "light") {
-      params.strongMagnitude = 0.3;
-      params.weakMagnitude = 0.3;
-    } else if (type === "heavy") {
-      params.strongMagnitude = 1.0;
-      params.weakMagnitude = 0.3;
-    } else if (type === "full") {
-      params.strongMagnitude = 1.0;
-      params.weakMagnitude = 1.0;
-    }
-    gp.vibrationActuator.playEffect("dual-rumble", params);
-    vibeNote.textContent = "Vibrando...";
-    setTimeout(() => { vibeNote.textContent = ""; }, 500);
-  });
-});
