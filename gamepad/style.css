@@ -219,86 +219,213 @@ main {
   stroke: white;
 }
 
-/* STICKS */
-.stick {
-  position: absolute;
-  width: 24%;
-  aspect-ratio: 1 / 1;
-  /* centro vertical */
-  top: 50%;
-  transform: translateY(-50%);
-}
-#stick-l { left: 22%; }
-#stick-r { right: 22%; }
-
-.knob {
-  position: absolute;
-  width: 45%;
-  aspect-ratio: 1 / 1;
-  background: radial-gradient(circle at 30% 30%, #f1f5f9, #94a3b8);
-  border-radius: 50%;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
-  transition: transform 0.05s;
-  /* se moverá con translate en JS */
+.stick{
+    position:absolute;
+    width:24%;
+    aspect-ratio:1;
+    top:50%;
+    transform:translateY(-50%);
 }
 
-.dial {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+#stick-l{
+    left:22%;
 }
-.dial svg {
-  width: 100%;
-  height: 100%;
-  opacity: 0.3;
+
+#stick-r{
+    right:22%;
 }
-.dial-bg {
-  fill: none;
-  stroke: #cbd5e1;
-  stroke-width: 6;
+
+.dial{
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:1;
+
 }
+
+.dial svg{
+
+    width:100%;
+
+    height:100%;
+
+    overflow:visible;
+
+}
+
+.dial-bg{
+
+    fill:none;
+
+    stroke:#d7dee7;
+
+    stroke-width:2;
+
+}
+
 .dial-check{
-  fill:none;
-  stroke:#cbd5e1;
-  stroke-width:4;
-  stroke-dasharray:1 5;
-  opacity:.7;
+
+    fill:none;
+
+    stroke:#dfe5ec;
+
+    stroke-width:3;
+
+    stroke-dasharray:1 5;
+
+    opacity:.8;
+
 }
 
 .dial-progress{
-  fill:none;
-  stroke:#22c55e;
-  stroke-width:5;
-  stroke-linecap:round;
-  transform:rotate(-90deg);
-  transform-origin:50% 50%;
-  stroke-dasharray:289;
-  stroke-dashoffset:289;
-  transition:stroke-dashoffset .04s linear,stroke .15s ease;
+
+    fill:none;
+
+    stroke:#2ecc71;
+
+    stroke-width:4;
+
+    stroke-linecap:round;
+
+    transform:rotate(-90deg);
+
+    transform-origin:center;
+
+    stroke-dasharray:289;
+
+    stroke-dashoffset:289;
+
+    filter:drop-shadow(0 0 3px rgba(46,204,113,.5));
+
+    transition:stroke-dashoffset .05s linear;
+
 }
 
 .dial-line{
-  stroke:#22c55e;
-  stroke-width:2;
-  opacity:.45;
+
+    stroke:#2ecc71;
+
+    stroke-width:1.8;
+
+    opacity:.45;
+
 }
 
 .dial-dot{
-  fill:#22c55e;
-  stroke:#fff;
-  stroke-width:1.2;
+
+    fill:#2ecc71;
+
+    stroke:#fff;
+
+    stroke-width:1.5;
+
+}
+
+.dead-zone{
+
+    fill:#edf2f7;
+
+    stroke:#cbd5e1;
+
+    stroke-width:1.5;
+
 }
 
 #dial-l-txt,
-#dial-r-txt {
-  fill: #64748b;
-  font-size: 18px;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
+#dial-r-txt{
+
+    fill:#64748b;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    dominant-baseline:middle;
+
+    text-anchor:middle;
+
+}
+
+.knob{
+
+    position:absolute;
+
+    width:43%;
+
+    aspect-ratio:1;
+
+    left:50%;
+
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    border-radius:50%;
+
+    z-index:5;
+
+    background:
+
+    radial-gradient(circle at 35% 35%,
+
+    #f8fafc,
+
+    #dbe4ee 35%,
+
+    #9aa8b8 80%,
+
+    #66758a);
+
+    border:3px solid #f1f5f9;
+
+    box-shadow:
+
+    inset 0 4px 8px rgba(255,255,255,.5),
+
+    inset 0 -6px 10px rgba(0,0,0,.25),
+
+    0 8px 20px rgba(0,0,0,.35);
+
+    transition:transform .04s linear;
+
+}
+
+.knob::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:18%;
+
+    border-radius:50%;
+
+    border:3px solid rgba(255,255,255,.25);
+
+}
+
+.knob::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    top:50%;
+
+    width:14%;
+
+    aspect-ratio:1;
+
+    transform:translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:#f8fafc;
+
 }
 
 /* BOTONES CENTRALES */
