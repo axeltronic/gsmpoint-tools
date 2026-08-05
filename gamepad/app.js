@@ -127,7 +127,7 @@ function createRing(id){
 
     svg.insertBefore(group,svg.firstChild);
 
-    stickHistory[id]=segments;
+    ringSegments[id] = segments;
 
 }
 
@@ -272,34 +272,41 @@ function updateStick(containerId, knobId, progressId, textId, x, y) {
      NUEVO ANILLO DE CHECKPOINTS
   ============================ */
 
-  const ring = stickHistory[containerId];
+const ring = ringSegments[containerId];
+const history = stickHistory[containerId];
 
-  if (ring && ring.length) {
+if (ring && history) {
 
-    const current = Math.floor(
-      ((angle + Math.PI) / (Math.PI * 2)) * ring.length
-    );
+    // grado actual
+    let deg =
+        (angle * 180 / Math.PI + 450) % 360;
 
-    const distance = Math.floor(
-      magnitude * 10
-    );
+    // usamos 720 checkpoints
+    let index =
+        Math.floor(deg * 2);
 
-    ring.forEach(segment => {
-      segment.classList.remove("current");
-    });
+    history[index] = true;
 
-    for (let i = -distance; i <= distance; i++) {
+    // también marcamos vecinos
+    history[(index + 1) % 720] = true;
+    history[(index + 719) % 720] = true;
 
-      const index =
-        (current + i + ring.length) % ring.length;
+    for (let i = 0; i < ring.length; i++) {
 
-      ring[index].classList.add("visited");
+        if (history[i * 4]) {
+            ring[i].classList.add("visited");
+        }
+
+        else{
+            ring[i].classList.remove("visited");
+        }
+
+        ring[i].classList.remove("current");
 
     }
 
-    ring[current].classList.add("current");
-
-  }
+    ring[Math.floor(index / 4)]
+        .classList.add("current");
 
 }
 
