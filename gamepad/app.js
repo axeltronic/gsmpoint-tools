@@ -66,6 +66,66 @@ function createButtonChips() {
   });
 }
 
+/* ===========================
+   STICK PRO RING
+=========================== */
+
+const stickHistory = {
+    "stick-l": [],
+    "stick-r": []
+};
+
+function createRing(id){
+
+    const svg = document.querySelector(`#${id} .dial svg`);
+
+    if(!svg) return;
+
+    const NS = "http://www.w3.org/2000/svg";
+
+    const group = document.createElementNS(NS,"g");
+
+    group.classList.add("ring");
+
+    const segments=[];
+
+    const total=180;
+
+    const r1=42;
+    const r2=48;
+
+    for(let i=0;i<total;i++){
+
+        const a=(i/total)*Math.PI*2-Math.PI/2;
+
+        const x1=50+Math.cos(a)*r1;
+        const y1=50+Math.sin(a)*r1;
+
+        const x2=50+Math.cos(a)*r2;
+        const y2=50+Math.sin(a)*r2;
+
+        const line=document.createElementNS(NS,"line");
+
+        line.setAttribute("x1",x1);
+        line.setAttribute("y1",y1);
+
+        line.setAttribute("x2",x2);
+        line.setAttribute("y2",y2);
+
+        line.classList.add("checkpoint");
+
+        group.appendChild(line);
+
+        segments.push(line);
+
+    }
+
+    svg.insertBefore(group,svg.firstChild);
+
+    stickHistory[id]=segments;
+
+}
+
 // Loop de actualización
 function update() {
   if (gamepadIndex !== null) {
