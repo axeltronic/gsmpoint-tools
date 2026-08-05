@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gamepad Tester | GSMPoint Tools</title>
+<meta content="Probá tu joystick PS4, PS5, Xbox, Switch o genérico desde el navegador." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+<header>
+<a href="../">← Volver a GSMPoint Tools</a>
+<h1>🎮 Gamepad Tester</h1>
+<p>Probá tu joystick USB o Bluetooth directamente desde el navegador.</p>
+</header>
+<main>
+<div class="status" id="connection-status">Esperando joystick...</div>
+<section class="hidden" id="tester">
+<div class="controller-info">
+<h2 id="controller-name"></h2>
+<p id="controller-type"></p>
+</div>
+<!-- NUEVO DISEÑO DEL MANDO -->
+<div class="stage" id="stage">
+<svg aria-hidden="true" class="stage-body" fill="none" viewbox="0 0 600 400">
+<path class="body" d="M300 1C336.951 1.50887 421.46 6.60456 446.91 9.14258C457.065 10.1552 474.523 12.7376 490.877 16.0039C499.053 17.6369 506.938 19.4384 513.487 21.2949C520.074 23.1621 525.193 25.055 527.927 26.8379C537.077 32.8056 542.185 39.6906 547.579 46.9727L547.67 47.0957C548.854 48.6949 550.598 51.892 552.751 56.4824C554.893 61.0495 557.411 66.9322 560.148 73.8545C565.623 87.6987 571.963 105.675 577.914 125.548C589.825 165.321 600.142 212.58 598.898 249.512C597.65 286.605 596.294 310.696 594.807 326.853C593.319 343.018 591.703 351.185 589.955 356.462C585.958 368.528 578.115 381.71 563.898 390.483C557.272 394.573 551.903 396.687 546.049 397.791C540.161 398.902 533.747 399 524.974 399C522.846 399 520.586 398.648 518.317 397.109C516.034 395.561 513.635 392.739 511.39 387.6C509.796 383.953 482.079 317.102 466.921 280.166L466.88 280.079L466.641 279.636C461.463 270.202 445.716 252.696 421.925 255.157C398.324 257.598 388.822 258.201 387.053 258.201H212.947C211.178 258.201 201.676 257.598 178.075 255.157C153.906 252.657 138.039 270.763 133.12 280.079L133.079 280.166C117.921 317.102 90.2038 383.953 88.6104 387.6C86.3645 392.739 83.9665 395.561 81.6826 397.109C79.4137 398.648 77.1542 399 75.0264 399C66.2535 399 59.8394 398.902 53.9512 397.791C48.0969 396.687 42.728 394.573 36.1016 390.483C21.8847 381.71 14.0415 368.528 10.0449 356.462C8.2971 351.185 6.68143 343.018 5.19336 326.853C3.70617 310.696 2.35047 286.605 1.10156 249.512C-0.141883 212.58 10.1753 165.321 22.0859 125.548C28.0372 105.675 34.3775 87.6987 39.8516 73.8545C42.5887 66.9322 45.1071 61.0495 47.249 56.4824C49.4019 51.8919 51.1456 48.6949 52.3301 47.0957L52.4209 46.9727C57.8146 39.6906 62.9228 32.8056 72.0732 26.8379C74.807 25.0551 79.9264 23.1621 86.5127 21.2949C93.0616 19.4384 100.947 17.6369 109.123 16.0039C125.477 12.7376 142.935 10.1552 153.09 9.14258C178.54 6.60457 263.049 1.50889 300 1Z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<!-- D-PAD -->
+<div class="dpad" id="dpad">
+<button aria-label="Arriba" class="pad up" data-btn="12"></button>
+<button aria-label="Abajo" class="pad down" data-btn="13"></button>
+<button aria-label="Izquierda" class="pad left" data-btn="14"></button>
+<button aria-label="Derecha" class="pad right" data-btn="15"></button>
+</div>
+<!-- GATILLOS / HOMBROS -->
+<button aria-label="L1" class="bumper l1" data-btn="4"><span>L1</span></button>
+<button aria-label="R1" class="bumper r1" data-btn="5"><span>R1</span></button>
+<button aria-label="L2" class="trigger-2d l2" data-btn="6"><span>L2</span></button>
+<button aria-label="R2" class="trigger-2d r2" data-btn="7"><span>R2</span></button>
+<!-- BOTONES DE CARA -->
+<div class="face">
+<button aria-label="Triángulo" class="face-btn tr" data-btn="3">
+<svg viewbox="0 0 24 24"><path d="M13.73 4a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path></svg>
+</button>
+<button aria-label="Cuadrado" class="face-btn sq" data-btn="2">
+<svg viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="3"></rect></svg>
+</button>
+<button aria-label="Círculo" class="face-btn cr" data-btn="1">
+<svg viewbox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg>
+</button>
+<button aria-label="Cruz" class="face-btn x" data-btn="0">
+<svg viewbox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+</div>
+<!-- STICK IZQUIERDO -->
+<div class="stick" id="stick-l">
+<div class="dial">
+<svg viewBox="0 0 100 100">
+
+    <g id="ring-l" class="ring"></g>
+
+    <circle class="dial-bg" cx="50" cy="50" r="46"></circle>
+
+    <circle class="dial-check" cx="50" cy="50" r="46"></circle>
+
+    <circle class="dial-progress" id="dial-l-progress" cx="50" cy="50" r="46"></circle>
+
+    <line class="dial-line" id="dial-l-line"
+          x1="50" y1="50"
+          x2="50" y2="4"></line>
+
+    <circle class="dial-dot"
+            id="dial-l-dot"
+            cx="50"
+            cy="4"
+            r="3"></circle>
+
+    <text id="dial-l-txt"
+          x="50"
+          y="53"
+          text-anchor="middle">0%</text>
+
+</svg>
+</div>
+<div class="knob" id="knob-l"></div>
+</div>
+<!-- STICK DERECHO -->
+<div class="stick" id="stick-r">
+<div class="dial">
+<svg viewBox="0 0 100 100">
+
+    <g id="ring-r" class="ring"></g>
+
+    <circle class="dial-bg" cx="50" cy="50" r="46"></circle>
+
+    <circle class="dial-check" cx="50" cy="50" r="46"></circle>
+
+    <circle class="dial-progress" id="dial-r-progress" cx="50" cy="50" r="46"></circle>
+
+    <line class="dial-line"
+          id="dial-r-line"
+          x1="50"
+          y1="50"
+          x2="50"
+          y2="4"></line>
+
+    <circle class="dial-dot"
+            id="dial-r-dot"
+            cx="50"
+            cy="4"
+            r="3"></circle>
+
+    <text id="dial-r-txt"
+          x="50"
+          y="53"
+          text-anchor="middle">0%</text>
+
+</svg>
+</div>
+<div class="knob" id="knob-r"></div>
+</div>
+<!-- BOTONES CENTRALES -->
+<button aria-label="Share" class="sys share" data-btn="8"></button>
+<button aria-label="Options" class="sys options" data-btn="9"></button>
+<button aria-label="Home" class="sys home" data-btn="16"><span>PS</span></button>
+<button aria-label="R3" class="r3" data-btn="11"></button>
+<button aria-label="L3" class="l3" data-btn="10"></button>
+</div>
+<div class="progress-line">
+<span id="progress">0</span> de 17 entradas probadas · <span id="vibe-note"></span>
+</div>
+<!-- CHIPS DE BOTONES -->
+<div class="chips" id="chips"></div>
+<!-- VIBRACIÓN -->
+<div class="vibe">
+<button class="vibe-btn" data-vibe="light">🌫 Luz</button>
+<button class="vibe-btn" data-vibe="heavy">🌀 Fuerte</button>
+<button class="vibe-btn" data-vibe="full">🔔 Completa</button>
+</div>
+</section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
