@@ -261,10 +261,38 @@ main {
   stroke: #cbd5e1;
   stroke-width: 6;
 }
-.dial-fill {
-  fill: #2563eb;
-  transition: d 0.1s;
+.dial-check{
+  fill:none;
+  stroke:#cbd5e1;
+  stroke-width:4;
+  stroke-dasharray:1 5;
+  opacity:.7;
 }
+
+.dial-progress{
+  fill:none;
+  stroke:#22c55e;
+  stroke-width:5;
+  stroke-linecap:round;
+  transform:rotate(-90deg);
+  transform-origin:50% 50%;
+  stroke-dasharray:289;
+  stroke-dashoffset:289;
+  transition:stroke-dashoffset .04s linear,stroke .15s ease;
+}
+
+.dial-line{
+  stroke:#22c55e;
+  stroke-width:2;
+  opacity:.45;
+}
+
+.dial-dot{
+  fill:#22c55e;
+  stroke:#fff;
+  stroke-width:1.2;
+}
+
 #dial-l-txt,
 #dial-r-txt {
   fill: #64748b;
