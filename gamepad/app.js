@@ -279,13 +279,10 @@ if (ring && history) {
     let deg =
         (angle * 180 / Math.PI + 450) % 360;
 
-    // usamos 720 checkpoints
     let index =
         Math.floor(deg * 2);
 
     history[index] = true;
-
-    // también marcamos vecinos
     history[(index + 1) % 720] = true;
     history[(index + 719) % 720] = true;
 
@@ -293,20 +290,21 @@ if (ring && history) {
 
         if (history[i * 4]) {
             ring[i].classList.add("visited");
-        }
-
-        else{
+        } else {
             ring[i].classList.remove("visited");
         }
 
         ring[i].classList.remove("current");
-
     }
 
-    ring[Math.floor(index / 4)]
-        .classList.add("current");
-
+    ring[Math.floor(index / 4)].classList.add("current");
 }
+
+// 👇 ESTA LLAVE FALTABA
+}
+
+// Gatillos (L2/R2) analógicos
+function updateTriggers(gp) {
 
 // Gatillos (L2/R2) analógicos
 function updateTriggers(gp) {
