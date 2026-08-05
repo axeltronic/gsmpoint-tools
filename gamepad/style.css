@@ -279,30 +279,6 @@ main {
 
 }
 
-.dial-progress{
-
-    fill:none;
-
-    stroke:#2ecc71;
-
-    stroke-width:4;
-
-    stroke-linecap:round;
-
-    transform:rotate(-90deg);
-
-    transform-origin:center;
-
-    stroke-dasharray:289;
-
-    stroke-dashoffset:289;
-
-    filter:drop-shadow(0 0 3px rgba(46,204,113,.5));
-
-    transition:stroke-dashoffset .05s linear;
-
-}
-
 .dial-line{
 
     stroke:#2ecc71;
