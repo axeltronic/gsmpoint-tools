@@ -82,34 +82,30 @@ const ringSegments = {
 
 function createRing(id){
 
-    const svg = document.querySelector(`#${id} .dial svg`);
+    const svg = document.getElementById(id);
 
     if(!svg) return;
 
     const NS = "http://www.w3.org/2000/svg";
 
-    const group = document.createElementNS(NS,"g");
+    const segments = [];
 
-    group.classList.add("ring");
+    const total = 180;
 
-    const segments=[];
-
-    const total=180;
-
-    const r1=42;
-    const r2=48;
+    const inner = 42;
+    const outer = 48;
 
     for(let i=0;i<total;i++){
 
-        const a=(i/total)*Math.PI*2-Math.PI/2;
+        const a = (i / total) * Math.PI * 2 - Math.PI/2;
 
-        const x1=50+Math.cos(a)*r1;
-        const y1=50+Math.sin(a)*r1;
+        const x1 = 50 + Math.cos(a) * inner;
+        const y1 = 50 + Math.sin(a) * inner;
 
-        const x2=50+Math.cos(a)*r2;
-        const y2=50+Math.sin(a)*r2;
+        const x2 = 50 + Math.cos(a) * outer;
+        const y2 = 50 + Math.sin(a) * outer;
 
-        const line=document.createElementNS(NS,"line");
+        const line = document.createElementNS(NS,"line");
 
         line.setAttribute("x1",x1);
         line.setAttribute("y1",y1);
@@ -119,18 +115,15 @@ function createRing(id){
 
         line.classList.add("checkpoint");
 
-        group.appendChild(line);
+        svg.appendChild(line);
 
         segments.push(line);
 
     }
 
-    svg.insertBefore(group,svg.firstChild);
-
-    ringSegments[id] = segments;
+    stickHistory[id] = segments;
 
 }
-
 function update() {
   if (gamepadIndex !== null) {
     let gp = navigator.getGamepads()[gamepadIndex];
