@@ -100,51 +100,102 @@ function updateButtons(gp) {
 
 // Sticks con knob y dial
 function updateSticks(gp) {
-  // Stick izquierdo (axes 0,1)
-  updateStick("stick-l", "knob-l", "dial-l-fill", "dial-l-txt", gp.axes[0], gp.axes[1]);
-  // Stick derecho (axes 2,3)
-  updateStick("stick-r", "knob-r", "dial-r-fill", "dial-r-txt", gp.axes[2], gp.axes[3]);
+
+  updateStick(
+    "stick-l",
+    "knob-l",
+    "dial-l-progress",
+    "dial-l-txt",
+    gp.axes[0],
+    gp.axes[1]
+  );
+
+  updateStick(
+    "stick-r",
+    "knob-r",
+    "dial-r-progress",
+    "dial-r-txt",
+    gp.axes[2],
+    gp.axes[3]
+  );
+
 }
 
-function updateStick(containerId, knobId, dialFillId, dialTextId, x, y) {
+function updateStick(containerId, knobId, progressId, textId, x, y) {
+
   const container = document.getElementById(containerId);
   const knob = document.getElementById(knobId);
-  const fill = document.getElementById(dialFillId);
-  const text = document.getElementById(dialTextId);
-  if (!container || !knob || !fill || !text) return;
 
-  // Limitar movimiento a un radio relativo al tamaño del stick
-  const maxMove = container.offsetWidth * 0.25; // 25% del ancho del stick
+  const progress = document.getElementById(progressId);
+  const text = document.getElementById(textId);
+
+  const dot = document.getElementById(
+    progressId.replace("progress", "dot")
+  );
+
+  const line = document.getElementById(
+    progressId.replace("progress", "line")
+  );
+
+  if (!container || !knob) return;
+
+  x = Number.isFinite(x) ? x : 0;
+  y = Number.isFinite(y) ? y : 0;
+
+  const maxMove = container.offsetWidth * 0.25;
+
   const dx = x * maxMove;
   const dy = y * maxMove;
-  knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
 
-  // Calcular magnitud y ángulo para el dial
-  const magnitude = Math.sqrt(x * x + y * y);
-  const percentage = Math.round(Math.min(magnitude, 1) * 100);
-  text.textContent = percentage + "%";
+  knob.style.transform =
+    `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
 
-  // Dibujar arco en el dial según magnitud
-  if (magnitude > 0.01) {
-    const angle = Math.atan2(y, x) * (180 / Math.PI); // grados
-    const startAngle = -90; // comenzar desde arriba
-    const endAngle = startAngle + angle;
-    const r = 46;
-    const cx = 50, cy = 50;
-    const toRad = (deg) => deg * Math.PI / 180;
-    const startRad = toRad(startAngle);
-    const endRad = toRad(endAngle);
-    const x1 = cx + r * Math.cos(startRad);
-    const y1 = cy + r * Math.sin(startRad);
-    const x2 = cx + r * Math.cos(endRad);
-    const y2 = cy + r * Math.sin(endRad);
-    const largeArc = magnitude > 0.5 ? 1 : 0;
-    fill.setAttribute("d", `M${cx} ${cy} L${x1} ${y1} A${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`);
-    fill.setAttribute("opacity", "0.3");
-  } else {
-    fill.setAttribute("d", "M50 50 L50 4 A46 46 0 1 1 50.1 4 Z");
-    fill.setAttribute("opacity", "0");
+  const magnitude = Math.min(
+    Math.sqrt(x * x + y * y),
+    1
+  );
+
+  text.textContent =
+    Math.round(magnitude * 100) + "%";
+
+  if (progress) {
+
+    const circumference =
+      2 * Math.PI * 46;
+
+    progress.style.strokeDasharray =
+      circumference;
+
+    progress.style.strokeDashoffset =
+      circumference -
+      (circumference * magnitude);
+
   }
+
+  const angle = Math.atan2(y, x);
+
+  const radius = 46;
+
+  const px =
+    50 + Math.cos(angle) * radius;
+
+  const py =
+    50 + Math.sin(angle) * radius;
+
+  if (dot) {
+
+    dot.setAttribute("cx", px);
+    dot.setAttribute("cy", py);
+
+  }
+
+  if (line) {
+
+    line.setAttribute("x2", px);
+    line.setAttribute("y2", py);
+
+  }
+
 }
 
 // Gatillos (L2/R2) analógicos
