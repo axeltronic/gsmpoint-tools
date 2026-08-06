@@ -213,10 +213,20 @@ function updateStick(containerId, knobId, progressId, textId, x, y) {
   x = Number.isFinite(x) ? x : 0;
   y = Number.isFinite(y) ? y : 0;
 
-  const maxMove = container.offsetWidth * 0.25;
+  const KNOB_RADIUS = 28;
+  const RING_RADIUS = 58;
 
-  const dx = x * maxMove;
-  const dy = y * maxMove;
+  const maxMove = RING_RADIUS - KNOB_RADIUS;
+
+  const len = Math.hypot(x, y);
+
+if (len > 1) {
+    x /= len;
+    y /= len;
+}
+
+const dx = x * maxMove;
+const dy = y * maxMove;
 
   knob.style.transform =
     `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
@@ -260,7 +270,12 @@ function updateStick(containerId, knobId, progressId, textId, x, y) {
   }
 
   if (line) {
+const cx = 50;
+const cy = 50;
 
+const px = cx + Math.cos(angle) * radius;
+const py = cy + Math.sin(angle) * radius;
+    
     line.setAttribute("x2", px);
     line.setAttribute("y2", py);
 
@@ -276,7 +291,15 @@ const history = stickHistory[containerId];
 if (ring && history) {
 
     // grado actual
-    let deg =
+    const SEGMENTS = 180;
+
+let segment = Math.floor(
+    ((angle + Math.PI) / (Math.PI * 2)) * SEGMENTS
+);
+
+history[segment] = true;
+  
+  let deg =
         (angle * 180 / Math.PI + 450) % 360;
 
     let index =
@@ -343,6 +366,13 @@ document.querySelectorAll(".vibe-btn").forEach(btn => {
       vibeNote.textContent = "Vibración no soportada";
       return;
     }
+    line.setAttribute("x1",50);
+line.setAttribute("y1",50);
+
+line.setAttribute("x2",px);
+line.setAttribute("y2",py);
+    knob.style.transform =
+`translate(${dx}px,${dy}px)`;
     const type = btn.dataset.vibe;
     let params = { duration: 500, strongMagnitude: 0, weakMagnitude: 0 };
     if (type === "light") {
