@@ -228,11 +228,15 @@ main {
 }
 
 #stick-l{
-    left:22%;
+
+left:24%;
+
 }
 
 #stick-r{
-    right:22%;
+
+right:24%;
+
 }
 
 .dial{
@@ -328,12 +332,11 @@ main {
 
     position:absolute;
 
-    width:43%;
+    width:36%;
 
     aspect-ratio:1;
 
     left:50%;
-
     top:50%;
 
     transform:translate(-50%,-50%);
@@ -342,29 +345,9 @@ main {
 
     z-index:5;
 
-    background:
+    will-change:transform;
 
-    radial-gradient(circle at 35% 35%,
-
-    #f8fafc,
-
-    #dbe4ee 35%,
-
-    #9aa8b8 80%,
-
-    #66758a);
-
-    border:3px solid #f1f5f9;
-
-    box-shadow:
-
-    inset 0 4px 8px rgba(255,255,255,.5),
-
-    inset 0 -6px 10px rgba(0,0,0,.25),
-
-    0 8px 20px rgba(0,0,0,.35);
-
-    transition:transform .04s linear;
+    transition:none;
 
 }
 
