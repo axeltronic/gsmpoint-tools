@@ -300,16 +300,6 @@ let segment = Math.floor(
 );
 
 history[segment] = true;
-  
-  const SEGMENTS = 180;
-
-const segment = Math.floor(
-
-    ((angle + Math.PI) / (Math.PI * 2)) * SEGMENTS
-
-);
-
-history[segment] = true;
 
     for (let i = 0; i < ring.length; i++) {
 
@@ -368,13 +358,7 @@ document.querySelectorAll(".vibe-btn").forEach(btn => {
       vibeNote.textContent = "Vibración no soportada";
       return;
     }
-    line.setAttribute("x1",50);
-line.setAttribute("y1",50);
-
-line.setAttribute("x2",px);
-line.setAttribute("y2",py);
-    knob.style.transform =
-`translate(${dx}px,${dy}px)`;
+    
     const type = btn.dataset.vibe;
     let params = { duration: 500, strongMagnitude: 0, weakMagnitude: 0 };
     if (type === "light") {
