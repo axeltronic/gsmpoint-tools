@@ -60,15 +60,14 @@ main {
 /* ===================== */
 /* STAGE DEL MANDO */
 /* ===================== */
-.stage {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
-  aspect-ratio: 3 / 2;
-  margin: 0 auto 30px;
-  /* fondo sutil para la silueta */
-  background: radial-gradient(circle at center, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.05) 100%);
-  border-radius: 40px;
+.stage{
+
+max-width:720px;
+
+width:min(100%,720px);
+
+margin:auto;
+
 }
 
 .stage-body {
@@ -295,11 +294,7 @@ right:24%;
 
 .dial-dot{
 
-    fill:#2ecc71;
-
-    stroke:#fff;
-
-    stroke-width:1.5;
+r:4;
 
 }
 
@@ -316,15 +311,11 @@ right:24%;
 #dial-l-txt,
 #dial-r-txt{
 
-    fill:#64748b;
+font-size:14px;
 
-    font-size:11px;
+font-weight:800;
 
-    font-weight:700;
-
-    dominant-baseline:middle;
-
-    text-anchor:middle;
+fill:#475569;
 
 }
 
@@ -491,15 +482,11 @@ right:24%;
 
 .ring line{
 
-    stroke:#d7dee7;
-    stroke-width:2;
-    stroke-linecap:round;
-    opacity:.25;
+stroke:#d8dee6;
 
-    transition:
-    stroke .08s linear,
-    opacity .08s linear,
-    stroke-width .08s linear;
+stroke-width:3;
+
+opacity:1;
 
 }
 
