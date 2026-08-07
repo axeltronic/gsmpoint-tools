@@ -313,6 +313,8 @@ history[segment] = true;
 }
 
 ring[segment].classList.add("current");
+
+ring[segment].classList.add("current");
 }
 
 // 👇 ESTA LLAVE FALTABA
