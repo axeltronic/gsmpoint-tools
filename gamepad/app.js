@@ -71,8 +71,10 @@ function createButtonChips() {
 =========================== */
 
 const stickHistory = {
-    "stick-l": new Array(720).fill(false),
-    "stick-r": new Array(720).fill(false)
+
+    "stick-l": new Array(180).fill(false),
+    "stick-r": new Array(180).fill(false)
+
 };
 
 const ringSegments = {
@@ -214,22 +216,24 @@ function updateStick(containerId, knobId, progressId, textId, x, y) {
   y = Number.isFinite(y) ? y : 0;
 
   const KNOB_RADIUS = 28;
-  const RING_RADIUS = 58;
+const RING_RADIUS = 58;
 
-  const maxMove = RING_RADIUS - KNOB_RADIUS;
+const maxMove = RING_RADIUS - KNOB_RADIUS;
 
-  const len = Math.hypot(x, y);
+const len = Math.hypot(x, y);
 
 if (len > 1) {
+
     x /= len;
     y /= len;
+
 }
 
 const dx = x * maxMove;
 const dy = y * maxMove;
 
-  knob.style.transform =
-    `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+knob.style.transform =
+`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
 
   const magnitude = Math.min(
     Math.sqrt(x * x + y * y),
@@ -256,30 +260,28 @@ const dy = y * maxMove;
 
   const angle = Math.atan2(y, x);
 
-  const radius = 46;
+const radius = 46;
 
-  const px = 50 + Math.cos(angle) * radius;
-
-  const py = 50 + Math.sin(angle) * radius;
-
-  if (dot) {
-
-    dot.setAttribute("cx", px);
-    dot.setAttribute("cy", py);
-
-  }
-
-  if (line) {
 const cx = 50;
 const cy = 50;
 
 const px = cx + Math.cos(angle) * radius;
 const py = cy + Math.sin(angle) * radius;
-    
+
+if (dot) {
+    dot.setAttribute("cx", px);
+    dot.setAttribute("cy", py);
+}
+
+if (line) {
+
+    line.setAttribute("x1", cx);
+    line.setAttribute("y1", cy);
+
     line.setAttribute("x2", px);
     line.setAttribute("y2", py);
 
-  }
+}
 
   /* ===========================
      NUEVO ANILLO DE CHECKPOINTS
@@ -299,28 +301,28 @@ let segment = Math.floor(
 
 history[segment] = true;
   
-  let deg =
-        (angle * 180 / Math.PI + 450) % 360;
+  const SEGMENTS = 180;
 
-    let index =
-        Math.floor(deg * 2);
+const segment = Math.floor(
 
-    history[index] = true;
-    history[(index + 1) % 720] = true;
-    history[(index + 719) % 720] = true;
+    ((angle + Math.PI) / (Math.PI * 2)) * SEGMENTS
+
+);
+
+history[segment] = true;
 
     for (let i = 0; i < ring.length; i++) {
 
-        if (history[i * 4]) {
-            ring[i].classList.add("visited");
-        } else {
-            ring[i].classList.remove("visited");
-        }
+    ring[i].classList.toggle(
+        "visited",
+        history[i]
+    );
 
-        ring[i].classList.remove("current");
-    }
+    ring[i].classList.remove("current");
 
-    ring[Math.floor(index / 4)].classList.add("current");
+}
+
+ring[segment].classList.add("current");
 }
 
 // 👇 ESTA LLAVE FALTABA
