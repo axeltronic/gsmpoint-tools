@@ -1,86 +1,182 @@
+/* =========================================================
+   GAMEPAD TESTER
+   GSMPoint Tools
+========================================================= */
+
 let gamepadIndex = null;
 
-const status = document.getElementById("connection-status");
-const tester = document.getElementById("tester");
-const controllerName = document.getElementById("controller-name");
-const controllerType = document.getElementById("controller-type");
-const progressSpan = document.getElementById("progress");
-const chipsContainer = document.getElementById("chips");
-const vibeNote = document.getElementById("vibe-note");
+
+/* =========================================================
+   ELEMENTOS PRINCIPALES
+========================================================= */
+
+const status =
+    document.getElementById("connection-status");
+
+const tester =
+    document.getElementById("tester");
+
+const controllerName =
+    document.getElementById("controller-name");
+
+const controllerType =
+    document.getElementById("controller-type");
+
+const progressSpan =
+    document.getElementById("progress");
+
+const chipsContainer =
+    document.getElementById("chips");
+
+const vibeNote =
+    document.getElementById("vibe-note");
 
 
-// =========================================================
-// NOMBRES DE BOTONES
-// =========================================================
+/* =========================================================
+   NOMBRES DE BOTONES
+========================================================= */
 
 const buttonNames = [
-    "✕", "○", "□", "△",
-    "L1", "R1",
-    "L2", "R2",
-    "Share", "Options",
-    "L3", "R3",
-    "↑", "↓", "←", "→",
+    "✕",
+    "○",
+    "□",
+    "△",
+    "L1",
+    "R1",
+    "L2",
+    "R2",
+    "Share",
+    "Options",
+    "L3",
+    "R3",
+    "↑",
+    "↓",
+    "←",
+    "→",
     "Home"
 ];
 
 let testedButtons = [];
 
 
-// =========================================================
-// CONEXIÓN
-// =========================================================
+/* =========================================================
+   CONEXIÓN
+========================================================= */
 
-window.addEventListener("gamepadconnected", (e) => {
+window.addEventListener(
+    "gamepadconnected",
+    (e) => {
 
-    gamepadIndex = e.gamepad.index;
-
-    const type = detectController(e.gamepad);
-
-    status.innerHTML = "✅ Joystick conectado";
-
-    controllerName.textContent =
-        e.gamepad.id;
-
-    controllerType.textContent =
-        "Layout: " + type;
-
-    tester.classList.remove("hidden");
-
-    createButtonChips();
-
-});
+        gamepadIndex =
+            e.gamepad.index;
 
 
-window.addEventListener("gamepaddisconnected", () => {
-
-    gamepadIndex = null;
-
-    status.innerHTML =
-        "❌ Joystick desconectado";
-
-    tester.classList.add("hidden");
-
-    testedButtons = [];
-
-    progressSpan.textContent = "0";
-
-    chipsContainer.innerHTML = "";
-
-    resetStickHistory();
-
-    resetTriggers();
-
-});
+        const type =
+            detectController(
+                e.gamepad
+            );
 
 
-// =========================================================
-// DETECTAR CONTROLADOR
-// =========================================================
+        if (status) {
+
+            status.textContent =
+                "✅ Joystick conectado";
+
+        }
+
+
+        if (controllerName) {
+
+            controllerName.textContent =
+                e.gamepad.id;
+
+        }
+
+
+        if (controllerType) {
+
+            controllerType.textContent =
+                "Layout: " + type;
+
+        }
+
+
+        if (tester) {
+
+            tester.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        createButtonChips();
+
+        resetVisualState();
+
+    }
+);
+
+
+window.addEventListener(
+    "gamepaddisconnected",
+    () => {
+
+        gamepadIndex = null;
+
+
+        if (status) {
+
+            status.textContent =
+                "❌ Joystick desconectado";
+
+        }
+
+
+        if (tester) {
+
+            tester.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        testedButtons = [];
+
+
+        if (progressSpan) {
+
+            progressSpan.textContent =
+                "0";
+
+        }
+
+
+        if (chipsContainer) {
+
+            chipsContainer.innerHTML =
+                "";
+
+        }
+
+
+        resetVisualState();
+
+    }
+);
+
+
+/* =========================================================
+   DETECTAR CONTROLADOR
+========================================================= */
 
 function detectController(gp) {
 
     const id =
-        gp.id.toLowerCase();
+        String(
+            gp?.id || ""
+        ).toLowerCase();
 
 
     if (
@@ -120,267 +216,76 @@ function detectController(gp) {
 }
 
 
-// =========================================================
-// CHIPS
-// =========================================================
+/* =========================================================
+   CHIPS
+========================================================= */
 
 function createButtonChips() {
 
-    chipsContainer.innerHTML = "";
-
-    buttonNames.forEach((name, index) => {
-
-        const chip =
-            document.createElement("span");
-
-        chip.className = "chip";
-
-        chip.id =
-            "chip-" + index;
-
-        chip.textContent =
-            name;
-
-        chipsContainer.appendChild(
-            chip
-        );
-
-    });
-
-}
+    if (!chipsContainer) return;
 
 
-// =========================================================
-// STICK CHECKPOINT DATA
-// =========================================================
-
-const stickData = {
-
-    "stick-l": {
-
-        total: 180,
-
-        visited:
-            new Array(180).fill(false),
-
-        segments: [],
-
-        current: -1
-
-    },
-
-    "stick-r": {
-
-        total: 180,
-
-        visited:
-            new Array(180).fill(false),
-
-        segments: [],
-
-        current: -1
-
-    }
-
-};
+    chipsContainer.innerHTML =
+        "";
 
 
-// =========================================================
-// CREAR CHECKPOINTS
-// =========================================================
+    buttonNames.forEach(
+        (name, index) => {
 
-function createRing(
-    ringId,
-    stickId
-) {
-
-    const group =
-        document.getElementById(
-            ringId
-        );
-
-    if (!group) return;
-
-    const data =
-        stickData[stickId];
-
-    if (!data) return;
+            const chip =
+                document.createElement(
+                    "span"
+                );
 
 
-    // Evitar duplicados
-
-    if (
-        data.segments.length > 0
-    ) {
-
-        return;
-
-    }
+            chip.className =
+                "chip";
 
 
-    const NS =
-        "http://www.w3.org/2000/svg";
-
-    const total =
-        data.total;
+            chip.id =
+                "chip-" + index;
 
 
-    /*
-        Centro = 50 / 50
-        Radio interno = 42
-        Radio externo = 48
-    */
-
-    const inner =
-        42;
-
-    const outer =
-        48;
+            chip.textContent =
+                name;
 
 
-    for (
-        let i = 0;
-        i < total;
-        i++
-    ) {
-
-        /*
-            Primer checkpoint arriba.
-        */
-
-        const angle =
-            (
-                i /
-                total
-            ) *
-            Math.PI *
-            2 -
-            Math.PI / 2;
-
-
-        const x1 =
-            50 +
-            Math.cos(angle) *
-            inner;
-
-        const y1 =
-            50 +
-            Math.sin(angle) *
-            inner;
-
-
-        const x2 =
-            50 +
-            Math.cos(angle) *
-            outer;
-
-        const y2 =
-            50 +
-            Math.sin(angle) *
-            outer;
-
-
-        const line =
-            document.createElementNS(
-                NS,
-                "line"
+            chipsContainer.appendChild(
+                chip
             );
 
-
-        line.setAttribute(
-            "x1",
-            x1
-        );
-
-        line.setAttribute(
-            "y1",
-            y1
-        );
-
-        line.setAttribute(
-            "x2",
-            x2
-        );
-
-        line.setAttribute(
-            "y2",
-            y2
-        );
-
-
-        line.classList.add(
-            "checkpoint"
-        );
-
-
-        group.appendChild(
-            line
-        );
-
-
-        data.segments.push(
-            line
-        );
-
-    }
+        }
+    );
 
 }
 
 
-// =========================================================
-// CREAR LOS DOS AROS
-// =========================================================
+/* =========================================================
+   BUSCAR BOTÓN DEL SVG
+========================================================= */
 
-createRing(
-    "ring-l",
-    "stick-l"
-);
+function getButtonElement(index) {
 
-createRing(
-    "ring-r",
-    "stick-r"
-);
+    return (
 
+        document.querySelector(
+            `[data-button="${index}"]`
+        )
 
-// =========================================================
-// RESETEAR AROS
-// =========================================================
+        ||
 
-function resetStickHistory() {
+        document.querySelector(
+            `[data-btn="${index}"]`
+        )
 
-    Object.keys(
-        stickData
-    ).forEach(stickId => {
-
-        const data =
-            stickData[stickId];
-
-        data.visited.fill(false);
-
-        data.current = -1;
-
-        data.segments.forEach(
-            segment => {
-
-                segment.classList.remove(
-                    "visited"
-                );
-
-                segment.classList.remove(
-                    "current"
-                );
-
-            }
-        );
-
-    });
+    );
 
 }
 
 
-// =========================================================
-// MAIN LOOP
-// =========================================================
+/* =========================================================
+   LOOP PRINCIPAL
+========================================================= */
 
 function update() {
 
@@ -390,6 +295,7 @@ function update() {
 
         const gamepads =
             navigator.getGamepads();
+
 
         const gp =
             gamepads[
@@ -416,58 +322,59 @@ function update() {
 
 }
 
+
 update();
 
 
-// =========================================================
-// BOTONES
-// =========================================================
+/* =========================================================
+   BOTONES
+========================================================= */
 
 function updateButtons(gp) {
 
+    const maxButtons =
+        Math.min(
+            gp.buttons.length,
+            17
+        );
+
+
     for (
         let i = 0;
-        i <= 16;
+        i < maxButtons;
         i++
     ) {
 
         const button =
             gp.buttons[i];
 
+
         if (!button) continue;
 
 
-        /*
-            Compatible con:
-
-            data-btn="0"
-
-            y
-
-            data-button="0"
-        */
-
         const element =
-            document.querySelector(
-                `[data-btn="${i}"]`
-            ) ||
-            document.querySelector(
-                `[data-button="${i}"]`
-            );
+            getButtonElement(i);
 
 
         if (!element) continue;
 
 
-        if (
-            button.pressed
-        ) {
+        const pressed =
+            Boolean(
+                button.pressed ||
+                button.value > 0.1
+            );
+
+
+        if (pressed) {
 
             element.classList.add(
                 "pressed"
             );
 
+
             markButtonTested(i);
+
 
         } else {
 
@@ -482,626 +389,14 @@ function updateButtons(gp) {
 }
 
 
-// =========================================================
-// STICKS
-// =========================================================
+/* =========================================================
+   MARCAR BOTÓN PROBADO
+========================================================= */
 
-function updateSticks(gp) {
-
-    updateStick(
-        "stick-l",
-        "knob-l",
-        "dial-l-line",
-        "dial-l-dot",
-        "dial-l-txt",
-        gp.axes[0],
-        gp.axes[1]
-    );
-
-
-    updateStick(
-        "stick-r",
-        "knob-r",
-        "dial-r-line",
-        "dial-r-dot",
-        "dial-r-txt",
-        gp.axes[2],
-        gp.axes[3]
-    );
-
-}
-
-
-// =========================================================
-// UPDATE STICK
-// =========================================================
-
-function updateStick(
-    stickId,
-    knobId,
-    lineId,
-    dotId,
-    textId,
-    rawX,
-    rawY
-) {
-
-    const stick =
-        document.getElementById(
-            stickId
-        );
-
-    const knob =
-        document.getElementById(
-            knobId
-        );
-
-    const line =
-        document.getElementById(
-            lineId
-        );
-
-    const dot =
-        document.getElementById(
-            dotId
-        );
-
-    const text =
-        document.getElementById(
-            textId
-        );
-
+function markButtonTested(index) {
 
     if (
-        !stick ||
-        !knob
-    ) {
-
-        return;
-
-    }
-
-
-    const data =
-        stickData[stickId];
-
-    if (!data) return;
-
-
-    // =======================================================
-    // VALORES
-    // =======================================================
-
-    let x =
-        Number.isFinite(rawX)
-            ? rawX
-            : 0;
-
-    let y =
-        Number.isFinite(rawY)
-            ? rawY
-            : 0;
-
-
-    // =======================================================
-    // DEAD ZONE
-    // =======================================================
-
-    const deadZone =
-        0.08;
-
-
-    if (
-        Math.abs(x) <
-        deadZone
-    ) {
-
-        x = 0;
-
-    }
-
-
-    if (
-        Math.abs(y) <
-        deadZone
-    ) {
-
-        y = 0;
-
-    }
-
-
-    // =======================================================
-    // MAGNITUD
-    // =======================================================
-
-    let magnitude =
-        Math.hypot(
-            x,
-            y
-        );
-
-
-    magnitude =
-        Math.min(
-            magnitude,
-            1
-        );
-
-
-    // =======================================================
-    // MOVIMIENTO DEL KNOB
-    // =======================================================
-
-    const maxMove =
-        stick.offsetWidth *
-        0.16;
-
-
-    const dx =
-        x * maxMove;
-
-    const dy =
-        y * maxMove;
-
-
-    knob.style.transform =
-        `translate(
-            calc(-50% + ${dx}px),
-            calc(-50% + ${dy}px)
-        )`;
-
-
-    // =======================================================
-    // DIRECCIÓN
-    // =======================================================
-
-    let angle =
-        Math.atan2(
-            y,
-            x
-        );
-
-
-    const cx =
-        50;
-
-    const cy =
-        50;
-
-    const radius =
-        46;
-
-
-    const px =
-        cx +
-        Math.cos(angle) *
-        radius;
-
-    const py =
-        cy +
-        Math.sin(angle) *
-        radius;
-
-
-    // =======================================================
-    // LÍNEA
-    // =======================================================
-
-    if (line) {
-
-        line.setAttribute(
-            "x1",
-            cx
-        );
-
-        line.setAttribute(
-            "y1",
-            cy
-        );
-
-        line.setAttribute(
-            "x2",
-            px
-        );
-
-        line.setAttribute(
-            "y2",
-            py
-        );
-
-    }
-
-
-    // =======================================================
-    // DOT
-    // =======================================================
-
-    if (dot) {
-
-        dot.setAttribute(
-            "cx",
-            px
-        );
-
-        dot.setAttribute(
-            "cy",
-            py
-        );
-
-    }
-
-
-    // =======================================================
-    // CHECKPOINTS
-    // =======================================================
-
-    if (
-        magnitude >=
-        deadZone
-    ) {
-
-        /*
-            Convertimos el ángulo
-            a un índice entre 0 y 179.
-
-            El índice 0 está arriba.
-        */
-
-        let index =
-            Math.floor(
-                (
-                    (
-                        angle +
-                        Math.PI / 2 +
-                        Math.PI * 2
-                    ) %
-                    (Math.PI * 2)
-                ) /
-                (Math.PI * 2) *
-                data.total
-            );
-
-
-        if (
-            index < 0
-        ) {
-
-            index = 0;
-
-        }
-
-
-        if (
-            index >=
-            data.total
-        ) {
-
-            index =
-                data.total - 1;
-
-        }
-
-
-        // ===================================================
-        // MARCAR ACTUAL
-        // ===================================================
-
-        data.visited[index] =
-            true;
-
-
-        /*
-            Dos vecinos para evitar
-            huecos entre movimientos.
-        */
-
-        data.visited[
-            (
-                index -
-                1 +
-                data.total
-            ) %
-            data.total
-        ] = true;
-
-
-        data.visited[
-            (
-                index +
-                1
-            ) %
-            data.total
-        ] = true;
-
-
-        // ===================================================
-        // PINTAR ARO
-        // ===================================================
-
-        for (
-            let i = 0;
-            i < data.total;
-            i++
-        ) {
-
-            const segment =
-                data.segments[i];
-
-            if (!segment) continue;
-
-
-            segment.classList.toggle(
-                "visited",
-                data.visited[i]
-            );
-
-
-            segment.classList.remove(
-                "current"
-            );
-
-        }
-
-
-        // ===================================================
-        // CHECKPOINT ACTUAL
-        // ===================================================
-
-        if (
-            data.segments[index]
-        ) {
-
-            data.segments[index]
-                .classList.add(
-                    "current"
-                );
-
-        }
-
-
-        data.current =
-            index;
-
-    }
-
-
-    // =======================================================
-    // PORCENTAJE DEL RECORRIDO
-    // =======================================================
-
-    const visited =
-        data.visited.filter(
-            Boolean
-        ).length;
-
-
-    const coverage =
-        Math.round(
-            (
-                visited /
-                data.total
-            ) *
-            100
-        );
-
-
-    if (text) {
-
-        text.textContent =
-            coverage + "%";
-
-    }
-
-}
-
-
-// =========================================================
-// TRIGGERS L2 / R2
-// =========================================================
-
-function updateTriggers(gp) {
-
-    const l2 =
-        gp.buttons[6]?.value || 0;
-
-    const r2 =
-        gp.buttons[7]?.value || 0;
-
-
-    updateTrigger(
-        "l2",
-        l2
-    );
-
-
-    updateTrigger(
-        "r2",
-        r2
-    );
-
-}
-
-
-// =========================================================
-// UPDATE TRIGGER
-// =========================================================
-
-function updateTrigger(
-    side,
-    value
-) {
-
-    const widget =
-        document.querySelector(
-            `.trigger-widget[data-trigger="${side}"]`
-        );
-
-    if (!widget) return;
-
-
-    const fill =
-        widget.querySelector(
-            ".trigger-fill"
-        );
-
-
-    const percent =
-        widget.querySelector(
-            ".trigger-percent"
-        );
-
-
-    const button =
-        widget.querySelector(
-            "[data-btn]"
-        );
-
-
-    // =======================================================
-    // NORMALIZAR 0 - 1
-    // =======================================================
-
-    const normalized =
-        Math.max(
-            0,
-            Math.min(
-                1,
-                Number(value) || 0
-            )
-        );
-
-
-    const valuePercent =
-        Math.round(
-            normalized * 100
-        );
-
-
-    // =======================================================
-    // BARRA
-    // =======================================================
-
-    if (fill) {
-
-        fill.style.height =
-            `${valuePercent}%`;
-
-    }
-
-
-    // =======================================================
-    // PORCENTAJE
-    // =======================================================
-
-    if (percent) {
-
-        percent.textContent =
-            `${valuePercent}%`;
-
-    }
-
-
-    // =======================================================
-    // ESTADO ACTIVO
-    // =======================================================
-
-    widget.classList.toggle(
-        "active",
-        normalized > 0.01
-    );
-
-
-    // =======================================================
-    // BOTÓN
-    // =======================================================
-
-    if (button) {
-
-        button.classList.toggle(
-            "pressed",
-            normalized > 0.1
-        );
-
-    }
-
-}
-
-
-// =========================================================
-// RESET TRIGGERS
-// =========================================================
-
-function resetTriggers() {
-
-    document
-        .querySelectorAll(
-            ".trigger-widget"
-        )
-        .forEach(widget => {
-
-            const fill =
-                widget.querySelector(
-                    ".trigger-fill"
-                );
-
-            const percent =
-                widget.querySelector(
-                    ".trigger-percent"
-                );
-
-            const button =
-                widget.querySelector(
-                    "[data-btn]"
-                );
-
-
-            if (fill) {
-
-                fill.style.height =
-                    "0%";
-
-            }
-
-
-            if (percent) {
-
-                percent.textContent =
-                    "0%";
-
-            }
-
-
-            widget.classList.remove(
-                "active"
-            );
-
-
-            if (button) {
-
-                button.classList.remove(
-                    "pressed"
-                );
-
-            }
-
-        });
-
-}
-
-
-// =========================================================
-// PROGRESO DE BOTONES
-// =========================================================
-
-function markButtonTested(
-    index
-) {
-
-    if (
-        testedButtons.includes(
-            index
-        )
+        testedButtons.includes(index)
     ) {
 
         return;
@@ -1129,22 +424,910 @@ function markButtonTested(
     }
 
 
-    progressSpan.textContent =
-        testedButtons.length;
+    if (progressSpan) {
+
+        progressSpan.textContent =
+            testedButtons.length;
+
+    }
 
 }
 
 
-// =========================================================
-// VIBRACIÓN
-// =========================================================
+/* =========================================================
+   STICKS
+========================================================= */
+
+const stickState = {
+
+    left: {
+
+        visited:
+            new Set(),
+
+        current:
+            -1
+
+    },
+
+    right: {
+
+        visited:
+            new Set(),
+
+        current:
+            -1
+
+    }
+
+};
+
+
+/* =========================================================
+   OBTENER ELEMENTOS DEL STICK
+========================================================= */
+
+function getStickElements(side) {
+
+    const stick =
+        document.querySelector(
+            `[data-stick="${side}"]`
+        );
+
+
+    if (stick) {
+
+        return {
+
+            container:
+                stick,
+
+            knob:
+                stick.querySelector(
+                    ".analog-knob"
+                ),
+
+            progress:
+                stick.querySelector(
+                    ".analog-progress"
+                ),
+
+            percent:
+                stick.querySelector(
+                    ".analog-percent"
+                ),
+
+            ring:
+                stick.querySelector(
+                    ".analog-ring"
+                ),
+
+            line:
+                stick.querySelector(
+                    ".analog-line"
+                ),
+
+            dot:
+                stick.querySelector(
+                    ".analog-dot"
+                )
+
+        };
+
+    }
+
+
+    /* -------------------------------------------------------
+       COMPATIBILIDAD CON LA ESTRUCTURA ANTERIOR
+    ------------------------------------------------------- */
+
+    const oldId =
+        side === "left"
+            ? "stick-l"
+            : "stick-r";
+
+
+    return {
+
+        container:
+            document.getElementById(
+                oldId
+            ),
+
+        knob:
+            document.getElementById(
+                side === "left"
+                    ? "knob-l"
+                    : "knob-r"
+            ),
+
+        progress:
+            document.getElementById(
+                side === "left"
+                    ? "dial-l-progress"
+                    : "dial-r-progress"
+            ),
+
+        percent:
+            document.getElementById(
+                side === "left"
+                    ? "dial-l-txt"
+                    : "dial-r-txt"
+            ),
+
+        ring:
+            null,
+
+        line:
+            document.getElementById(
+                side === "left"
+                    ? "dial-l-line"
+                    : "dial-r-line"
+            ),
+
+        dot:
+            document.getElementById(
+                side === "left"
+                    ? "dial-l-dot"
+                    : "dial-r-dot"
+            )
+
+    };
+
+}
+
+
+/* =========================================================
+   UPDATE STICKS
+========================================================= */
+
+function updateSticks(gp) {
+
+    updateStick(
+        "left",
+        gp.axes?.[0] ?? 0,
+        gp.axes?.[1] ?? 0
+    );
+
+
+    updateStick(
+        "right",
+        gp.axes?.[2] ?? 0,
+        gp.axes?.[3] ?? 0
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE INDIVIDUAL STICK
+========================================================= */
+
+function updateStick(
+    side,
+    rawX,
+    rawY
+) {
+
+    const elements =
+        getStickElements(
+            side
+        );
+
+
+    if (
+        !elements.container ||
+        !elements.knob
+    ) {
+
+        return;
+
+    }
+
+
+    let x =
+        Number.isFinite(rawX)
+            ? rawX
+            : 0;
+
+
+    let y =
+        Number.isFinite(rawY)
+            ? rawY
+            : 0;
+
+
+    /* =====================================================
+       DEAD ZONE
+    ===================================================== */
+
+    const deadZone =
+        0.06;
+
+
+    if (
+        Math.abs(x) <
+        deadZone
+    ) {
+
+        x = 0;
+
+    }
+
+
+    if (
+        Math.abs(y) <
+        deadZone
+    ) {
+
+        y = 0;
+
+    }
+
+
+    /* =====================================================
+       MAGNITUD
+    ===================================================== */
+
+    const magnitude =
+        Math.min(
+            Math.hypot(
+                x,
+                y
+            ),
+            1
+        );
+
+
+    /* =====================================================
+       POSICIÓN DEL KNOB
+    ===================================================== */
+
+    const container =
+        elements.container;
+
+
+    const size =
+        Math.min(
+            container.clientWidth ||
+            0,
+
+            container.clientHeight ||
+            0
+        );
+
+
+    /*
+       Distancia máxima del knob.
+
+       Se calcula según el tamaño real
+       del SVG para que no se deforme.
+    */
+
+    const maxMove =
+        size * 0.27;
+
+
+    const dx =
+        x * maxMove;
+
+
+    const dy =
+        y * maxMove;
+
+
+    elements.knob.style.transform =
+        `translate(
+            ${dx}px,
+            ${dy}px
+        )`;
+
+
+    /* =====================================================
+       ÁNGULO
+    ===================================================== */
+
+    let angle =
+        Math.atan2(
+            y,
+            x
+        );
+
+
+    if (
+        !Number.isFinite(angle)
+    ) {
+
+        angle = 0;
+
+    }
+
+
+    /* =====================================================
+       PORCENTAJE DEL STICK
+    ===================================================== */
+
+    const percentage =
+        Math.round(
+            magnitude * 100
+        );
+
+
+    if (elements.percent) {
+
+        elements.percent.textContent =
+            percentage + "%";
+
+    }
+
+
+    /* =====================================================
+       PROGRESO CIRCULAR SVG
+    ===================================================== */
+
+    if (
+        elements.progress
+    ) {
+
+        const length =
+            getCircleLength(
+                elements.progress
+            );
+
+
+        if (length > 0) {
+
+            elements.progress.style.strokeDasharray =
+                length;
+
+
+            elements.progress.style.strokeDashoffset =
+                length -
+                (
+                    length *
+                    magnitude
+                );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LÍNEA / DOT
+    ===================================================== */
+
+    updateDirectionVisuals(
+        elements,
+        angle,
+        magnitude
+    );
+
+
+    /* =====================================================
+       CHECKPOINT
+    ===================================================== */
+
+    updateStickCheckpoint(
+        side,
+        angle,
+        magnitude,
+        elements
+    );
+
+}
+
+
+/* =========================================================
+   LONGITUD DEL CÍRCULO
+========================================================= */
+
+function getCircleLength(
+    element
+) {
+
+    if (
+        typeof element.getTotalLength ===
+        "function"
+    ) {
+
+        try {
+
+            return element.getTotalLength();
+
+        } catch (e) {}
+
+    }
+
+
+    const radius =
+        parseFloat(
+            element.getAttribute(
+                "r"
+            )
+        );
+
+
+    if (
+        Number.isFinite(radius)
+    ) {
+
+        return (
+            2 *
+            Math.PI *
+            radius
+        );
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* =========================================================
+   DIRECCIÓN
+========================================================= */
+
+function updateDirectionVisuals(
+    elements,
+    angle,
+    magnitude
+) {
+
+    const cx =
+        50;
+
+    const cy =
+        50;
+
+
+    const radius =
+        42;
+
+
+    const px =
+        cx +
+        Math.cos(angle) *
+        radius *
+        magnitude;
+
+
+    const py =
+        cy +
+        Math.sin(angle) *
+        radius *
+        magnitude;
+
+
+    /* -----------------------------------------------------
+       LINE
+    ----------------------------------------------------- */
+
+    if (
+        elements.line
+    ) {
+
+        elements.line.setAttribute(
+            "x1",
+            cx
+        );
+
+        elements.line.setAttribute(
+            "y1",
+            cy
+        );
+
+        elements.line.setAttribute(
+            "x2",
+            px
+        );
+
+        elements.line.setAttribute(
+            "y2",
+            py
+        );
+
+    }
+
+
+    /* -----------------------------------------------------
+       DOT
+    ----------------------------------------------------- */
+
+    if (
+        elements.dot
+    ) {
+
+        elements.dot.setAttribute(
+            "cx",
+            px
+        );
+
+        elements.dot.setAttribute(
+            "cy",
+            py
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CHECKPOINTS
+========================================================= */
+
+function updateStickCheckpoint(
+    side,
+    angle,
+    magnitude,
+    elements
+) {
+
+    const state =
+        stickState[side];
+
+
+    if (!state) return;
+
+
+    if (
+        magnitude <
+        0.08
+    ) {
+
+        return;
+
+    }
+
+
+    const total =
+        180;
+
+
+    /*
+       Convertimos el ángulo
+       para que 0 quede arriba.
+    */
+
+    let index =
+        Math.round(
+            (
+                angle +
+                Math.PI / 2 +
+                Math.PI * 2
+            ) %
+            (Math.PI * 2) /
+            (Math.PI * 2) *
+            total
+        );
+
+
+    index =
+        (
+            index +
+            total
+        ) %
+        total;
+
+
+    state.visited.add(
+        index
+    );
+
+
+    /*
+       Agregamos vecinos para
+       evitar huecos visuales.
+    */
+
+    state.visited.add(
+        (
+            index - 1 +
+            total
+        ) % total
+    );
+
+
+    state.visited.add(
+        (
+            index + 1
+        ) % total
+    );
+
+
+    state.current =
+        index;
+
+
+    /* =====================================================
+       SVG ANALOG-PROGRESS
+    ===================================================== */
+
+    if (
+        elements.progress
+    ) {
+
+        elements.progress.classList.add(
+            "active"
+        );
+
+    }
+
+
+    /* =====================================================
+       CHECKPOINTS EXISTENTES
+    ===================================================== */
+
+    const container =
+        elements.container;
+
+
+    if (!container) return;
+
+
+    const checkpoints =
+        container.querySelectorAll(
+            ".checkpoint"
+        );
+
+
+    if (
+        checkpoints.length
+    ) {
+
+        checkpoints.forEach(
+            (checkpoint, i) => {
+
+                checkpoint.classList.toggle(
+                    "visited",
+                    state.visited.has(i)
+                );
+
+
+                checkpoint.classList.toggle(
+                    "current",
+                    i === state.current
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TRIGGERS L2 / R2
+========================================================= */
+
+function updateTriggers(gp) {
+
+    const l2 =
+        Number(
+            gp.buttons?.[6]?.value ||
+            0
+        );
+
+
+    const r2 =
+        Number(
+            gp.buttons?.[7]?.value ||
+            0
+        );
+
+
+    updateTrigger(
+        "l2",
+        l2
+    );
+
+
+    updateTrigger(
+        "r2",
+        r2
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE TRIGGER
+========================================================= */
+
+function updateTrigger(
+    side,
+    value
+) {
+
+    const widget =
+        document.querySelector(
+            `.trigger-widget[data-trigger="${side}"]`
+        );
+
+
+    if (!widget) return;
+
+
+    const normalized =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                value
+            )
+        );
+
+
+    const percentage =
+        Math.round(
+            normalized * 100
+        );
+
+
+    /* =====================================================
+       BARRA
+    ===================================================== */
+
+    const fill =
+        widget.querySelector(
+            ".trigger-fill"
+        );
+
+
+    if (fill) {
+
+        /*
+           Compatible con SVG <rect>
+           y también con div.
+        */
+
+        const isSVG =
+            fill instanceof
+            SVGElement;
+
+
+        if (isSVG) {
+
+            const barHeight =
+                Number(
+                    fill.getAttribute(
+                        "data-bar-height"
+                    )
+                ) ||
+                Number(
+                    fill.getAttribute(
+                        "height"
+                    )
+                ) ||
+                92;
+
+
+            const barY =
+                Number(
+                    fill.getAttribute(
+                        "data-bar-y"
+                    )
+                ) ||
+                0;
+
+
+            const height =
+                barHeight *
+                normalized;
+
+
+            fill.setAttribute(
+                "height",
+                height
+            );
+
+
+            fill.setAttribute(
+                "y",
+                barY +
+                (
+                    barHeight -
+                    height
+                )
+            );
+
+
+        } else {
+
+            fill.style.height =
+                percentage + "%";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       PORCENTAJE
+    ===================================================== */
+
+    const percent =
+        widget.querySelector(
+            ".trigger-percent"
+        );
+
+
+    if (percent) {
+
+        percent.textContent =
+            percentage + "%";
+
+    }
+
+
+    /* =====================================================
+       ESTADO ACTIVO
+    ===================================================== */
+
+    widget.classList.toggle(
+        "active",
+        normalized > 0.01
+    );
+
+
+    /* =====================================================
+       BOTÓN
+    ===================================================== */
+
+    const button =
+        widget.querySelector(
+            "[data-button]"
+        ) ||
+        widget.querySelector(
+            "[data-btn]"
+        );
+
+
+    if (button) {
+
+        button.classList.toggle(
+            "pressed",
+            normalized > 0.1
+        );
+
+    }
+
+
+    /*
+       L2/R2 también cuentan
+       como botón probado.
+    */
+
+    if (
+        normalized >
+        0.1
+    ) {
+
+        markButtonTested(
+            side === "l2"
+                ? 6
+                : 7
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   VIBRACIÓN
+========================================================= */
 
 document
     .querySelectorAll(
         ".vibe-btn"
     )
     .forEach(
-        btn => {
+        (btn) => {
 
             btn.addEventListener(
                 "click",
@@ -1155,8 +1338,12 @@ document
                         null
                     ) {
 
-                        vibeNote.textContent =
-                            "Conectá un joystick primero";
+                        if (vibeNote) {
+
+                            vibeNote.textContent =
+                                "Conectá un joystick primero";
+
+                        }
 
                         return;
 
@@ -1174,8 +1361,12 @@ document
                         !gp.vibrationActuator
                     ) {
 
-                        vibeNote.textContent =
-                            "Vibración no soportada";
+                        if (vibeNote) {
+
+                            vibeNote.textContent =
+                                "Vibración no soportada";
+
+                        }
 
                         return;
 
@@ -1197,12 +1388,9 @@ document
                     };
 
 
-                    // -----------------------------------------
-                    // SUAVE
-                    // -----------------------------------------
-
                     if (
-                        type === "light"
+                        type ===
+                        "light"
                     ) {
 
                         params.strongMagnitude =
@@ -1214,16 +1402,13 @@ document
                     }
 
 
-                    // -----------------------------------------
-                    // FUERTE
-                    // -----------------------------------------
-
                     else if (
-                        type === "heavy"
+                        type ===
+                        "heavy"
                     ) {
 
                         params.strongMagnitude =
-                            1.0;
+                            1;
 
                         params.weakMagnitude =
                             0.3;
@@ -1231,19 +1416,16 @@ document
                     }
 
 
-                    // -----------------------------------------
-                    // COMPLETA
-                    // -----------------------------------------
-
                     else if (
-                        type === "full"
+                        type ===
+                        "full"
                     ) {
 
                         params.strongMagnitude =
-                            1.0;
+                            1;
 
                         params.weakMagnitude =
-                            1.0;
+                            1;
 
                     }
 
@@ -1258,8 +1440,12 @@ document
                             );
 
 
-                        vibeNote.textContent =
-                            "Vibrando...";
+                        if (vibeNote) {
+
+                            vibeNote.textContent =
+                                "Vibrando...";
+
+                        }
 
 
                     } catch (error) {
@@ -1270,8 +1456,12 @@ document
                         );
 
 
-                        vibeNote.textContent =
-                            "Error de vibración";
+                        if (vibeNote) {
+
+                            vibeNote.textContent =
+                                "Error de vibración";
+
+                        }
 
                     }
 
@@ -1279,8 +1469,12 @@ document
                     setTimeout(
                         () => {
 
-                            vibeNote.textContent =
-                                "";
+                            if (vibeNote) {
+
+                                vibeNote.textContent =
+                                    "";
+
+                            }
 
                         },
                         500
@@ -1291,3 +1485,223 @@ document
 
         }
     );
+
+
+/* =========================================================
+   RESET VISUAL
+========================================================= */
+
+function resetVisualState() {
+
+    testedButtons = [];
+
+
+    if (progressSpan) {
+
+        progressSpan.textContent =
+            "0";
+
+    }
+
+
+    /* -----------------------------------------------------
+       BOTONES
+    ----------------------------------------------------- */
+
+    document
+        .querySelectorAll(
+            "[data-button], [data-btn]"
+        )
+        .forEach(
+            (element) => {
+
+                element.classList.remove(
+                    "pressed"
+                );
+
+            }
+        );
+
+
+    /* -----------------------------------------------------
+       CHIPS
+    ----------------------------------------------------- */
+
+    document
+        .querySelectorAll(
+            ".chip"
+        )
+        .forEach(
+            (chip) => {
+
+                chip.classList.remove(
+                    "active"
+                );
+
+            }
+        );
+
+
+    /* -----------------------------------------------------
+       STICKS
+    ----------------------------------------------------- */
+
+    Object.keys(
+        stickState
+    ).forEach(
+        (side) => {
+
+            stickState[
+                side
+            ].visited.clear();
+
+
+            stickState[
+                side
+            ].current = -1;
+
+        }
+    );
+
+
+    document
+        .querySelectorAll(
+            ".analog-progress"
+        )
+        .forEach(
+            (progress) => {
+
+                progress.classList.remove(
+                    "active"
+                );
+
+
+                const length =
+                    getCircleLength(
+                        progress
+                    );
+
+
+                if (
+                    length
+                ) {
+
+                    progress.style.strokeDasharray =
+                        length;
+
+
+                    progress.style.strokeDashoffset =
+                        length;
+
+                }
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".analog-percent"
+        )
+        .forEach(
+            (text) => {
+
+                text.textContent =
+                    "0%";
+
+            }
+        );
+
+
+    /* -----------------------------------------------------
+       TRIGGERS
+    ----------------------------------------------------- */
+
+    document
+        .querySelectorAll(
+            ".trigger-widget"
+        )
+        .forEach(
+            (widget) => {
+
+                widget.classList.remove(
+                    "active"
+                );
+
+
+                const fill =
+                    widget.querySelector(
+                        ".trigger-fill"
+                    );
+
+
+                const percent =
+                    widget.querySelector(
+                        ".trigger-percent"
+                    );
+
+
+                if (fill) {
+
+                    if (
+                        fill instanceof
+                        SVGElement
+                    ) {
+
+                        const barHeight =
+                            Number(
+                                fill.getAttribute(
+                                    "data-bar-height"
+                                )
+                            ) ||
+                            Number(
+                                fill.getAttribute(
+                                    "height"
+                                )
+                            ) ||
+                            92;
+
+
+                        const barY =
+                            Number(
+                                fill.getAttribute(
+                                    "data-bar-y"
+                                )
+                            ) ||
+                            0;
+
+
+                        fill.setAttribute(
+                            "height",
+                            0
+                        );
+
+
+                        fill.setAttribute(
+                            "y",
+                            barY +
+                            barHeight
+                        );
+
+
+                    } else {
+
+                        fill.style.height =
+                            "0%";
+
+                    }
+
+                }
+
+
+                if (percent) {
+
+                    percent.textContent =
+                        "0%";
+
+                }
+
+            }
+        );
+
+}
