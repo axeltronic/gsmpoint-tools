@@ -83,16 +83,16 @@ main {
 
 
 /* =========================================================
-   STAGE DEL MANDO
+   STAGE
 ========================================================= */
 
 .stage {
     position: relative;
 
-    width: min(100%, 720px);
-    max-width: 720px;
+    width: min(100%, 760px);
+    max-width: 760px;
 
-    aspect-ratio: 600 / 400;
+    aspect-ratio: 680 / 400;
 
     margin: 0 auto 30px;
 
@@ -101,35 +101,75 @@ main {
 
 
 /* =========================================================
-   SVG DEL MANDO
+   CONTENEDOR SVG
 ========================================================= */
 
-.stage-body {
+.gamepad {
     position: absolute;
 
+    left: 50%;
     top: 0;
-    left: 0;
 
-    width: 100%;
-    height: 100%;
+    width: 680px;
+    height: 400px;
 
-    pointer-events: none;
+    transform:
+        translateX(-50%);
+
+    color: #172033;
+}
+
+.gamepad-svg {
+    display: block;
+
+    width: 680px;
+    height: 400px;
+
     overflow: visible;
 }
 
-.stage-body .body {
-    fill: #f8fafc;
 
-    stroke: #cbd5e1;
-    stroke-width: 2;
+/* =========================================================
+   CUERPO
+========================================================= */
+
+.gp-body {
+    fill: url(#gpBody);
+
+    stroke: #c7ccd5;
+
+    stroke-width: 1.5;
+
+    stroke-linejoin: round;
+}
+
+
+/* =========================================================
+   TOUCHPAD
+========================================================= */
+
+.touchpad {
+    fill: url(#touchGradient);
+
+    stroke: #c3c8d0;
+
+    stroke-width: 1.5;
+}
+
+.touch-light {
+    fill: #2563eb;
 
     filter:
         drop-shadow(
-            0 8px 18px
-            rgba(15, 23, 42, 0.08)
+            0 0 3px
+            rgba(37,99,235,.35)
         );
+}
 
-    vector-effect: non-scaling-stroke;
+.touch-dots {
+    fill: #cbd0d7;
+
+    opacity: .45;
 }
 
 
@@ -137,197 +177,127 @@ main {
    D-PAD
 ========================================================= */
 
-.dpad {
-    position: absolute;
+.dpad-main {
+    fill: #202936;
 
-    left: 17%;
-    top: 50%;
+    stroke: #111827;
 
-    transform:
-        translate(-50%, -50%);
+    stroke-width: 1.5;
 
-    width: 15%;
-
-    aspect-ratio: 1 / 1;
-
-    display: grid;
-
-    grid-template-areas:
-        ". up ."
-        "left . right"
-        ". down .";
-
-    gap: 2%;
-}
-
-.pad {
-    background: #1e293b;
-
-    border: 1px solid #0f172a;
-
-    border-radius: 6px;
-
-    cursor: pointer;
+    filter:
+        drop-shadow(
+            0 2px 2px
+            rgba(0,0,0,.25)
+        );
 
     transition:
-        background .1s ease,
-        transform .1s ease,
-        box-shadow .1s ease;
-
-    box-shadow:
-        inset
-        0 1px 2px
-        rgba(255,255,255,.15),
-
-        0 2px 4px
-        rgba(0,0,0,.18);
-
-    clip-path: polygon(
-        22% 0,
-        78% 0,
-        100% 22%,
-        100% 78%,
-        78% 100%,
-        22% 100%,
-        0 78%,
-        0 22%
-    );
+        fill .08s ease,
+        filter .08s ease;
 }
 
-.pad.up {
-    grid-area: up;
+.dpad-arrow {
+    fill: #7c8795;
+
+    opacity: .8;
+
+    pointer-events: none;
 }
 
-.pad.down {
-    grid-area: down;
+.dpad-hit {
+    cursor: pointer;
 }
 
-.pad.left {
-    grid-area: left;
+.dpad-hit.pressed {
+    fill: rgba(37,99,235,.35);
 }
 
-.pad.right {
-    grid-area: right;
-}
+.dpad-main.pressed {
+    fill: #2563eb;
 
-.pad.pressed {
-    background: #2563eb;
+    stroke: #1d4ed8;
 
-    box-shadow:
-        0 0 12px
-        rgba(37,99,235,.45),
-
-        inset
-        0 1px 2px
-        rgba(255,255,255,.2);
-
-    transform: scale(.94);
+    filter:
+        drop-shadow(
+            0 0 6px
+            rgba(37,99,235,.45)
+        );
 }
 
 
 /* =========================================================
-   L1 / R1
+   TEXTOS SVG
 ========================================================= */
 
-.bumper {
-    position: absolute;
+.label {
+    fill: #273142;
 
-    top: 4%;
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
 
-    width: 16%;
-    height: 10%;
+    font-size: 6px;
 
-    border: none;
+    font-weight: 600;
 
-    border-radius: 20px;
+    text-anchor: middle;
 
-    background: #e2e8f0;
-
-    color: #1e293b;
-
-    font-weight: 700;
-    font-size: 0.9rem;
-
-    font-family: 'Inter', sans-serif;
-
-    cursor: pointer;
-
-    transition: .1s;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
+    pointer-events: none;
 }
 
-.bumper.l1 {
-    left: 10%;
-}
+.trigger-text {
+    fill: white;
 
-.bumper.r1 {
-    right: 10%;
-}
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
 
-.bumper.pressed {
-    background: #2563eb;
+    font-size: 7px;
 
-    color: white;
+    font-weight: 800;
 
-    transform:
-        translateY(3px);
+    text-anchor: middle;
+
+    pointer-events: none;
 }
 
 
 /* =========================================================
-   L2 / R2
+   BOTONES PEQUEÑOS
 ========================================================= */
 
-.trigger-2d {
-    position: absolute;
+.small-button {
+    fill: #202936;
 
-    top: 2%;
+    stroke: #111827;
 
-    width: 18%;
-    height: 8%;
+    stroke-width: 1;
 
-    border: none;
-
-    border-radius: 20px;
-
-    background: #475569;
-
-    color: white;
-
-    font-weight: 700;
-    font-size: 0.8rem;
-
-    font-family: 'Inter', sans-serif;
+    filter:
+        drop-shadow(
+            0 2px 2px
+            rgba(0,0,0,.18)
+        );
 
     cursor: pointer;
 
     transition:
-        transform .1s,
-        background .1s;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
+        fill .08s ease,
+        stroke .08s ease,
+        filter .08s ease;
 }
 
-.trigger-2d.l2 {
-    left: 8%;
-}
+.small-button.pressed {
+    fill: #2563eb;
 
-.trigger-2d.r2 {
-    right: 8%;
-}
+    stroke: #1d4ed8;
 
-.trigger-2d.pressed {
-    background: #2563eb;
-
-    transform:
-        translateY(4px);
+    filter:
+        drop-shadow(
+            0 0 6px
+            rgba(37,99,235,.45)
+        );
 }
 
 
@@ -335,87 +305,81 @@ main {
    BOTONES DE CARA
 ========================================================= */
 
-.face {
-    position: absolute;
+.face-button {
+    fill: #202936;
 
-    right: 14%;
-    top: 50%;
+    stroke: #0f172a;
 
-    transform:
-        translate(50%, -50%);
-
-    width: 18%;
-
-    aspect-ratio: 1 / 1;
-
-    display: grid;
-
-    grid-template-areas:
-        ". tr ."
-        "sq . cr"
-        ". x .";
-
-    gap: 8%;
-}
-
-.face-btn {
-    background: #e2e8f0;
-
-    border: none;
-
-    border-radius: 50%;
+    stroke-width: 1.5;
 
     cursor: pointer;
 
-    transition: .1s;
+    transition:
+        fill .08s ease,
+        stroke .08s ease,
+        filter .08s ease,
+        transform .08s ease;
 
-    display: flex;
+    transform-box: fill-box;
 
-    align-items: center;
-    justify-content: center;
-
-    padding: 22%;
+    transform-origin: center;
 }
 
-.face-btn svg {
-    width: 100%;
-    height: 100%;
+.symbol {
+    fill: #94a3b8;
 
-    fill: none;
+    font-family:
+        Arial,
+        sans-serif;
 
-    stroke: #1e293b;
+    font-size: 20px;
 
-    stroke-width: 2;
+    font-weight: 500;
 
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    text-anchor: middle;
+
+    pointer-events: none;
 }
 
-.face-btn.tr {
-    grid-area: tr;
+
+/* =========================================================
+   COLORES DE LOS SÍMBOLOS
+========================================================= */
+
+.triangle {
+    fill: #4ade80;
 }
 
-.face-btn.sq {
-    grid-area: sq;
+.square {
+    fill: #f472b6;
 }
 
-.face-btn.cr {
-    grid-area: cr;
+.circle {
+    fill: #ef4444;
 }
 
-.face-btn.x {
-    grid-area: x;
+.cross {
+    fill: #60a5fa;
 }
 
-.face-btn.pressed {
-    background: #2563eb;
+
+/* =========================================================
+   FACE PRESSED
+========================================================= */
+
+.face-button.pressed {
+    fill: #16a34a;
+
+    stroke: #15803d;
+
+    filter:
+        drop-shadow(
+            0 0 6px
+            rgba(34,197,94,.55)
+        );
 
     transform:
-        scale(0.9);
-}
-
-.face-btn.pressed svg {
-    stroke: white;
+        scale(.94);
 }
 
 
@@ -423,133 +387,40 @@ main {
    ANALOGOS
 ========================================================= */
 
-.stick {
-    position: absolute;
-
-    width: 24%;
-
-    aspect-ratio: 1;
-
-    top: 50%;
-
-    transform:
-        translateY(-50%);
+.analog {
+    pointer-events: none;
 }
 
-#stick-l {
-    left: 25%;
-}
+.analog-ring {
+    fill: #fafafa;
 
-#stick-r {
-    right: 25%;
-}
-
-
-/* =========================================================
-   DIAL
-========================================================= */
-
-.dial {
-    position: absolute;
-
-    inset: 0;
-
-    z-index: 1;
-}
-
-.dial svg {
-    width: 100%;
-    height: 100%;
-
-    overflow: visible;
-}
-
-
-/* =========================================================
-   DIAL BACKGROUND
-========================================================= */
-
-.dial-bg {
-    fill: none;
-
-    stroke: #d7dee7;
-
-    stroke-width: 2;
-}
-
-
-/* =========================================================
-   DIAL CHECK
-========================================================= */
-
-.dial-check {
-    fill: none;
-
-    stroke: #dfe5ec;
-
-    stroke-width: 3;
-
-    stroke-dasharray:
-        1 5;
-
-    opacity: .8;
-}
-
-
-/* =========================================================
-   DIAL LINE
-========================================================= */
-
-.dial-line {
-    stroke: #22c55e;
-
-    stroke-width: 2;
-
-    stroke-linecap: round;
-
-    opacity: 1;
-}
-
-
-/* =========================================================
-   DIAL DOT
-========================================================= */
-
-.dial-dot {
-    fill: #22c55e;
-
-    stroke: white;
-
-    stroke-width: 2;
-
-    r: 4;
-}
-
-
-/* =========================================================
-   DEAD ZONE
-========================================================= */
-
-.dead-zone {
-    fill: #edf2f7;
-
-    stroke: #cbd5e1;
+    stroke: #d5d9df;
 
     stroke-width: 1.5;
 }
 
+.analog-progress {
+    fill: none;
 
-/* =========================================================
-   PORCENTAJE ANALOGOS
-========================================================= */
+    stroke: #d5d8dd;
 
-#dial-l-txt,
-#dial-r-txt {
-    font-size: 14px;
+    stroke-width: 3;
 
-    font-weight: 800;
+    stroke-dasharray:
+        1.3 2.3;
 
-    fill: #475569;
+    transform-origin:
+        center;
+
+    transform:
+        rotate(-90deg);
+
+    transition:
+        stroke .08s ease;
+}
+
+.analog-progress.active {
+    stroke: #16a34a;
 }
 
 
@@ -557,187 +428,258 @@ main {
    KNOB
 ========================================================= */
 
-.knob {
-    position: absolute;
+.analog-knob {
+    fill: url(#stickGradient);
 
-    width: 36%;
+    stroke: #0f172a;
 
-    aspect-ratio: 1;
+    stroke-width: 1.2;
 
-    left: 50%;
-    top: 50%;
-
-    transform:
-        translate(-50%, -50%);
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle at 35% 35%,
-            #f8fafc,
-            #dbe4ee 35%,
-            #9aa8b8 80%,
-            #66758a
+    filter:
+        drop-shadow(
+            0 3px 3px
+            rgba(0,0,0,.35)
         );
 
-    border:
-        3px solid #f1f5f9;
+    cursor: pointer;
 
-    box-shadow:
-
-        inset
-        0 4px 8px
-        rgba(255,255,255,.5),
-
-        inset
-        0 -6px 10px
-        rgba(0,0,0,.25),
-
-        0 8px 20px
-        rgba(0,0,0,.35);
-
-    will-change:
-        transform;
-
-    transition: none;
+    transition:
+        cx .025s linear,
+        cy .025s linear;
 }
 
-.knob::before {
-    content: "";
+.analog-highlight {
+    fill:
+        rgba(255,255,255,.16);
 
-    position: absolute;
-
-    inset: 18%;
-
-    border-radius: 50%;
-
-    border:
-        3px solid
-        rgba(255,255,255,.25);
-}
-
-.knob::after {
-    content: "";
-
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 14%;
-
-    aspect-ratio: 1;
-
-    transform:
-        translate(-50%, -50%);
-
-    border-radius: 50%;
-
-    background: #f8fafc;
+    pointer-events: none;
 }
 
 
 /* =========================================================
-   BOTONES CENTRALES
+   PORCENTAJE ANALOGO
 ========================================================= */
 
-.sys {
-    position: absolute;
+.analog-percent {
+    fill: #111827;
 
-    top: 24%;
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
 
-    width: 6%;
-
-    aspect-ratio: 1 / 1;
-
-    border-radius: 50%;
-
-    border: none;
-
-    background: #475569;
-
-    cursor: pointer;
-
-    transition: .1s;
-}
-
-.sys.share {
-    left: 42%;
-}
-
-.sys.options {
-    right: 42%;
-}
-
-.sys.home {
-    left: 50%;
-
-    transform:
-        translateX(-50%);
-
-    width: 8%;
-
-    background: none;
-
-    border:
-        2px solid #94a3b8;
-
-    color: #475569;
+    font-size: 9px;
 
     font-weight: 700;
 
-    font-size: 0.7rem;
-}
+    text-anchor: middle;
 
-.sys.pressed {
-    background: #2563eb;
-
-    color: white;
-}
-
-.sys.home.pressed {
-    background: #2563eb;
-
-    border-color:
-        #2563eb;
+    pointer-events: none;
 }
 
 
 /* =========================================================
-   L3 / R3
+   PLAYSTATION CENTRAL
 ========================================================= */
 
-.r3,
-.l3 {
-    position: absolute;
+.ps-logo {
+    fill: #111827;
 
-    bottom: 10%;
+    font-family:
+        Arial,
+        sans-serif;
 
-    width: 5%;
+    font-size: 26px;
 
-    aspect-ratio: 1 / 1;
+    font-weight: 900;
 
-    border-radius: 50%;
+    text-anchor: middle;
 
-    background: #475569;
+    pointer-events: none;
+}
 
-    border: none;
+.ps-light {
+    fill: #cbd5e1;
 
+    stroke: #aeb7c3;
+
+    stroke-width: 1;
+}
+
+.center-dots {
+    fill: #111827;
+
+    pointer-events: none;
+}
+
+.ps-button {
+    fill: #202936;
+
+    stroke: #0f172a;
+
+    stroke-width: 1;
+
+    cursor: pointer;
+
+    transition:
+        fill .08s ease,
+        stroke .08s ease,
+        filter .08s ease;
+}
+
+.ps-button-text {
+    fill: white;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    text-anchor: middle;
+
+    pointer-events: none;
+}
+
+.ps-button.pressed {
+    fill: #2563eb;
+
+    stroke: #1d4ed8;
+
+    filter:
+        drop-shadow(
+            0 0 6px
+            rgba(37,99,235,.45)
+        );
+}
+
+
+/* =========================================================
+   TOUCHPAD %
+========================================================= */
+
+.touch-percent {
+    fill: #111827;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    text-anchor: middle;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   TRIGGERS
+========================================================= */
+
+.trigger-widget {
+    pointer-events: none;
+}
+
+.trigger-title {
+    fill: #172033;
+
+    stroke: none;
+
+    cursor: pointer;
+
+    transition:
+        fill .08s ease,
+        transform .06s ease;
+}
+
+.trigger-title.pressed {
+    fill: #111827;
+}
+
+.trigger-track {
+    fill: #e5e7eb;
+
+    stroke: none;
+}
+
+.trigger-fill {
+    fill: #172033;
+
+    transition:
+        height .04s linear,
+        y .04s linear,
+        fill .08s linear;
+}
+
+.trigger-widget.active
+.trigger-fill {
+    fill: #111827;
+}
+
+.trigger-percent {
+    fill: #111827;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    text-anchor: middle;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   L1 / R1
+========================================================= */
+
+.bumper-svg {
     cursor: pointer;
 }
 
-.r3 {
-    right: 28%;
+
+/* =========================================================
+   CHECKPOINTS
+========================================================= */
+
+.ring line {
+    stroke: #d7dee7;
+
+    stroke-width: 3;
+
+    stroke-linecap: round;
+
+    opacity: 1;
+
+    transition:
+        stroke .08s linear,
+        opacity .08s linear,
+        stroke-width .08s linear;
 }
 
-.l3 {
-    left: 28%;
+.ring line.visited {
+    stroke: #22c55e;
+
+    opacity: 1;
 }
 
-.r3.pressed,
-.l3.pressed {
-    background: #2563eb;
+.ring line.current {
+    stroke: #10b981;
+
+    stroke-width: 3.5;
+
+    opacity: 1;
 }
 
 
@@ -779,9 +721,14 @@ main {
     padding:
         6px 14px;
 
-    font-size: 0.85rem;
+    font-size: .85rem;
 
     font-weight: 500;
+
+    transition:
+        background .12s ease,
+        border-color .12s ease,
+        color .12s ease;
 }
 
 .chip.active {
@@ -826,45 +773,18 @@ main {
 
     cursor: pointer;
 
-    transition: .2s;
+    transition:
+        background .2s ease,
+        transform .1s ease;
 }
 
 .vibe-btn:hover {
     background: #1d4ed8;
 }
 
-
-/* =========================================================
-   STICK CHECKPOINT RING
-========================================================= */
-
-.ring line {
-    stroke: #d7dee7;
-
-    stroke-width: 3;
-
-    stroke-linecap: round;
-
-    opacity: 1;
-
-    transition:
-        stroke .08s linear,
-        opacity .08s linear,
-        stroke-width .08s linear;
-}
-
-.ring line.visited {
-    stroke: #22c55e;
-
-    opacity: 1;
-}
-
-.ring line.current {
-    stroke: #10b981;
-
-    stroke-width: 3.5;
-
-    opacity: 1;
+.vibe-btn:active {
+    transform:
+        scale(.97);
 }
 
 
@@ -872,24 +792,43 @@ main {
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 700px) {
+@media (max-width: 760px) {
 
     .stage {
+        width: 100%;
 
-        width: 720px;
+        max-width: 680px;
+    }
 
-        max-width: none;
+    .gamepad {
+        transform:
+            translateX(-50%)
+            scale(
+                calc(
+                    min(100vw, 680px) / 680
+                )
+            );
 
         transform-origin:
             top center;
+    }
 
-        transform:
-            translateX(-50%)
-            scale(.82);
+}
 
-        margin-left: 50%;
 
-        margin-right: 0;
+@media (max-width: 500px) {
+
+    header {
+        padding:
+            35px 15px;
+    }
+
+    h1 {
+        font-size: 32px;
+    }
+
+    header p {
+        font-size: 14px;
     }
 
 }
