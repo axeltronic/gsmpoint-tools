@@ -63,6 +63,7 @@ const buttonNames = [
 /*
    17 entradas principales del mando.
 */
+
 const TOTAL_BUTTONS =
     buttonNames.length;
 
@@ -155,7 +156,6 @@ window.addEventListener(
 
 
         testedButtons = [];
-
 
         updateProgress();
 
@@ -1486,15 +1486,6 @@ function updateTriggers(
    COLOR DEL GATILLO
 ========================================================= */
 
-/*
-   0%   = #202936
-   50%  = transición
-   100% = verde
-
-   Hacemos la interpolación directamente
-   para que el cambio sea realmente gradual.
-*/
-
 function getTriggerColor(
     value
 ) {
@@ -1518,15 +1509,11 @@ function getTriggerColor(
             0,
             Math.min(
                 1,
-                value
+                Number(value) ||
+                0
             )
         );
 
-
-    /*
-       Suavizamos ligeramente
-       la progresión.
-    */
 
     const eased =
         t * t * (
@@ -1600,7 +1587,8 @@ function getTriggerStroke(
             0,
             Math.min(
                 1,
-                value
+                Number(value) ||
+                0
             )
         );
 
@@ -1639,6 +1627,91 @@ function getTriggerStroke(
 
 
     return `rgb(${r}, ${g}, ${b})`;
+
+}
+
+
+/* =========================================================
+   MOVIMIENTO FÍSICO L2 / R2
+========================================================= */
+
+/*
+   El gatillo gira desde su zona superior.
+
+   L2 y R2 están espejados:
+
+   L2 -> gira hacia el centro.
+   R2 -> gira hacia el centro.
+
+   No trasladamos todo el gatillo hacia abajo.
+   La punta se hunde por ROTACIÓN alrededor del pivote.
+
+   Pivotes basados en la geometría actual del SVG:
+
+       L2 = 99, 38
+       R2 = 581, 38
+*/
+
+function getTriggerTransform(
+    side,
+    value
+) {
+
+    const t =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                Number(value) ||
+                0
+            )
+        );
+
+
+    const eased =
+        t * t * (
+            3 -
+            2 * t
+        );
+
+
+    const maxRotation =
+        11;
+
+
+    if (
+        side ===
+        "l2"
+    ) {
+
+        const angle =
+            -eased *
+            maxRotation;
+
+
+        return `
+            rotate(
+                ${angle.toFixed(3)}
+                99
+                38
+            )
+        `;
+
+    }
+
+
+    const angle =
+        eased *
+        maxRotation;
+
+
+    return `
+        rotate(
+            ${angle.toFixed(3)}
+            581
+            38
+        )
+    `;
 
 }
 
@@ -1707,6 +1780,23 @@ function updateTrigger(
 
 
     /* =====================================================
+       MOVIMIENTO FÍSICO
+    ===================================================== */
+
+    widget.setAttribute(
+        "transform",
+        getTriggerTransform(
+            side,
+            normalized
+        )
+    );
+
+
+    widget.style.transition =
+        "none";
+
+
+    /* =====================================================
        REFLEJO
     ===================================================== */
 
@@ -1745,13 +1835,9 @@ function updateTrigger(
             "%";
 
 
-        /*
-           A mayor presión,
-           texto ligeramente más claro.
-        */
-
         percent.style.fill =
-            normalized > 0.55
+            normalized >
+            0.55
                 ? "#ffffff"
                 : "#cbd5e1";
 
@@ -1772,12 +1858,6 @@ function updateTrigger(
     /* =====================================================
        BOTÓN L2 / R2
     ===================================================== */
-
-    /*
-       El path tiene data-btn,
-       por lo que no necesitamos
-       buscar .trigger-fill.
-    */
 
     if (body) {
 
@@ -1840,6 +1920,7 @@ document
 
                         }
 
+
                         return;
 
                     }
@@ -1866,6 +1947,7 @@ document
                                 "Vibración no soportada";
 
                         }
+
 
                         return;
 
@@ -2229,6 +2311,20 @@ function resetVisualState() {
                 widget.classList.remove(
                     "pressed"
                 );
+
+
+                /*
+                   Volver a la posición
+                   física de reposo.
+                */
+
+                widget.removeAttribute(
+                    "transform"
+                );
+
+
+                widget.style.transition =
+                    "none";
 
 
                 const body =
