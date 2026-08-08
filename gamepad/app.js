@@ -68,6 +68,8 @@ window.addEventListener("gamepaddisconnected", () => {
 
     resetStickHistory();
 
+    resetTriggers();
+
 });
 
 
@@ -80,6 +82,7 @@ function detectController(gp) {
     const id =
         gp.id.toLowerCase();
 
+
     if (
         id.includes("sony") ||
         id.includes("dualshock") ||
@@ -91,6 +94,7 @@ function detectController(gp) {
 
     }
 
+
     if (
         id.includes("xbox") ||
         id.includes("microsoft")
@@ -100,6 +104,7 @@ function detectController(gp) {
 
     }
 
+
     if (
         id.includes("switch") ||
         id.includes("nintendo")
@@ -108,6 +113,7 @@ function detectController(gp) {
         return "switch";
 
     }
+
 
     return "generic";
 
@@ -200,7 +206,9 @@ function createRing(
 
     if (!data) return;
 
+
     // Evitar duplicados
+
     if (
         data.segments.length > 0
     ) {
@@ -209,18 +217,18 @@ function createRing(
 
     }
 
+
     const NS =
         "http://www.w3.org/2000/svg";
 
     const total =
         data.total;
 
-    /*
-        Estos valores corresponden
-        al dial SVG que ya tenés:
 
-        centro = 50 / 50
-        dial   = r46
+    /*
+        Centro = 50 / 50
+        Radio interno = 42
+        Radio externo = 48
     */
 
     const inner =
@@ -237,7 +245,7 @@ function createRing(
     ) {
 
         /*
-            Primer punto arriba.
+            Primer checkpoint arriba.
         */
 
         const angle =
@@ -388,6 +396,7 @@ function update() {
                 gamepadIndex
             ];
 
+
         if (gp) {
 
             updateButtons(gp);
@@ -399,6 +408,7 @@ function update() {
         }
 
     }
+
 
     requestAnimationFrame(
         update
@@ -623,14 +633,6 @@ function updateStick(
     // MOVIMIENTO DEL KNOB
     // =======================================================
 
-    /*
-        El knob se mueve sin deformarse.
-
-        Usamos el tamaño real
-        del stick para calcular
-        el desplazamiento.
-    */
-
     const maxMove =
         stick.offsetWidth *
         0.16;
@@ -675,7 +677,6 @@ function updateStick(
         cx +
         Math.cos(angle) *
         radius;
-
 
     const py =
         cy +
@@ -908,72 +909,25 @@ function updateTriggers(gp) {
         gp.buttons[7]?.value || 0;
 
 
-    updateTriggerSVG(
+    updateTrigger(
         "l2",
         l2
     );
 
 
-    updateTriggerSVG(
+    updateTrigger(
         "r2",
         r2
     );
-
-
-    /*
-        Compatibilidad con el
-        sistema antiguo, por si
-        todavía existe en HTML.
-    */
-
-    const l2Btn =
-        document.querySelector(
-            ".trigger-2d.l2"
-        );
-
-    const r2Btn =
-        document.querySelector(
-            ".trigger-2d.r2"
-        );
-
-
-    if (l2Btn) {
-
-        l2Btn.style.transform =
-            `translateY(
-                ${l2 * 6}px
-            )`;
-
-        l2Btn.classList.toggle(
-            "pressed",
-            l2 > 0.1
-        );
-
-    }
-
-
-    if (r2Btn) {
-
-        r2Btn.style.transform =
-            `translateY(
-                ${r2 * 6}px
-            )`;
-
-        r2Btn.classList.toggle(
-            "pressed",
-            r2 > 0.1
-        );
-
-    }
 
 }
 
 
 // =========================================================
-// TRIGGER SVG
+// UPDATE TRIGGER
 // =========================================================
 
-function updateTriggerSVG(
+function updateTrigger(
     side,
     value
 ) {
@@ -982,7 +936,6 @@ function updateTriggerSVG(
         document.querySelector(
             `.trigger-widget[data-trigger="${side}"]`
         );
-
 
     if (!widget) return;
 
@@ -999,20 +952,29 @@ function updateTriggerSVG(
         );
 
 
+    const button =
+        widget.querySelector(
+            "[data-btn]"
+        );
+
+
+    // =======================================================
+    // NORMALIZAR 0 - 1
+    // =======================================================
+
     const normalized =
         Math.max(
             0,
             Math.min(
                 1,
-                value
+                Number(value) || 0
             )
         );
 
 
     const valuePercent =
         Math.round(
-            normalized *
-            100
+            normalized * 100
         );
 
 
@@ -1022,25 +984,8 @@ function updateTriggerSVG(
 
     if (fill) {
 
-        const maxHeight =
-            92;
-
-
-        const height =
-            maxHeight *
-            normalized;
-
-
-        fill.setAttribute(
-            "height",
-            height
-        );
-
-
-        fill.setAttribute(
-            "y",
-            130 - height
-        );
+        fill.style.height =
+            `${valuePercent}%`;
 
     }
 
@@ -1052,19 +997,95 @@ function updateTriggerSVG(
     if (percent) {
 
         percent.textContent =
-            valuePercent + "%";
+            `${valuePercent}%`;
 
     }
 
 
     // =======================================================
-    // ACTIVO
+    // ESTADO ACTIVO
     // =======================================================
 
     widget.classList.toggle(
         "active",
         normalized > 0.01
     );
+
+
+    // =======================================================
+    // BOTÓN
+    // =======================================================
+
+    if (button) {
+
+        button.classList.toggle(
+            "pressed",
+            normalized > 0.1
+        );
+
+    }
+
+}
+
+
+// =========================================================
+// RESET TRIGGERS
+// =========================================================
+
+function resetTriggers() {
+
+    document
+        .querySelectorAll(
+            ".trigger-widget"
+        )
+        .forEach(widget => {
+
+            const fill =
+                widget.querySelector(
+                    ".trigger-fill"
+                );
+
+            const percent =
+                widget.querySelector(
+                    ".trigger-percent"
+                );
+
+            const button =
+                widget.querySelector(
+                    "[data-btn]"
+                );
+
+
+            if (fill) {
+
+                fill.style.height =
+                    "0%";
+
+            }
+
+
+            if (percent) {
+
+                percent.textContent =
+                    "0%";
+
+            }
+
+
+            widget.classList.remove(
+                "active"
+            );
+
+
+            if (button) {
+
+                button.classList.remove(
+                    "pressed"
+                );
+
+            }
+
+        });
 
 }
 
