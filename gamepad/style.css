@@ -137,7 +137,6 @@ main {
     fill: #f8fafc;
 
     stroke: #c7ccd5;
-
     stroke-width: 1.5;
 
     stroke-linejoin: round;
@@ -160,7 +159,6 @@ main {
     fill: #f1f3f6;
 
     stroke: #c3c8d0;
-
     stroke-width: 1.5;
 }
 
@@ -176,7 +174,6 @@ main {
 
 .touch-dots {
     fill: #cbd0d7;
-
     opacity: .45;
 }
 
@@ -185,11 +182,14 @@ main {
    D-PAD
 ========================================================= */
 
+.dpad {
+    isolation: isolate;
+}
+
 .dpad-main {
     fill: #202936;
 
     stroke: #111827;
-
     stroke-width: 1.5;
 
     filter:
@@ -200,25 +200,33 @@ main {
 
     transition:
         fill .08s ease,
+        stroke .08s ease,
         filter .08s ease;
 }
 
-.dpad-arrow {
-    fill: #7c8795;
-
-    opacity: .8;
-
-    pointer-events: none;
-}
-
+/*
+   Cada zona del D-PAD queda por encima
+   de la cruz visual.
+*/
 .dpad-hit {
     cursor: pointer;
+
+    pointer-events: all;
+
+    transition:
+        fill .06s ease,
+        opacity .06s ease;
 }
 
 .dpad-hit.pressed {
     fill: rgba(37,99,235,.35);
 }
 
+/*
+   Estado general de la cruz.
+   El JS nuevo va a controlar cada dirección
+   individualmente sin pintar las cuatro.
+*/
 .dpad-main.pressed {
     fill: #2563eb;
 
@@ -229,6 +237,23 @@ main {
             0 0 6px
             rgba(37,99,235,.45)
         );
+}
+
+.dpad-arrow {
+    fill: #7c8795;
+
+    opacity: .8;
+
+    pointer-events: none;
+
+    transition:
+        fill .08s ease,
+        opacity .08s ease;
+}
+
+.dpad-arrow.pressed {
+    fill: white;
+    opacity: 1;
 }
 
 
@@ -245,7 +270,6 @@ main {
         sans-serif;
 
     font-size: 6px;
-
     font-weight: 600;
 
     text-anchor: middle;
@@ -262,7 +286,6 @@ main {
         sans-serif;
 
     font-size: 7px;
-
     font-weight: 800;
 
     text-anchor: middle;
@@ -279,7 +302,6 @@ main {
     fill: #202936;
 
     stroke: #111827;
-
     stroke-width: 1;
 
     filter:
@@ -317,7 +339,6 @@ main {
     fill: #202936;
 
     stroke: #0f172a;
-
     stroke-width: 1.5;
 
     cursor: pointer;
@@ -329,7 +350,6 @@ main {
         transform .08s ease;
 
     transform-box: fill-box;
-
     transform-origin: center;
 }
 
@@ -341,12 +361,14 @@ main {
         sans-serif;
 
     font-size: 20px;
-
     font-weight: 500;
 
     text-anchor: middle;
 
     pointer-events: none;
+
+    transition:
+        fill .08s ease;
 }
 
 
@@ -390,6 +412,10 @@ main {
         scale(.94);
 }
 
+.face-button.pressed + .symbol {
+    fill: white;
+}
+
 
 /* =========================================================
    ANALOGOS
@@ -403,7 +429,6 @@ main {
     fill: #fafafa;
 
     stroke: #d5d9df;
-
     stroke-width: 1.5;
 }
 
@@ -424,11 +449,14 @@ main {
         rotate(-90deg);
 
     transition:
-        stroke .08s ease;
+        stroke .08s ease,
+        stroke-width .08s ease,
+        opacity .08s ease;
 }
 
 .analog-progress.active {
     stroke: #16a34a;
+    stroke-width: 3.4;
 }
 
 
@@ -440,7 +468,6 @@ main {
     fill: #252b33;
 
     stroke: #0f172a;
-
     stroke-width: 1.2;
 
     filter:
@@ -477,7 +504,6 @@ main {
         sans-serif;
 
     font-size: 9px;
-
     font-weight: 700;
 
     text-anchor: middle;
@@ -498,7 +524,6 @@ main {
         sans-serif;
 
     font-size: 26px;
-
     font-weight: 900;
 
     text-anchor: middle;
@@ -510,7 +535,6 @@ main {
     fill: #cbd5e1;
 
     stroke: #aeb7c3;
-
     stroke-width: 1;
 }
 
@@ -524,7 +548,6 @@ main {
     fill: #202936;
 
     stroke: #0f172a;
-
     stroke-width: 1;
 
     cursor: pointer;
@@ -543,7 +566,6 @@ main {
         sans-serif;
 
     font-size: 7px;
-
     font-weight: 700;
 
     text-anchor: middle;
@@ -565,95 +587,185 @@ main {
 
 
 /* =========================================================
-   TOUCHPAD %
-========================================================= */
-
-.touch-percent {
-    fill: #111827;
-
-    font-family:
-        Inter,
-        Arial,
-        sans-serif;
-
-    font-size: 9px;
-
-    font-weight: 800;
-
-    text-anchor: middle;
-
-    pointer-events: none;
-}
-
-
-/* =========================================================
-   TRIGGERS
+   L2 / R2
+   GATILLOS REALISTAS
 ========================================================= */
 
 .trigger-widget {
     pointer-events: none;
 }
 
-.trigger-title {
-    fill: #172033;
+.trigger-body {
+    fill: #202936;
 
-    stroke: none;
+    stroke: #111827;
+    stroke-width: 1.4;
 
-    cursor: pointer;
+    stroke-linejoin: round;
+
+    filter:
+        drop-shadow(
+            0 3px 4px
+            rgba(0,0,0,.25)
+        );
+
+    pointer-events: none;
 
     transition:
-        fill .08s ease,
-        transform .06s ease;
+        fill .04s linear,
+        stroke .04s linear,
+        filter .08s ease;
 }
 
-.trigger-title.pressed {
-    fill: #111827;
+
+/*
+   Reflejo superior del gatillo.
+*/
+.trigger-highlight {
+    fill:
+        rgba(255,255,255,.12);
+
+    opacity: .9;
+
+    pointer-events: none;
+
+    transition:
+        opacity .08s ease;
 }
 
-.trigger-track {
+
+/*
+   Texto L2 / R2.
+*/
+.trigger-widget .trigger-text {
     fill: #e5e7eb;
 
-    stroke: none;
+    font-size: 7px;
+    font-weight: 800;
+
+    pointer-events: none;
 }
 
-.trigger-fill {
-    fill: #172033;
 
-    transition:
-        height .04s linear,
-        y .04s linear,
-        fill .08s linear;
-}
-
-.trigger-widget.active
-.trigger-fill {
-    fill: #111827;
-}
-
+/*
+   Porcentaje del gatillo.
+*/
 .trigger-percent {
-    fill: #111827;
+    fill: #cbd5e1;
 
     font-family:
         Inter,
         Arial,
         sans-serif;
 
-    font-size: 9px;
+    font-size: 8px;
+    font-weight: 800;
+
+    text-anchor: middle;
+
+    pointer-events: none;
+
+    transition:
+        fill .06s linear;
+}
+
+
+/*
+   Gatillo presionado.
+*/
+.trigger-widget.pressed .trigger-body {
+    filter:
+        drop-shadow(
+            0 0 7px
+            rgba(34,197,94,.35)
+        );
+}
+
+.trigger-widget.pressed .trigger-percent {
+    fill: white;
+}
+
+
+/*
+   Variables CSS que va a controlar app.js:
+
+   --trigger-progress: 0 → 1
+   --trigger-color-rgb: color generado por JS
+
+   El JS podrá cambiar directamente el fill
+   del path para que la transición sea continua.
+*/
+.trigger-body {
+    transition:
+        fill .035s linear,
+        stroke .035s linear,
+        filter .08s ease,
+        transform .035s linear;
+}
+
+
+/* =========================================================
+   L1 / R1
+   BUMPERS SUPERIORES
+========================================================= */
+
+.bumper-svg {
+    fill: #202936;
+
+    stroke: #111827;
+    stroke-width: 1.4;
+
+    stroke-linejoin: round;
+
+    filter:
+        drop-shadow(
+            0 3px 4px
+            rgba(0,0,0,.24)
+        );
+
+    cursor: pointer;
+
+    transition:
+        fill .08s ease,
+        stroke .08s ease,
+        filter .08s ease,
+        transform .06s ease;
+
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.bumper-svg.pressed {
+    fill: #2563eb;
+
+    stroke: #1d4ed8;
+
+    filter:
+        drop-shadow(
+            0 0 7px
+            rgba(37,99,235,.5)
+        );
+
+    transform:
+        translateY(2px)
+        scale(.985);
+}
+
+.bumper-text {
+    fill: #e5e7eb;
+
+    font-family:
+        Inter,
+        Arial,
+        sans-serif;
+
+    font-size: 7px;
 
     font-weight: 800;
 
     text-anchor: middle;
 
     pointer-events: none;
-}
-
-
-/* =========================================================
-   L1 / R1
-========================================================= */
-
-.bumper-svg {
-    cursor: pointer;
 }
 
 
@@ -664,7 +776,7 @@ main {
 .ring line {
     stroke: #d7dee7;
 
-    stroke-width: 3;
+    stroke-width: 3.2;
 
     stroke-linecap: round;
 
@@ -679,23 +791,46 @@ main {
 .ring line.visited {
     stroke: #22c55e;
 
+    stroke-width: 3.7;
+
     opacity: 1;
+
+    filter:
+        drop-shadow(
+            0 0 2px
+            rgba(34,197,94,.35)
+        );
 }
 
 .ring line.current {
     stroke: #10b981;
 
-    stroke-width: 3.5;
+    stroke-width: 4.5;
 
     opacity: 1;
+
+    filter:
+        drop-shadow(
+            0 0 4px
+            rgba(16,185,129,.55)
+        );
 }
 
 
 /* =========================================================
-   PROGRESO Y CHIPS
+   PROGRESO GLOBAL
 ========================================================= */
 
 .progress-line {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
     font-size: 1.1rem;
 
     margin:
@@ -703,6 +838,33 @@ main {
 
     color: #475569;
 }
+
+.progress-line #progress {
+    color: #0f172a;
+
+    font-weight: 800;
+}
+
+.progress-percent {
+    color: #16a34a;
+
+    font-weight: 800;
+}
+
+.progress-label {
+    color: #64748b;
+
+    font-weight: 500;
+}
+
+#vibe-note {
+    color: #64748b;
+}
+
+
+/* =========================================================
+   CHIPS
+========================================================= */
 
 .chips {
     display: flex;
@@ -736,7 +898,8 @@ main {
     transition:
         background .12s ease,
         border-color .12s ease,
-        color .12s ease;
+        color .12s ease,
+        box-shadow .12s ease;
 }
 
 .chip.active {
@@ -746,6 +909,10 @@ main {
         #16a34a;
 
     color: white;
+
+    box-shadow:
+        0 0 7px
+        rgba(34,197,94,.22);
 }
 
 
@@ -797,6 +964,29 @@ main {
 
 
 /* =========================================================
+   INTERACCIÓN SVG
+========================================================= */
+
+[data-btn] {
+    cursor: pointer;
+}
+
+
+/*
+   Evitamos que los textos interfieran
+   con la detección visual.
+*/
+.bumper-text,
+.trigger-text,
+.trigger-percent,
+.symbol,
+.ps-button-text,
+.label {
+    user-select: none;
+}
+
+
+/* =========================================================
    RESPONSIVE
 ========================================================= */
 
@@ -804,7 +994,6 @@ main {
 
     .stage {
         width: 100%;
-
         max-width: 680px;
     }
 
@@ -837,6 +1026,17 @@ main {
 
     header p {
         font-size: 14px;
+    }
+
+    .progress-line {
+        font-size: .95rem;
+    }
+
+    .chip {
+        padding:
+            5px 11px;
+
+        font-size: .78rem;
     }
 
 }
