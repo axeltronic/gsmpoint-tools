@@ -70,12 +70,10 @@ window.addEventListener(
         gamepadIndex =
             e.gamepad.index;
 
-
         const type =
             detectController(
                 e.gamepad
             );
-
 
         if (status) {
 
@@ -84,14 +82,12 @@ window.addEventListener(
 
         }
 
-
         if (controllerName) {
 
             controllerName.textContent =
                 e.gamepad.id;
 
         }
-
 
         if (controllerType) {
 
@@ -100,7 +96,6 @@ window.addEventListener(
 
         }
 
-
         if (tester) {
 
             tester.classList.remove(
@@ -108,7 +103,6 @@ window.addEventListener(
             );
 
         }
-
 
         createButtonChips();
 
@@ -124,14 +118,12 @@ window.addEventListener(
 
         gamepadIndex = null;
 
-
         if (status) {
 
             status.textContent =
                 "❌ Joystick desconectado";
 
         }
-
 
         if (tester) {
 
@@ -141,9 +133,7 @@ window.addEventListener(
 
         }
 
-
         testedButtons = [];
-
 
         if (progressSpan) {
 
@@ -152,14 +142,12 @@ window.addEventListener(
 
         }
 
-
         if (chipsContainer) {
 
             chipsContainer.innerHTML =
                 "";
 
         }
-
 
         resetVisualState();
 
@@ -224,10 +212,8 @@ function createButtonChips() {
 
     if (!chipsContainer) return;
 
-
     chipsContainer.innerHTML =
         "";
-
 
     buttonNames.forEach(
         (name, index) => {
@@ -237,18 +223,14 @@ function createButtonChips() {
                     "span"
                 );
 
-
             chip.className =
                 "chip";
-
 
             chip.id =
                 "chip-" + index;
 
-
             chip.textContent =
                 name;
-
 
             chipsContainer.appendChild(
                 chip
@@ -296,7 +278,6 @@ function update() {
         const gamepads =
             navigator.getGamepads();
 
-
         const gp =
             gamepads[
                 gamepadIndex
@@ -304,6 +285,9 @@ function update() {
 
 
         if (gp) {
+
+            window.__currentGamepad =
+                gp;
 
             updateButtons(gp);
 
@@ -348,15 +332,7 @@ function updateButtons(gp) {
         const button =
             gp.buttons[i];
 
-
         if (!button) continue;
-
-
-        const element =
-            getButtonElement(i);
-
-
-        if (!element) continue;
 
 
         const pressed =
@@ -366,20 +342,97 @@ function updateButtons(gp) {
             );
 
 
+        updateButtonVisual(
+            i,
+            pressed,
+            gp
+        );
+
+
         if (pressed) {
-
-            element.classList.add(
-                "pressed"
-            );
-
 
             markButtonTested(i);
 
+        }
 
-        } else {
+    }
 
-            element.classList.remove(
-                "pressed"
+}
+
+
+/* =========================================================
+   VISUAL DEL BOTÓN
+========================================================= */
+
+function updateButtonVisual(
+    index,
+    pressed,
+    gp
+) {
+
+    const element =
+        getButtonElement(index);
+
+
+    if (element) {
+
+        element.classList.toggle(
+            "pressed",
+            pressed
+        );
+
+    }
+
+
+    /*
+       D-PAD
+
+       El mando SVG tiene una sola pieza
+       visual para el D-Pad.
+
+       Las 4 direcciones tienen sus
+       propios data-btn.
+    */
+
+    if (
+        index >= 12 &&
+        index <= 15
+    ) {
+
+        const dpad =
+            document.querySelector(
+                ".dpad-main"
+            );
+
+
+        if (dpad) {
+
+            let anyPressed = false;
+
+
+            for (
+                let i = 12;
+                i <= 15;
+                i++
+            ) {
+
+                if (
+                    gp.buttons[i]?.pressed ||
+                    gp.buttons[i]?.value > 0.1
+                ) {
+
+                    anyPressed = true;
+
+                    break;
+
+                }
+
+            }
+
+
+            dpad.classList.toggle(
+                "pressed",
+                anyPressed
             );
 
         }
@@ -450,6 +503,7 @@ const stickState = {
 
     },
 
+
     right: {
 
         visited:
@@ -464,115 +518,311 @@ const stickState = {
 
 
 /* =========================================================
+   COORDENADAS REALES DEL SVG
+========================================================= */
+
+const STICK_CONFIG = {
+
+    left: {
+
+        cx: 245,
+
+        cy: 218
+
+    },
+
+
+    right: {
+
+        cx: 435,
+
+        cy: 218
+
+    }
+
+};
+
+
+/*
+   Cantidad de checkpoints
+*/
+
+const CHECKPOINT_COUNT =
+    72;
+
+
+/*
+   Radio externo
+*/
+
+const CHECKPOINT_RADIUS =
+    40;
+
+
+/*
+   Radio interno
+*/
+
+const CHECKPOINT_INNER_RADIUS =
+    35;
+
+
+/* =========================================================
    OBTENER ELEMENTOS DEL STICK
 ========================================================= */
 
 function getStickElements(side) {
 
-    const stick =
+    const container =
         document.querySelector(
             `[data-stick="${side}"]`
         );
 
 
-    if (stick) {
+    if (!container) {
 
-        return {
-
-            container:
-                stick,
-
-            knob:
-                stick.querySelector(
-                    ".analog-knob"
-                ),
-
-            progress:
-                stick.querySelector(
-                    ".analog-progress"
-                ),
-
-            percent:
-                stick.querySelector(
-                    ".analog-percent"
-                ),
-
-            ring:
-                stick.querySelector(
-                    ".analog-ring"
-                ),
-
-            line:
-                stick.querySelector(
-                    ".analog-line"
-                ),
-
-            dot:
-                stick.querySelector(
-                    ".analog-dot"
-                )
-
-        };
+        return null;
 
     }
 
 
-    /* -------------------------------------------------------
-       COMPATIBILIDAD CON LA ESTRUCTURA ANTERIOR
-    ------------------------------------------------------- */
+    /*
+       Activamos el sistema de
+       checkpoints sobre el grupo SVG.
+    */
 
-    const oldId =
-        side === "left"
-            ? "stick-l"
-            : "stick-r";
+    container.classList.add(
+        "ring"
+    );
 
 
-    return {
+    const elements = {
 
         container:
-            document.getElementById(
-                oldId
-            ),
+
+            container,
+
 
         knob:
-            document.getElementById(
-                side === "left"
-                    ? "knob-l"
-                    : "knob-r"
+
+            container.querySelector(
+                ".analog-knob"
             ),
+
 
         progress:
-            document.getElementById(
-                side === "left"
-                    ? "dial-l-progress"
-                    : "dial-r-progress"
+
+            container.querySelector(
+                ".analog-progress"
             ),
+
 
         percent:
-            document.getElementById(
-                side === "left"
-                    ? "dial-l-txt"
-                    : "dial-r-txt"
+
+            container.querySelector(
+                ".analog-percent"
             ),
+
 
         ring:
-            null,
 
-        line:
-            document.getElementById(
-                side === "left"
-                    ? "dial-l-line"
-                    : "dial-r-line"
+            container.querySelector(
+                ".analog-ring"
             ),
 
+
+        line:
+
+            container.querySelector(
+                ".analog-line"
+            ),
+
+
         dot:
-            document.getElementById(
-                side === "left"
-                    ? "dial-l-dot"
-                    : "dial-r-dot"
+
+            container.querySelector(
+                ".analog-dot"
             )
 
     };
+
+
+    ensureCheckpointRing(
+        elements,
+        side
+    );
+
+
+    return elements;
+
+}
+
+
+/* =========================================================
+   CREAR CHECKPOINTS
+========================================================= */
+
+function ensureCheckpointRing(
+    elements,
+    side
+) {
+
+    if (
+        !elements?.container
+    ) {
+
+        return;
+
+    }
+
+
+    let ring =
+        elements.container.querySelector(
+            ".checkpoint-ring"
+        );
+
+
+    if (!ring) {
+
+        ring =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "g"
+            );
+
+
+        ring.classList.add(
+            "checkpoint-ring"
+        );
+
+
+        /*
+           Lo ponemos detrás del knob
+           pero delante del fondo.
+        */
+
+        elements.container.insertBefore(
+            ring,
+            elements.container.firstChild
+        );
+
+
+        const cfg =
+            STICK_CONFIG[side];
+
+
+        for (
+            let i = 0;
+            i < CHECKPOINT_COUNT;
+            i++
+        ) {
+
+            const angle =
+                -Math.PI / 2 +
+                (
+                    i /
+                    CHECKPOINT_COUNT
+                ) *
+                Math.PI *
+                2;
+
+
+            const x1 =
+                cfg.cx +
+                Math.cos(angle) *
+                CHECKPOINT_INNER_RADIUS;
+
+
+            const y1 =
+                cfg.cy +
+                Math.sin(angle) *
+                CHECKPOINT_INNER_RADIUS;
+
+
+            const x2 =
+                cfg.cx +
+                Math.cos(angle) *
+                CHECKPOINT_RADIUS;
+
+
+            const y2 =
+                cfg.cy +
+                Math.sin(angle) *
+                CHECKPOINT_RADIUS;
+
+
+            const line =
+                document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "line"
+                );
+
+
+            line.setAttribute(
+                "x1",
+                x1
+            );
+
+            line.setAttribute(
+                "y1",
+                y1
+            );
+
+            line.setAttribute(
+                "x2",
+                x2
+            );
+
+            line.setAttribute(
+                "y2",
+                y2
+            );
+
+
+            line.classList.add(
+                "checkpoint"
+            );
+
+
+            ring.appendChild(
+                line
+            );
+
+        }
+
+    }
+
+
+    /*
+       Ocultamos el antiguo círculo
+       de progreso porque ahora
+       usamos los checkpoints reales.
+    */
+
+    if (
+        elements.progress
+    ) {
+
+        elements.progress.style.stroke =
+            "transparent";
+
+        elements.progress.style.strokeDasharray =
+            "none";
+
+        elements.progress.style.strokeDashoffset =
+            "0";
+
+        elements.progress.removeAttribute(
+            "transform"
+        );
+
+    }
+
+
+    updateCheckpointClasses(
+        elements,
+        side
+    );
 
 }
 
@@ -616,13 +866,17 @@ function updateStick(
 
 
     if (
-        !elements.container ||
+        !elements?.container ||
         !elements.knob
     ) {
 
         return;
 
     }
+
+
+    const cfg =
+        STICK_CONFIG[side];
 
 
     let x =
@@ -645,29 +899,60 @@ function updateStick(
         0.06;
 
 
+    const rawMagnitude =
+        Math.min(
+            Math.hypot(
+                x,
+                y
+            ),
+            1
+        );
+
+
     if (
-        Math.abs(x) <
+        rawMagnitude <=
         deadZone
     ) {
 
         x = 0;
 
-    }
-
-
-    if (
-        Math.abs(y) <
-        deadZone
-    ) {
-
         y = 0;
 
     }
 
+    else {
 
-    /* =====================================================
-       MAGNITUD
-    ===================================================== */
+        /*
+           Quitamos la zona muerta
+           para que el porcentaje
+           sea más preciso.
+        */
+
+        const normalizedMagnitude =
+            Math.min(
+                (
+                    rawMagnitude -
+                    deadZone
+                ) /
+                (
+                    1 -
+                    deadZone
+                ),
+                1
+            );
+
+
+        const factor =
+            normalizedMagnitude /
+            rawMagnitude;
+
+
+        x *= factor;
+
+        y *= factor;
+
+    }
+
 
     const magnitude =
         Math.min(
@@ -680,47 +965,71 @@ function updateStick(
 
 
     /* =====================================================
-       POSICIÓN DEL KNOB
+       POSICIÓN REAL DEL KNOB SVG
     ===================================================== */
 
-    const container =
-        elements.container;
+    const maxMove =
+        15;
 
 
-    const size =
-        Math.min(
-            container.clientWidth ||
-            0,
+    const knobX =
+        cfg.cx +
+        x *
+        maxMove;
 
-            container.clientHeight ||
-            0
-        );
+
+    const knobY =
+        cfg.cy +
+        y *
+        maxMove;
 
 
     /*
-       Distancia máxima del knob.
+       IMPORTANTE:
 
-       Se calcula según el tamaño real
-       del SVG para que no se deforme.
+       NO usamos:
+
+       style.transform
+
+       porque el knob es un
+       elemento SVG.
+
+       Modificamos directamente
+       cx / cy.
     */
 
-    const maxMove =
-        size * 0.27;
+    elements.knob.setAttribute(
+        "cx",
+        knobX.toFixed(2)
+    );
 
 
-    const dx =
-        x * maxMove;
+    elements.knob.setAttribute(
+        "cy",
+        knobY.toFixed(2)
+    );
 
 
-    const dy =
-        y * maxMove;
+    /* =====================================================
+       PORCENTAJE
+    ===================================================== */
+
+    const percentage =
+        Math.round(
+            magnitude *
+            100
+        );
 
 
-    elements.knob.style.transform =
-        `translate(
-            ${dx}px,
-            ${dy}px
-        )`;
+    if (
+        elements.percent
+    ) {
+
+        elements.percent.textContent =
+            percentage +
+            "%";
+
+    }
 
 
     /* =====================================================
@@ -735,7 +1044,9 @@ function updateStick(
 
 
     if (
-        !Number.isFinite(angle)
+        !Number.isFinite(
+            angle
+        )
     ) {
 
         angle = 0;
@@ -744,63 +1055,14 @@ function updateStick(
 
 
     /* =====================================================
-       PORCENTAJE DEL STICK
-    ===================================================== */
-
-    const percentage =
-        Math.round(
-            magnitude * 100
-        );
-
-
-    if (elements.percent) {
-
-        elements.percent.textContent =
-            percentage + "%";
-
-    }
-
-
-    /* =====================================================
-       PROGRESO CIRCULAR SVG
-    ===================================================== */
-
-    if (
-        elements.progress
-    ) {
-
-        const length =
-            getCircleLength(
-                elements.progress
-            );
-
-
-        if (length > 0) {
-
-            elements.progress.style.strokeDasharray =
-                length;
-
-
-            elements.progress.style.strokeDashoffset =
-                length -
-                (
-                    length *
-                    magnitude
-                );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       LÍNEA / DOT
+       DIRECCIÓN LEGACY
     ===================================================== */
 
     updateDirectionVisuals(
         elements,
         angle,
-        magnitude
+        magnitude,
+        cfg
     );
 
 
@@ -819,91 +1081,33 @@ function updateStick(
 
 
 /* =========================================================
-   LONGITUD DEL CÍRCULO
-========================================================= */
-
-function getCircleLength(
-    element
-) {
-
-    if (
-        typeof element.getTotalLength ===
-        "function"
-    ) {
-
-        try {
-
-            return element.getTotalLength();
-
-        } catch (e) {}
-
-    }
-
-
-    const radius =
-        parseFloat(
-            element.getAttribute(
-                "r"
-            )
-        );
-
-
-    if (
-        Number.isFinite(radius)
-    ) {
-
-        return (
-            2 *
-            Math.PI *
-            radius
-        );
-
-    }
-
-
-    return 0;
-
-}
-
-
-/* =========================================================
    DIRECCIÓN
 ========================================================= */
 
 function updateDirectionVisuals(
     elements,
     angle,
-    magnitude
+    magnitude,
+    cfg
 ) {
-
-    const cx =
-        50;
-
-    const cy =
-        50;
-
 
     const radius =
         42;
 
 
     const px =
-        cx +
+        cfg.cx +
         Math.cos(angle) *
         radius *
         magnitude;
 
 
     const py =
-        cy +
+        cfg.cy +
         Math.sin(angle) *
         radius *
         magnitude;
 
-
-    /* -----------------------------------------------------
-       LINE
-    ----------------------------------------------------- */
 
     if (
         elements.line
@@ -911,12 +1115,12 @@ function updateDirectionVisuals(
 
         elements.line.setAttribute(
             "x1",
-            cx
+            cfg.cx
         );
 
         elements.line.setAttribute(
             "y1",
-            cy
+            cfg.cy
         );
 
         elements.line.setAttribute(
@@ -931,10 +1135,6 @@ function updateDirectionVisuals(
 
     }
 
-
-    /* -----------------------------------------------------
-       DOT
-    ----------------------------------------------------- */
 
     if (
         elements.dot
@@ -978,39 +1178,56 @@ function updateStickCheckpoint(
         0.08
     ) {
 
+        state.current =
+            -1;
+
+
+        updateCheckpointClasses(
+            elements,
+            side
+        );
+
+
         return;
 
     }
 
 
-    const total =
-        180;
-
-
     /*
-       Convertimos el ángulo
-       para que 0 quede arriba.
+       0 = ARRIBA
+
+       18 = DERECHA
+
+       36 = ABAJO
+
+       54 = IZQUIERDA
     */
 
     let index =
         Math.round(
             (
-                angle +
-                Math.PI / 2 +
+                (
+                    angle +
+                    Math.PI / 2 +
+                    Math.PI * 2
+                ) %
+                (
+                    Math.PI * 2
+                )
+            ) /
+            (
                 Math.PI * 2
-            ) %
-            (Math.PI * 2) /
-            (Math.PI * 2) *
-            total
+            ) *
+            CHECKPOINT_COUNT
         );
 
 
     index =
         (
             index +
-            total
+            CHECKPOINT_COUNT
         ) %
-        total;
+        CHECKPOINT_COUNT;
 
 
     state.visited.add(
@@ -1019,22 +1236,26 @@ function updateStickCheckpoint(
 
 
     /*
-       Agregamos vecinos para
-       evitar huecos visuales.
+       Suavizamos el movimiento
+       agregando vecinos.
     */
 
     state.visited.add(
         (
-            index - 1 +
-            total
-        ) % total
+            index -
+            1 +
+            CHECKPOINT_COUNT
+        ) %
+        CHECKPOINT_COUNT
     );
 
 
     state.visited.add(
         (
-            index + 1
-        ) % total
+            index +
+            1
+        ) %
+        CHECKPOINT_COUNT
     );
 
 
@@ -1042,60 +1263,67 @@ function updateStickCheckpoint(
         index;
 
 
-    /* =====================================================
-       SVG ANALOG-PROGRESS
-    ===================================================== */
+    updateCheckpointClasses(
+        elements,
+        side
+    );
+
+}
+
+
+/* =========================================================
+   PINTAR CHECKPOINTS
+========================================================= */
+
+function updateCheckpointClasses(
+    elements,
+    side
+) {
 
     if (
-        elements.progress
+        !elements?.container
     ) {
 
-        elements.progress.classList.add(
-            "active"
-        );
+        return;
 
     }
 
 
-    /* =====================================================
-       CHECKPOINTS EXISTENTES
-    ===================================================== */
-
-    const container =
-        elements.container;
+    const state =
+        stickState[side];
 
 
-    if (!container) return;
+    if (!state) return;
 
 
     const checkpoints =
-        container.querySelectorAll(
-            ".checkpoint"
+        elements.container.querySelectorAll(
+            ".checkpoint-ring .checkpoint"
         );
 
 
-    if (
-        checkpoints.length
-    ) {
+    checkpoints.forEach(
+        (
+            checkpoint,
+            index
+        ) => {
 
-        checkpoints.forEach(
-            (checkpoint, i) => {
+            checkpoint.classList.toggle(
+                "visited",
+                state.visited.has(
+                    index
+                )
+            );
 
-                checkpoint.classList.toggle(
-                    "visited",
-                    state.visited.has(i)
-                );
 
+            checkpoint.classList.toggle(
+                "current",
+                index ===
+                state.current
+            );
 
-                checkpoint.classList.toggle(
-                    "current",
-                    i === state.current
-                );
-
-            }
-        );
-
-    }
+        }
+    );
 
 }
 
@@ -1157,14 +1385,16 @@ function updateTrigger(
             0,
             Math.min(
                 1,
-                value
+                Number(value) ||
+                0
             )
         );
 
 
     const percentage =
         Math.round(
-            normalized * 100
+            normalized *
+            100
         );
 
 
@@ -1178,70 +1408,55 @@ function updateTrigger(
         );
 
 
+    const track =
+        widget.querySelector(
+            ".trigger-track"
+        );
+
+
     if (fill) {
 
-        /*
-           Compatible con SVG <rect>
-           y también con div.
-        */
-
-        const isSVG =
-            fill instanceof
-            SVGElement;
-
-
-        if (isSVG) {
-
-            const barHeight =
-                Number(
-                    fill.getAttribute(
-                        "data-bar-height"
-                    )
-                ) ||
-                Number(
-                    fill.getAttribute(
-                        "height"
-                    )
-                ) ||
-                92;
-
-
-            const barY =
-                Number(
-                    fill.getAttribute(
-                        "data-bar-y"
-                    )
-                ) ||
-                0;
-
-
-            const height =
-                barHeight *
-                normalized;
-
-
-            fill.setAttribute(
-                "height",
-                height
-            );
-
-
-            fill.setAttribute(
-                "y",
-                barY +
-                (
-                    barHeight -
-                    height
+        const trackY =
+            Number(
+                track?.getAttribute(
+                    "y"
                 )
-            );
+            ) ||
+            38;
 
 
-        } else {
+        const trackHeight =
+            Number(
+                track?.getAttribute(
+                    "height"
+                )
+            ) ||
+            92;
 
-            fill.style.height =
-                percentage + "%";
 
-        }
+        const height =
+            trackHeight *
+            normalized;
+
+
+        const bottom =
+            trackY +
+            trackHeight;
+
+
+        fill.setAttribute(
+            "height",
+            height.toFixed(2)
+        );
+
+
+        fill.setAttribute(
+            "y",
+            (
+                bottom -
+                height
+            ).toFixed(2)
+        );
 
     }
 
@@ -1259,7 +1474,8 @@ function updateTrigger(
     if (percent) {
 
         percent.textContent =
-            percentage + "%";
+            percentage +
+            "%";
 
     }
 
@@ -1270,7 +1486,8 @@ function updateTrigger(
 
     widget.classList.toggle(
         "active",
-        normalized > 0.01
+        normalized >
+        0.01
     );
 
 
@@ -1281,7 +1498,8 @@ function updateTrigger(
     const button =
         widget.querySelector(
             "[data-button]"
-        ) ||
+        )
+        ||
         widget.querySelector(
             "[data-btn]"
         );
@@ -1291,7 +1509,8 @@ function updateTrigger(
 
         button.classList.toggle(
             "pressed",
-            normalized > 0.1
+            normalized >
+            0.1
         );
 
     }
@@ -1299,7 +1518,7 @@ function updateTrigger(
 
     /*
        L2/R2 también cuentan
-       como botón probado.
+       como botones probados.
     */
 
     if (
@@ -1379,11 +1598,14 @@ document
 
                     const params = {
 
-                        duration: 500,
+                        duration:
+                            500,
 
-                        strongMagnitude: 0,
+                        strongMagnitude:
+                            0,
 
-                        weakMagnitude: 0
+                        weakMagnitude:
+                            0
 
                     };
 
@@ -1447,8 +1669,10 @@ document
 
                         }
 
+                    }
 
-                    } catch (error) {
+
+                    catch (error) {
 
                         console.error(
                             "Error de vibración:",
@@ -1504,10 +1728,6 @@ function resetVisualState() {
     }
 
 
-    /* -----------------------------------------------------
-       BOTONES
-    ----------------------------------------------------- */
-
     document
         .querySelectorAll(
             "[data-button], [data-btn]"
@@ -1522,10 +1742,6 @@ function resetVisualState() {
             }
         );
 
-
-    /* -----------------------------------------------------
-       CHIPS
-    ----------------------------------------------------- */
 
     document
         .querySelectorAll(
@@ -1542,10 +1758,6 @@ function resetVisualState() {
         );
 
 
-    /* -----------------------------------------------------
-       STICKS
-    ----------------------------------------------------- */
-
     Object.keys(
         stickState
     ).forEach(
@@ -1558,64 +1770,116 @@ function resetVisualState() {
 
             stickState[
                 side
-            ].current = -1;
+            ].current =
+                -1;
 
         }
     );
 
 
-    document
-        .querySelectorAll(
-            ".analog-progress"
-        )
-        .forEach(
-            (progress) => {
+    [
+        "left",
+        "right"
+    ].forEach(
+        (side) => {
 
-                progress.classList.remove(
-                    "active"
+            const elements =
+                getStickElements(
+                    side
                 );
 
 
-                const length =
-                    getCircleLength(
-                        progress
-                    );
+            const cfg =
+                STICK_CONFIG[
+                    side
+                ];
 
 
-                if (
-                    length
-                ) {
-
-                    progress.style.strokeDasharray =
-                        length;
+            if (!elements) return;
 
 
-                    progress.style.strokeDashoffset =
-                        length;
+            if (
+                elements.knob
+            ) {
 
-                }
+                elements.knob.setAttribute(
+                    "cx",
+                    cfg.cx
+                );
+
+                elements.knob.setAttribute(
+                    "cy",
+                    cfg.cy
+                );
+
+                elements.knob.style.transform =
+                    "none";
 
             }
-        );
 
 
-    document
-        .querySelectorAll(
-            ".analog-percent"
-        )
-        .forEach(
-            (text) => {
+            if (
+                elements.percent
+            ) {
 
-                text.textContent =
+                elements.percent.textContent =
                     "0%";
 
             }
-        );
 
 
-    /* -----------------------------------------------------
-       TRIGGERS
-    ----------------------------------------------------- */
+            if (
+                elements.line
+            ) {
+
+                elements.line.setAttribute(
+                    "x1",
+                    cfg.cx
+                );
+
+                elements.line.setAttribute(
+                    "y1",
+                    cfg.cy
+                );
+
+                elements.line.setAttribute(
+                    "x2",
+                    cfg.cx
+                );
+
+                elements.line.setAttribute(
+                    "y2",
+                    cfg.cy
+                );
+
+            }
+
+
+            if (
+                elements.dot
+            ) {
+
+                elements.dot.setAttribute(
+                    "cx",
+                    cfg.cx
+                );
+
+                elements.dot.setAttribute(
+                    "cy",
+                    cfg.cy
+                );
+
+            }
+
+
+            updateCheckpointClasses(
+                elements,
+                side
+            );
+
+        }
+    );
+
 
     document
         .querySelectorAll(
@@ -1641,55 +1905,43 @@ function resetVisualState() {
                     );
 
 
+                const track =
+                    widget.querySelector(
+                        ".trigger-track"
+                    );
+
+
                 if (fill) {
 
-                    if (
-                        fill instanceof
-                        SVGElement
-                    ) {
-
-                        const barHeight =
-                            Number(
-                                fill.getAttribute(
-                                    "data-bar-height"
-                                )
-                            ) ||
-                            Number(
-                                fill.getAttribute(
-                                    "height"
-                                )
-                            ) ||
-                            92;
+                    const trackY =
+                        Number(
+                            track?.getAttribute(
+                                "y"
+                            )
+                        ) ||
+                        38;
 
 
-                        const barY =
-                            Number(
-                                fill.getAttribute(
-                                    "data-bar-y"
-                                )
-                            ) ||
-                            0;
+                    const trackHeight =
+                        Number(
+                            track?.getAttribute(
+                                "height"
+                            )
+                        ) ||
+                        92;
 
 
-                        fill.setAttribute(
-                            "height",
-                            0
-                        );
+                    fill.setAttribute(
+                        "height",
+                        "0"
+                    );
 
 
-                        fill.setAttribute(
-                            "y",
-                            barY +
-                            barHeight
-                        );
-
-
-                    } else {
-
-                        fill.style.height =
-                            "0%";
-
-                    }
+                    fill.setAttribute(
+                        "y",
+                        trackY +
+                        trackHeight
+                    );
 
                 }
 
@@ -1703,5 +1955,9 @@ function resetVisualState() {
 
             }
         );
+
+
+    window.__currentGamepad =
+        null;
 
 }
