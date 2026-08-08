@@ -141,6 +141,22 @@ main {
     );
 }
 
+.pad.up {
+    grid-area: up;
+}
+
+.pad.down {
+    grid-area: down;
+}
+
+.pad.left {
+    grid-area: left;
+}
+
+.pad.right {
+    grid-area: right;
+}
+
 .pad.pressed {
     background: #2563eb;
 
