@@ -134,13 +134,21 @@ main {
 ========================================================= */
 
 .gp-body {
-    fill: url(#gpBody);
+    fill: #f8fafc;
 
     stroke: #c7ccd5;
 
     stroke-width: 1.5;
 
     stroke-linejoin: round;
+
+    filter:
+        drop-shadow(
+            0 8px 18px
+            rgba(15,23,42,.08)
+        );
+
+    vector-effect: non-scaling-stroke;
 }
 
 
@@ -149,7 +157,7 @@ main {
 ========================================================= */
 
 .touchpad {
-    fill: url(#touchGradient);
+    fill: #f1f3f6;
 
     stroke: #c3c8d0;
 
@@ -429,7 +437,7 @@ main {
 ========================================================= */
 
 .analog-knob {
-    fill: url(#stickGradient);
+    fill: #252b33;
 
     stroke: #0f172a;
 
