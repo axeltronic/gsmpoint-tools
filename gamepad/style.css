@@ -114,7 +114,6 @@ main {
     height: 100%;
 
     pointer-events: none;
-
     overflow: visible;
 }
 
@@ -253,8 +252,7 @@ main {
 
     cursor: pointer;
 
-    transition:
-        .1s;
+    transition: .1s;
 
     display: flex;
 
@@ -282,22 +280,58 @@ main {
 
 /* =========================================================
    L2 / R2
-   ESTILO EXTERNO DE LA REFERENCIA
+   WIDGET EXTERNO DE SENSIBILIDAD
 ========================================================= */
 
-.trigger-2d {
-
+.trigger-widget {
     position: absolute;
 
-    /*
-        Los sacamos un poco del cuerpo,
-        como en la referencia.
-    */
+    top: -2px;
 
-    top: -2%;
+    width: 42px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    z-index: 30;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   POSICIÓN L2
+========================================================= */
+
+.trigger-left {
+    left: -12px;
+}
+
+
+/* =========================================================
+   POSICIÓN R2
+========================================================= */
+
+.trigger-right {
+    right: -12px;
+}
+
+
+/* =========================================================
+   BOTÓN L2 / R2
+========================================================= */
+
+.trigger-title {
+
+    position: relative;
 
     width: 42px;
     height: 28px;
+
+    flex-shrink: 0;
 
     border: none;
 
@@ -315,14 +349,14 @@ main {
 
     font-weight: 800;
 
-    cursor: pointer;
-
     display: flex;
 
     align-items: center;
     justify-content: center;
 
-    z-index: 20;
+    cursor: pointer;
+
+    pointer-events: auto;
 
     box-shadow:
         0 2px 4px
@@ -335,87 +369,11 @@ main {
 }
 
 
-/* ---------------------------------------------------------
-   L2
---------------------------------------------------------- */
+/* =========================================================
+   BOTÓN PRESIONADO
+========================================================= */
 
-.trigger-2d.l2 {
-
-    left: -12px;
-
-}
-
-
-/* ---------------------------------------------------------
-   R2
---------------------------------------------------------- */
-
-.trigger-2d.r2 {
-
-    right: -12px;
-
-}
-
-
-/* ---------------------------------------------------------
-   BARRA VISUAL DEL TRIGGER
---------------------------------------------------------- */
-
-.trigger-2d::after {
-
-    content: "";
-
-    position: absolute;
-
-    top: 38px;
-
-    left: 6px;
-
-    width: 30px;
-
-    height: 92px;
-
-    border-radius: 4px;
-
-    background:
-
-        linear-gradient(
-            to top,
-            #172033 0%,
-            #172033 0%,
-            #e5e7eb 0%,
-            #e5e7eb 100%
-        );
-
-    box-shadow:
-        inset
-        0 0 0 1px
-        rgba(15,23,42,.05);
-
-    pointer-events: none;
-}
-
-
-/* ---------------------------------------------------------
-   TEXTO L2/R2
---------------------------------------------------------- */
-
-.trigger-2d span {
-
-    position: relative;
-
-    z-index: 2;
-
-    line-height: 1;
-
-}
-
-
-/* ---------------------------------------------------------
-   PRESIONADO
---------------------------------------------------------- */
-
-.trigger-2d.pressed {
+.trigger-title.pressed {
 
     background: #111827;
 
@@ -429,11 +387,95 @@ main {
 
 
 /* =========================================================
+   BARRA DEL TRIGGER
+========================================================= */
+
+.trigger-bar {
+
+    position: relative;
+
+    width: 30px;
+    height: 92px;
+
+    margin-top: 10px;
+
+    overflow: hidden;
+
+    border-radius: 4px;
+
+    background: #e5e7eb;
+
+    box-shadow:
+        inset
+        0 0 0 1px
+        rgba(15,23,42,.05);
+}
+
+
+/* =========================================================
+   RELLENO DE LA BARRA
+========================================================= */
+
+.trigger-fill {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 0;
+
+    width: 100%;
+
+    height: 0%;
+
+    border-radius: 3px;
+
+    background: #172033;
+
+    transition:
+        height .04s linear,
+        background .08s linear;
+}
+
+
+/* =========================================================
+   TRIGGER ACTIVO
+========================================================= */
+
+.trigger-widget.active .trigger-fill {
+
+    background: #111827;
+}
+
+
+/* =========================================================
+   PORCENTAJE
+========================================================= */
+
+.trigger-percent {
+
+    margin-top: 8px;
+
+    color: #111827;
+
+    font-family:
+        'Inter',
+        sans-serif;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    line-height: 1;
+}
+
+
+/* =========================================================
    BOTONES DE CARA
 ========================================================= */
 
 .face {
-
     position: absolute;
 
     right: 14%;
@@ -457,7 +499,6 @@ main {
 }
 
 .face-btn {
-
     background: #e2e8f0;
 
     border: none;
@@ -466,8 +507,7 @@ main {
 
     cursor: pointer;
 
-    transition:
-        .1s;
+    transition: .1s;
 
     display: flex;
 
@@ -478,7 +518,6 @@ main {
 }
 
 .face-btn svg {
-
     width: 100%;
     height: 100%;
 
@@ -517,7 +556,6 @@ main {
 }
 
 .face-btn.pressed svg {
-
     stroke: white;
 }
 
@@ -527,7 +565,6 @@ main {
 ========================================================= */
 
 .stick {
-
     position: absolute;
 
     width: 24%;
@@ -539,7 +576,6 @@ main {
     transform:
         translateY(-50%);
 }
-
 
 #stick-l {
     left: 25%;
@@ -555,7 +591,6 @@ main {
 ========================================================= */
 
 .dial {
-
     position: absolute;
 
     inset: 0;
@@ -564,7 +599,6 @@ main {
 }
 
 .dial svg {
-
     width: 100%;
 
     height: 100%;
@@ -578,7 +612,6 @@ main {
 ========================================================= */
 
 .dial-bg {
-
     fill: none;
 
     stroke: #d7dee7;
@@ -592,7 +625,6 @@ main {
 ========================================================= */
 
 .dial-check {
-
     fill: none;
 
     stroke: #dfe5ec;
@@ -611,7 +643,6 @@ main {
 ========================================================= */
 
 .dial-line {
-
     stroke: #22c55e;
 
     stroke-width: 2;
@@ -627,7 +658,6 @@ main {
 ========================================================= */
 
 .dial-dot {
-
     fill: #22c55e;
 
     stroke: white;
@@ -643,7 +673,6 @@ main {
 ========================================================= */
 
 .dead-zone {
-
     fill: #edf2f7;
 
     stroke: #cbd5e1;
@@ -658,7 +687,6 @@ main {
 
 #dial-l-txt,
 #dial-r-txt {
-
     font-size: 14px;
 
     font-weight: 800;
@@ -672,7 +700,6 @@ main {
 ========================================================= */
 
 .knob {
-
     position: absolute;
 
     width: 36%;
@@ -716,10 +743,11 @@ main {
         transform;
 
     transition: none;
+
+    z-index: 5;
 }
 
 .knob::before {
-
     content: "";
 
     position: absolute;
@@ -734,7 +762,6 @@ main {
 }
 
 .knob::after {
-
     content: "";
 
     position: absolute;
@@ -760,7 +787,6 @@ main {
 ========================================================= */
 
 .sys {
-
     position: absolute;
 
     top: 24%;
@@ -777,8 +803,7 @@ main {
 
     cursor: pointer;
 
-    transition:
-        .1s;
+    transition: .1s;
 }
 
 .sys.share {
@@ -790,7 +815,6 @@ main {
 }
 
 .sys.home {
-
     left: 50%;
 
     transform:
@@ -811,14 +835,12 @@ main {
 }
 
 .sys.pressed {
-
     background: #2563eb;
 
     color: white;
 }
 
 .sys.home.pressed {
-
     background: #2563eb;
 
     border-color:
@@ -832,7 +854,6 @@ main {
 
 .r3,
 .l3 {
-
     position: absolute;
 
     bottom: 10%;
@@ -860,7 +881,6 @@ main {
 
 .r3.pressed,
 .l3.pressed {
-
     background: #2563eb;
 }
 
@@ -870,7 +890,6 @@ main {
 ========================================================= */
 
 .progress-line {
-
     font-size: 1.1rem;
 
     margin:
@@ -880,7 +899,6 @@ main {
 }
 
 .chips {
-
     display: flex;
 
     flex-wrap: wrap;
@@ -895,7 +913,6 @@ main {
 }
 
 .chip {
-
     background: white;
 
     border:
@@ -912,7 +929,6 @@ main {
 }
 
 .chip.active {
-
     background: #22c55e;
 
     border-color:
@@ -927,7 +943,6 @@ main {
 ========================================================= */
 
 .vibe {
-
     display: flex;
 
     justify-content: center;
@@ -940,7 +955,6 @@ main {
 }
 
 .vibe-btn {
-
     padding:
         12px 24px;
 
@@ -956,12 +970,10 @@ main {
 
     cursor: pointer;
 
-    transition:
-        .2s;
+    transition: .2s;
 }
 
 .vibe-btn:hover {
-
     background: #1d4ed8;
 }
 
@@ -971,7 +983,6 @@ main {
 ========================================================= */
 
 .ring line {
-
     stroke: #d7dee7;
 
     stroke-width: 3;
@@ -987,14 +998,12 @@ main {
 }
 
 .ring line.visited {
-
     stroke: #22c55e;
 
     opacity: 1;
 }
 
 .ring line.current {
-
     stroke: #10b981;
 
     stroke-width: 3.5;
@@ -1011,26 +1020,20 @@ main {
 
     .stage {
 
-        width:
-            720px;
+        width: 720px;
 
-        max-width:
-            none;
+        max-width: none;
 
         transform-origin:
             top center;
 
         transform:
+            translateX(-50%)
             scale(.82);
 
-        margin-left:
-            50%;
+        margin-left: 50%;
 
-        margin-right:
-            0;
-
-        left:
-            -50%;
+        margin-right: 0;
     }
 
 }
