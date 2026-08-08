@@ -59,14 +59,8 @@ const buttonNames = [
     "Home"
 ];
 
-
-/*
-   17 entradas principales del mando.
-*/
-
 const TOTAL_BUTTONS =
     buttonNames.length;
-
 
 let testedButtons = [];
 
@@ -82,48 +76,29 @@ window.addEventListener(
         gamepadIndex =
             e.gamepad.index;
 
-
         const type =
-            detectController(
-                e.gamepad
-            );
-
+            detectController(e.gamepad);
 
         if (status) {
-
             status.textContent =
                 "✅ Joystick conectado";
-
         }
-
 
         if (controllerName) {
-
             controllerName.textContent =
                 e.gamepad.id;
-
         }
-
 
         if (controllerType) {
-
             controllerType.textContent =
                 "Layout: " + type;
-
         }
-
 
         if (tester) {
-
-            tester.classList.remove(
-                "hidden"
-            );
-
+            tester.classList.remove("hidden");
         }
 
-
         createButtonChips();
-
         resetVisualState();
 
     }
@@ -134,39 +109,24 @@ window.addEventListener(
     "gamepaddisconnected",
     () => {
 
-        gamepadIndex =
-            null;
-
+        gamepadIndex = null;
 
         if (status) {
-
             status.textContent =
                 "❌ Joystick desconectado";
-
         }
-
 
         if (tester) {
-
-            tester.classList.add(
-                "hidden"
-            );
-
+            tester.classList.add("hidden");
         }
-
 
         testedButtons = [];
 
         updateProgress();
 
-
         if (chipsContainer) {
-
-            chipsContainer.innerHTML =
-                "";
-
+            chipsContainer.innerHTML = "";
         }
-
 
         resetVisualState();
 
@@ -192,9 +152,7 @@ function detectController(gp) {
         id.includes("dualsense") ||
         id.includes("054c")
     ) {
-
         return "playstation";
-
     }
 
 
@@ -202,9 +160,7 @@ function detectController(gp) {
         id.includes("xbox") ||
         id.includes("microsoft")
     ) {
-
         return "xbox";
-
     }
 
 
@@ -212,14 +168,11 @@ function detectController(gp) {
         id.includes("switch") ||
         id.includes("nintendo")
     ) {
-
         return "switch";
-
     }
 
 
     return "generic";
-
 }
 
 
@@ -231,35 +184,22 @@ function createButtonChips() {
 
     if (!chipsContainer) return;
 
-
-    chipsContainer.innerHTML =
-        "";
-
+    chipsContainer.innerHTML = "";
 
     buttonNames.forEach(
-        (
-            name,
-            index
-        ) => {
+        (name, index) => {
 
             const chip =
-                document.createElement(
-                    "span"
-                );
-
+                document.createElement("span");
 
             chip.className =
                 "chip";
 
-
             chip.id =
-                "chip-" +
-                index;
-
+                "chip-" + index;
 
             chip.textContent =
                 name;
-
 
             chipsContainer.appendChild(
                 chip
@@ -267,7 +207,6 @@ function createButtonChips() {
 
         }
     );
-
 }
 
 
@@ -290,7 +229,6 @@ function getButtonElement(index) {
         )
 
     );
-
 }
 
 
@@ -300,43 +238,28 @@ function getButtonElement(index) {
 
 function update() {
 
-    if (
-        gamepadIndex !== null
-    ) {
+    if (gamepadIndex !== null) {
 
         const gamepads =
             navigator.getGamepads();
 
-
         const gp =
-            gamepads[
-                gamepadIndex
-            ];
-
+            gamepads[gamepadIndex];
 
         if (gp) {
 
             window.__currentGamepad =
                 gp;
 
-
             updateButtons(gp);
-
             updateSticks(gp);
-
             updateTriggers(gp);
 
         }
-
     }
 
-
-    requestAnimationFrame(
-        update
-    );
-
+    requestAnimationFrame(update);
 }
-
 
 update();
 
@@ -346,6 +269,8 @@ update();
 ========================================================= */
 
 function updateButtons(gp) {
+
+    if (!gp?.buttons) return;
 
     const maxButtons =
         Math.min(
@@ -363,14 +288,23 @@ function updateButtons(gp) {
         const button =
             gp.buttons[i];
 
-
         if (!button) continue;
 
+        /*
+         * Para botones normales:
+         * pressed = true
+         *
+         * Para sticks y triggers:
+         * también existe value.
+         *
+         * En los botones usamos un umbral
+         * muy pequeño para evitar falsos estados.
+         */
 
         const pressed =
             Boolean(
                 button.pressed ||
-                button.value > 0.1
+                button.value > 0.5
             );
 
 
@@ -381,15 +315,10 @@ function updateButtons(gp) {
 
 
         if (pressed) {
-
-            markButtonTested(
-                i
-            );
-
+            markButtonTested(i);
         }
 
     }
-
 }
 
 
@@ -403,30 +332,26 @@ function updateButtonVisual(
 ) {
 
     const element =
-        getButtonElement(
-            index
-        );
+        getButtonElement(index);
 
 
-    /*
-       =====================================================
+    /* =====================================================
        D-PAD
-       =====================================================
-
-       MUY IMPORTANTE:
-
-       No tocamos .dpad-main.
-
-       Cada dirección tiene su propio
-       rect[data-btn].
-
-       Así ↑ no ilumina ↓ ← →.
-    */
+    ===================================================== */
 
     if (
         index >= 12 &&
         index <= 15
     ) {
+
+        /*
+         * Cada dirección es independiente.
+         *
+         * 12 = arriba
+         * 13 = abajo
+         * 14 = izquierda
+         * 15 = derecha
+         */
 
         if (element) {
 
@@ -443,16 +368,13 @@ function updateButtonVisual(
             pressed
         );
 
-
         return;
-
     }
 
 
-    /*
-       Todos los demás botones
-       se actualizan individualmente.
-    */
+    /* =====================================================
+       BOTONES NORMALES
+    ===================================================== */
 
     if (element) {
 
@@ -462,12 +384,11 @@ function updateButtonVisual(
         );
 
     }
-
 }
 
 
 /* =========================================================
-   D-PAD ARROWS
+   D-PAD
 ========================================================= */
 
 function updateDpadArrow(
@@ -476,10 +397,7 @@ function updateDpadArrow(
 ) {
 
     const dpad =
-        document.querySelector(
-            ".dpad"
-        );
-
+        document.querySelector(".dpad");
 
     if (!dpad) return;
 
@@ -489,27 +407,23 @@ function updateDpadArrow(
             ".dpad-arrow"
         );
 
-
     if (!arrows.length) return;
 
 
     /*
-       Orden de los arrows en el SVG:
-
-       0 = arriba
-       1 = abajo
-       2 = izquierda
-       3 = derecha
-    */
+     * Orden esperado dentro del SVG:
+     *
+     * 0 = ↑
+     * 1 = ↓
+     * 2 = ←
+     * 3 = →
+     */
 
     const arrowIndex =
         index - 12;
 
-
     const arrow =
-        arrows[
-            arrowIndex
-        ];
+        arrows[arrowIndex];
 
 
     if (arrow) {
@@ -520,7 +434,6 @@ function updateDpadArrow(
         );
 
     }
-
 }
 
 
@@ -528,40 +441,29 @@ function updateDpadArrow(
    MARCAR BOTÓN PROBADO
 ========================================================= */
 
-function markButtonTested(
-    index
-) {
+function markButtonTested(index) {
 
     if (
         index < 0 ||
         index >= TOTAL_BUTTONS
     ) {
-
         return;
-
     }
 
 
     if (
-        testedButtons.includes(
-            index
-        )
+        testedButtons.includes(index)
     ) {
-
         return;
-
     }
 
 
-    testedButtons.push(
-        index
-    );
+    testedButtons.push(index);
 
 
     const chip =
         document.getElementById(
-            "chip-" +
-            index
+            "chip-" + index
         );
 
 
@@ -575,7 +477,6 @@ function markButtonTested(
 
 
     updateProgress();
-
 }
 
 
@@ -597,8 +498,7 @@ function updateProgress() {
             (
                 completed /
                 TOTAL_BUTTONS
-            ) *
-            100
+            ) * 100
         );
 
 
@@ -613,11 +513,9 @@ function updateProgress() {
     if (progressPercent) {
 
         progressPercent.textContent =
-            percentage +
-            "%";
+            percentage + "%";
 
     }
-
 }
 
 
@@ -634,7 +532,6 @@ const stickState = {
 
         current:
             -1
-
     },
 
 
@@ -645,7 +542,6 @@ const stickState = {
 
         current:
             -1
-
     }
 
 };
@@ -660,7 +556,6 @@ const STICK_CONFIG = {
     left: {
 
         cx: 245,
-
         cy: 218
 
     },
@@ -669,7 +564,6 @@ const STICK_CONFIG = {
     right: {
 
         cx: 435,
-
         cy: 218
 
     }
@@ -684,10 +578,8 @@ const STICK_CONFIG = {
 const CHECKPOINT_COUNT =
     72;
 
-
 const CHECKPOINT_RADIUS =
     40;
-
 
 const CHECKPOINT_INNER_RADIUS =
     35;
@@ -697,9 +589,7 @@ const CHECKPOINT_INNER_RADIUS =
    OBTENER ELEMENTOS DEL STICK
 ========================================================= */
 
-function getStickElements(
-    side
-) {
+function getStickElements(side) {
 
     const container =
         document.querySelector(
@@ -708,15 +598,11 @@ function getStickElements(
 
 
     if (!container) {
-
         return null;
-
     }
 
 
-    container.classList.add(
-        "ring"
-    );
+    container.classList.add("ring");
 
 
     const elements = {
@@ -777,7 +663,6 @@ function getStickElements(
 
 
     return elements;
-
 }
 
 
@@ -790,12 +675,8 @@ function ensureCheckpointRing(
     side
 ) {
 
-    if (
-        !elements?.container
-    ) {
-
+    if (!elements?.container) {
         return;
-
     }
 
 
@@ -826,9 +707,7 @@ function ensureCheckpointRing(
 
 
         const cfg =
-            STICK_CONFIG[
-                side
-            ];
+            STICK_CONFIG[side];
 
 
         for (
@@ -849,33 +728,25 @@ function ensureCheckpointRing(
 
             const x1 =
                 cfg.cx +
-                Math.cos(
-                    angle
-                ) *
+                Math.cos(angle) *
                 CHECKPOINT_INNER_RADIUS;
 
 
             const y1 =
                 cfg.cy +
-                Math.sin(
-                    angle
-                ) *
+                Math.sin(angle) *
                 CHECKPOINT_INNER_RADIUS;
 
 
             const x2 =
                 cfg.cx +
-                Math.cos(
-                    angle
-                ) *
+                Math.cos(angle) *
                 CHECKPOINT_RADIUS;
 
 
             const y2 =
                 cfg.cy +
-                Math.sin(
-                    angle
-                ) *
+                Math.sin(angle) *
                 CHECKPOINT_RADIUS;
 
 
@@ -891,18 +762,15 @@ function ensureCheckpointRing(
                 x1
             );
 
-
             line.setAttribute(
                 "y1",
                 y1
             );
 
-
             line.setAttribute(
                 "x2",
                 x2
             );
-
 
             line.setAttribute(
                 "y2",
@@ -918,32 +786,24 @@ function ensureCheckpointRing(
             ring.appendChild(
                 line
             );
-
         }
-
     }
 
 
     /*
-       Ocultamos el antiguo círculo
-       de progreso.
-    */
+     * Ocultamos el círculo antiguo.
+     */
 
-    if (
-        elements.progress
-    ) {
+    if (elements.progress) {
 
         elements.progress.style.stroke =
             "transparent";
 
-
         elements.progress.style.strokeDasharray =
             "none";
 
-
         elements.progress.style.strokeDashoffset =
             "0";
-
 
         elements.progress.removeAttribute(
             "transform"
@@ -956,7 +816,6 @@ function ensureCheckpointRing(
         elements,
         side
     );
-
 }
 
 
@@ -964,9 +823,7 @@ function ensureCheckpointRing(
    UPDATE STICKS
 ========================================================= */
 
-function updateSticks(
-    gp
-) {
+function updateSticks(gp) {
 
     updateStick(
         "left",
@@ -995,39 +852,29 @@ function updateStick(
 ) {
 
     const elements =
-        getStickElements(
-            side
-        );
+        getStickElements(side);
 
 
     if (
         !elements?.container ||
         !elements.knob
     ) {
-
         return;
-
     }
 
 
     const cfg =
-        STICK_CONFIG[
-            side
-        ];
+        STICK_CONFIG[side];
 
 
     let x =
-        Number.isFinite(
-            rawX
-        )
+        Number.isFinite(rawX)
             ? rawX
             : 0;
 
 
     let y =
-        Number.isFinite(
-            rawY
-        )
+        Number.isFinite(rawY)
             ? rawY
             : 0;
 
@@ -1051,12 +898,10 @@ function updateStick(
 
 
     if (
-        rawMagnitude <=
-        deadZone
+        rawMagnitude <= deadZone
     ) {
 
         x = 0;
-
         y = 0;
 
     }
@@ -1083,9 +928,7 @@ function updateStick(
 
 
         x *= factor;
-
         y *= factor;
-
     }
 
 
@@ -1100,7 +943,7 @@ function updateStick(
 
 
     /* =====================================================
-       POSICIÓN DEL KNOB
+       POSICIÓN KNOB
     ===================================================== */
 
     const maxMove =
@@ -1132,7 +975,7 @@ function updateStick(
 
 
     /* =====================================================
-       PORCENTAJE DEL STICK
+       PORCENTAJE
     ===================================================== */
 
     const percentage =
@@ -1142,13 +985,10 @@ function updateStick(
         );
 
 
-    if (
-        elements.percent
-    ) {
+    if (elements.percent) {
 
         elements.percent.textContent =
-            percentage +
-            "%";
+            percentage + "%";
 
     }
 
@@ -1165,13 +1005,9 @@ function updateStick(
 
 
     if (
-        !Number.isFinite(
-            angle
-        )
+        !Number.isFinite(angle)
     ) {
-
         angle = 0;
-
     }
 
 
@@ -1194,7 +1030,7 @@ function updateStick(
 
 
 /* =========================================================
-   DIRECCIÓN
+   DIRECCIÓN DEL STICK
 ========================================================= */
 
 function updateDirectionVisuals(
@@ -1210,43 +1046,34 @@ function updateDirectionVisuals(
 
     const px =
         cfg.cx +
-        Math.cos(
-            angle
-        ) *
+        Math.cos(angle) *
         radius *
         magnitude;
 
 
     const py =
         cfg.cy +
-        Math.sin(
-            angle
-        ) *
+        Math.sin(angle) *
         radius *
         magnitude;
 
 
-    if (
-        elements.line
-    ) {
+    if (elements.line) {
 
         elements.line.setAttribute(
             "x1",
             cfg.cx
         );
 
-
         elements.line.setAttribute(
             "y1",
             cfg.cy
         );
 
-
         elements.line.setAttribute(
             "x2",
             px
         );
-
 
         elements.line.setAttribute(
             "y2",
@@ -1256,15 +1083,12 @@ function updateDirectionVisuals(
     }
 
 
-    if (
-        elements.dot
-    ) {
+    if (elements.dot) {
 
         elements.dot.setAttribute(
             "cx",
             px
         );
-
 
         elements.dot.setAttribute(
             "cy",
@@ -1277,7 +1101,7 @@ function updateDirectionVisuals(
 
 
 /* =========================================================
-   CHECKPOINTS
+   CHECKPOINT DEL STICK
 ========================================================= */
 
 function updateStickCheckpoint(
@@ -1288,31 +1112,23 @@ function updateStickCheckpoint(
 ) {
 
     const state =
-        stickState[
-            side
-        ];
+        stickState[side];
 
 
     if (!state) return;
 
 
-    if (
-        magnitude <
-        0.08
-    ) {
+    if (magnitude < 0.08) {
 
         state.current =
             -1;
-
 
         updateCheckpointClasses(
             elements,
             side
         );
 
-
         return;
-
     }
 
 
@@ -1343,16 +1159,13 @@ function updateStickCheckpoint(
         CHECKPOINT_COUNT;
 
 
-    state.visited.add(
-        index
-    );
+    state.visited.add(index);
 
 
     /*
-       Añadimos vecinos para que
-       el recorrido no quede cortado
-       entre dos checkpoints.
-    */
+     * Agregamos vecinos para que
+     * el recorrido quede continuo.
+     */
 
     state.visited.add(
         (
@@ -1394,19 +1207,13 @@ function updateCheckpointClasses(
     side
 ) {
 
-    if (
-        !elements?.container
-    ) {
-
+    if (!elements?.container) {
         return;
-
     }
 
 
     const state =
-        stickState[
-            side
-        ];
+        stickState[side];
 
 
     if (!state) return;
@@ -1426,9 +1233,7 @@ function updateCheckpointClasses(
 
             checkpoint.classList.toggle(
                 "visited",
-                state.visited.has(
-                    index
-                )
+                state.visited.has(index)
             );
 
 
@@ -1440,7 +1245,6 @@ function updateCheckpointClasses(
 
         }
     );
-
 }
 
 
@@ -1448,9 +1252,14 @@ function updateCheckpointClasses(
    TRIGGERS L2 / R2
 ========================================================= */
 
-function updateTriggers(
-    gp
-) {
+function updateTriggers(gp) {
+
+    /*
+     * DualSense / PlayStation:
+     *
+     * 6 = L2
+     * 7 = R2
+     */
 
     const l2 =
         Number(
@@ -1486,9 +1295,7 @@ function updateTriggers(
    COLOR DEL GATILLO
 ========================================================= */
 
-function getTriggerColor(
-    value
-) {
+function getTriggerColor(value) {
 
     const start = {
         r: 32,
@@ -1509,14 +1316,14 @@ function getTriggerColor(
             0,
             Math.min(
                 1,
-                Number(value) ||
-                0
+                Number(value) || 0
             )
         );
 
 
     const eased =
-        t * t * (
+        t * t *
+        (
             3 -
             2 * t
         );
@@ -1556,7 +1363,6 @@ function getTriggerColor(
 
 
     return `rgb(${r}, ${g}, ${b})`;
-
 }
 
 
@@ -1564,9 +1370,7 @@ function getTriggerColor(
    COLOR DEL BORDE
 ========================================================= */
 
-function getTriggerStroke(
-    value
-) {
+function getTriggerStroke(value) {
 
     const start = {
         r: 17,
@@ -1587,8 +1391,7 @@ function getTriggerStroke(
             0,
             Math.min(
                 1,
-                Number(value) ||
-                0
+                Number(value) || 0
             )
         );
 
@@ -1627,7 +1430,6 @@ function getTriggerStroke(
 
 
     return `rgb(${r}, ${g}, ${b})`;
-
 }
 
 
@@ -1636,21 +1438,41 @@ function getTriggerStroke(
 ========================================================= */
 
 /*
-   El gatillo gira desde su zona superior.
+ * IMPORTANTE
+ *
+ * Los gatillos del SVG aprobado están colocados:
+ *
+ *       L2
+ *       L1
+ *
+ * y:
+ *
+ *       R2
+ *       R1
+ *
+ * La parte curva queda hacia el EXTERIOR.
+ *
+ * El movimiento de L2/R2 se interpreta desde
+ * una vista superior del mando.
+ *
+ * Por eso NO hacemos una rotación diagonal
+ * grande.
+ *
+ * El movimiento principal es hacia ABAJO.
+ *
+ * Esto representa visualmente el hundimiento
+ * del gatillo.
+ *
+ * El SVG debe contener:
+ *
+ * .trigger-widget[data-trigger="l2"]
+ * .trigger-widget[data-trigger="r2"]
+ */
 
-   L2 y R2 están espejados:
 
-   L2 -> gira hacia el centro.
-   R2 -> gira hacia el centro.
-
-   No trasladamos todo el gatillo hacia abajo.
-   La punta se hunde por ROTACIÓN alrededor del pivote.
-
-   Pivotes basados en la geometría actual del SVG:
-
-       L2 = 99, 38
-       R2 = 581, 38
-*/
+/* =========================================================
+   TRANSFORMACIÓN DEL GATILLO
+========================================================= */
 
 function getTriggerTransform(
     side,
@@ -1662,36 +1484,57 @@ function getTriggerTransform(
             0,
             Math.min(
                 1,
-                Number(value) ||
-                0
+                Number(value) || 0
             )
         );
 
 
+    /*
+     * Suavizado.
+     */
+
     const eased =
-        t * t * (
+        t * t *
+        (
             3 -
             2 * t
         );
 
 
-    const maxRotation =
-        11;
+    /*
+     * Movimiento vertical.
+     *
+     * NO desplazamos horizontalmente.
+     * NO hacemos una rotación exagerada.
+     *
+     * El gatillo se hunde hacia abajo.
+     */
+
+    const verticalMove =
+        eased * 11;
 
 
-    if (
-        side ===
-        "l2"
-    ) {
+    /*
+     * Una rotación mínima solamente para
+     * conservar sensación mecánica.
+     *
+     * El movimiento visual principal continúa
+     * siendo vertical.
+     */
 
-        const angle =
-            -eased *
-            maxRotation;
+    const smallRotation =
+        eased * 1.5;
 
+
+    if (side === "l2") {
 
         return `
+            translate(
+                0
+                ${verticalMove.toFixed(3)}
+            )
             rotate(
-                ${angle.toFixed(3)}
+                ${(-smallRotation).toFixed(3)}
                 99
                 38
             )
@@ -1700,19 +1543,17 @@ function getTriggerTransform(
     }
 
 
-    const angle =
-        eased *
-        maxRotation;
-
-
     return `
+        translate(
+            0
+            ${verticalMove.toFixed(3)}
+        )
         rotate(
-            ${angle.toFixed(3)}
+            ${smallRotation.toFixed(3)}
             581
             38
         )
     `;
-
 }
 
 
@@ -1740,8 +1581,7 @@ function updateTrigger(
             0,
             Math.min(
                 1,
-                Number(value) ||
-                0
+                Number(value) || 0
             )
         );
 
@@ -1780,7 +1620,7 @@ function updateTrigger(
 
 
     /* =====================================================
-       MOVIMIENTO FÍSICO
+       MOVIMIENTO
     ===================================================== */
 
     widget.setAttribute(
@@ -1819,7 +1659,7 @@ function updateTrigger(
 
 
     /* =====================================================
-       TEXTO
+       PORCENTAJE
     ===================================================== */
 
     const percent =
@@ -1831,13 +1671,11 @@ function updateTrigger(
     if (percent) {
 
         percent.textContent =
-            percentage +
-            "%";
+            percentage + "%";
 
 
         percent.style.fill =
-            normalized >
-            0.55
+            normalized > 0.55
                 ? "#ffffff"
                 : "#cbd5e1";
 
@@ -1850,35 +1688,25 @@ function updateTrigger(
 
     widget.classList.toggle(
         "pressed",
-        normalized >
-        0.05
+        normalized > 0.05
     );
 
-
-    /* =====================================================
-       BOTÓN L2 / R2
-    ===================================================== */
 
     if (body) {
 
         body.classList.toggle(
             "pressed",
-            normalized >
-            0.1
+            normalized > 0.10
         );
 
     }
 
 
-    /*
-       Marcamos el botón como probado
-       cuando supera una presión mínima.
-    */
+    /* =====================================================
+       MARCAR L2/R2 COMO PROBADOS
+    ===================================================== */
 
-    if (
-        normalized >
-        0.10
-    ) {
+    if (normalized > 0.10) {
 
         markButtonTested(
             buttonIndex
@@ -1894,35 +1722,26 @@ function updateTrigger(
 ========================================================= */
 
 document
-    .querySelectorAll(
-        ".vibe-btn"
-    )
+    .querySelectorAll(".vibe-btn")
     .forEach(
-        (
-            btn
-        ) => {
+        (btn) => {
 
             btn.addEventListener(
                 "click",
                 async () => {
 
                     if (
-                        gamepadIndex ===
-                        null
+                        gamepadIndex === null
                     ) {
 
-                        if (
-                            vibeNote
-                        ) {
+                        if (vibeNote) {
 
                             vibeNote.textContent =
                                 "Conectá un joystick primero";
 
                         }
 
-
                         return;
-
                     }
 
 
@@ -1939,18 +1758,14 @@ document
                         !gp.vibrationActuator
                     ) {
 
-                        if (
-                            vibeNote
-                        ) {
+                        if (vibeNote) {
 
                             vibeNote.textContent =
                                 "Vibración no soportada";
 
                         }
 
-
                         return;
-
                     }
 
 
@@ -1973,8 +1788,7 @@ document
 
 
                     if (
-                        type ===
-                        "light"
+                        type === "light"
                     ) {
 
                         params.strongMagnitude =
@@ -1987,8 +1801,7 @@ document
 
 
                     else if (
-                        type ===
-                        "heavy"
+                        type === "heavy"
                     ) {
 
                         params.strongMagnitude =
@@ -2001,8 +1814,7 @@ document
 
 
                     else if (
-                        type ===
-                        "full"
+                        type === "full"
                     ) {
 
                         params.strongMagnitude =
@@ -2024,9 +1836,7 @@ document
                             );
 
 
-                        if (
-                            vibeNote
-                        ) {
+                        if (vibeNote) {
 
                             vibeNote.textContent =
                                 "Vibrando...";
@@ -2036,9 +1846,7 @@ document
                     }
 
 
-                    catch (
-                        error
-                    ) {
+                    catch (error) {
 
                         console.error(
                             "Error de vibración:",
@@ -2046,9 +1854,7 @@ document
                         );
 
 
-                        if (
-                            vibeNote
-                        ) {
+                        if (vibeNote) {
 
                             vibeNote.textContent =
                                 "Error de vibración";
@@ -2061,13 +1867,9 @@ document
                     setTimeout(
                         () => {
 
-                            if (
-                                vibeNote
-                            ) {
-
+                            if (vibeNote) {
                                 vibeNote.textContent =
                                     "";
-
                             }
 
                         },
@@ -2089,23 +1891,19 @@ function resetVisualState() {
 
     testedButtons = [];
 
-
     updateProgress();
 
 
-    /*
-       Limpiar estados de todos
-       los elementos interactivos.
-    */
+    /* =====================================================
+       LIMPIAR BOTONES
+    ===================================================== */
 
     document
         .querySelectorAll(
             "[data-button], [data-btn]"
         )
         .forEach(
-            (
-                element
-            ) => {
+            (element) => {
 
                 element.classList.remove(
                     "pressed"
@@ -2115,18 +1913,14 @@ function resetVisualState() {
         );
 
 
-    /*
-       Limpiar chips.
-    */
+    /* =====================================================
+       LIMPIAR CHIPS
+    ===================================================== */
 
     document
-        .querySelectorAll(
-            ".chip"
-        )
+        .querySelectorAll(".chip")
         .forEach(
-            (
-                chip
-            ) => {
+            (chip) => {
 
                 chip.classList.remove(
                     "active"
@@ -2136,18 +1930,16 @@ function resetVisualState() {
         );
 
 
-    /*
-       Limpiar flechas del D-pad.
-    */
+    /* =====================================================
+       LIMPIAR D-PAD
+    ===================================================== */
 
     document
         .querySelectorAll(
             ".dpad-arrow"
         )
         .forEach(
-            (
-                arrow
-            ) => {
+            (arrow) => {
 
                 arrow.classList.remove(
                     "pressed"
@@ -2157,16 +1949,14 @@ function resetVisualState() {
         );
 
 
-    /*
-       Reset de sticks.
-    */
+    /* =====================================================
+       RESET STICKS
+    ===================================================== */
 
     Object.keys(
         stickState
     ).forEach(
-        (
-            side
-        ) => {
+        (side) => {
 
             stickState[
                 side
@@ -2186,9 +1976,7 @@ function resetVisualState() {
         "left",
         "right"
     ].forEach(
-        (
-            side
-        ) => {
+        (side) => {
 
             const elements =
                 getStickElements(
@@ -2205,9 +1993,7 @@ function resetVisualState() {
             if (!elements) return;
 
 
-            if (
-                elements.knob
-            ) {
+            if (elements.knob) {
 
                 elements.knob.setAttribute(
                     "cx",
@@ -2223,9 +2009,7 @@ function resetVisualState() {
             }
 
 
-            if (
-                elements.percent
-            ) {
+            if (elements.percent) {
 
                 elements.percent.textContent =
                     "0%";
@@ -2233,9 +2017,7 @@ function resetVisualState() {
             }
 
 
-            if (
-                elements.line
-            ) {
+            if (elements.line) {
 
                 elements.line.setAttribute(
                     "x1",
@@ -2263,9 +2045,7 @@ function resetVisualState() {
             }
 
 
-            if (
-                elements.dot
-            ) {
+            if (elements.dot) {
 
                 elements.dot.setAttribute(
                     "cx",
@@ -2290,18 +2070,16 @@ function resetVisualState() {
     );
 
 
-    /*
-       Reset L2/R2.
-    */
+    /* =====================================================
+       RESET L2 / R2
+    ===================================================== */
 
     document
         .querySelectorAll(
             ".trigger-widget"
         )
         .forEach(
-            (
-                widget
-            ) => {
+            (widget) => {
 
                 widget.classList.remove(
                     "active"
@@ -2314,9 +2092,9 @@ function resetVisualState() {
 
 
                 /*
-                   Volver a la posición
-                   física de reposo.
-                */
+                 * Volver exactamente a la posición
+                 * original definida por el SVG.
+                 */
 
                 widget.removeAttribute(
                     "transform"
