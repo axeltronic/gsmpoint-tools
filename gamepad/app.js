@@ -8,373 +8,682 @@ const progressSpan = document.getElementById("progress");
 const chipsContainer = document.getElementById("chips");
 const vibeNote = document.getElementById("vibe-note");
 
-// Nombres para los chips de botones probados
+// =========================================================
+// NOMBRES DE BOTONES
+// =========================================================
+
 const buttonNames = [
-  "✕", "○", "□", "△",      // 0-3
-  "L1", "R1",              // 4-5
-  "L2", "R2",              // 6-7
-  "Share", "Options",      // 8-9
-  "L3", "R3",              // 10-11
-  "↑", "↓", "←", "→",      // 12-15
-  "Home"                   // 16
+  "✕", "○", "□", "△",
+  "L1", "R1",
+  "L2", "R2",
+  "Share", "Options",
+  "L3", "R3",
+  "↑", "↓", "←", "→",
+  "Home"
 ];
 
 let testedButtons = [];
 
-// Conexión
+// =========================================================
+// CONEXIÓN
+// =========================================================
+
 window.addEventListener("gamepadconnected", (e) => {
+
   gamepadIndex = e.gamepad.index;
-  let type = detectController(e.gamepad);
+
+  const type = detectController(e.gamepad);
 
   status.innerHTML = "✅ Joystick conectado";
-  controllerName.innerHTML = e.gamepad.id;
-  controllerType.innerHTML = "Layout: " + type;
+  controllerName.textContent = e.gamepad.id;
+  controllerType.textContent = "Layout: " + type;
 
   tester.classList.remove("hidden");
-  createButtonChips();   // crea los chips iniciales
+
+  createButtonChips();
+
 });
 
 window.addEventListener("gamepaddisconnected", () => {
+
   gamepadIndex = null;
+
   status.innerHTML = "❌ Joystick desconectado";
+
   tester.classList.add("hidden");
+
   testedButtons = [];
+
   progressSpan.textContent = "0";
+
   chipsContainer.innerHTML = "";
+
 });
 
+// =========================================================
+// DETECTAR CONTROLADOR
+// =========================================================
+
 function detectController(gp) {
-  let id = gp.id.toLowerCase();
-  if (id.includes("sony") || id.includes("dualshock") || id.includes("dualsense") || id.includes("054c"))
+
+  const id = gp.id.toLowerCase();
+
+  if (
+    id.includes("sony") ||
+    id.includes("dualshock") ||
+    id.includes("dualsense") ||
+    id.includes("054c")
+  ) {
     return "playstation";
-  if (id.includes("xbox") || id.includes("microsoft"))
+  }
+
+  if (
+    id.includes("xbox") ||
+    id.includes("microsoft")
+  ) {
     return "xbox";
-  if (id.includes("switch") || id.includes("nintendo"))
+  }
+
+  if (
+    id.includes("switch") ||
+    id.includes("nintendo")
+  ) {
     return "switch";
+  }
+
   return "generic";
 }
 
-// Crear chips de botones
+// =========================================================
+// CHIPS
+// =========================================================
+
 function createButtonChips() {
+
   chipsContainer.innerHTML = "";
+
   buttonNames.forEach((name, index) => {
-    let chip = document.createElement("span");
+
+    const chip = document.createElement("span");
+
     chip.className = "chip";
     chip.id = "chip-" + index;
     chip.textContent = name;
+
     chipsContainer.appendChild(chip);
+
   });
-}
-
-/* ===========================
-   STICK PRO RING
-=========================== */
-
-const stickHistory = {
-
-    "stick-l": new Array(180).fill(false),
-    "stick-r": new Array(180).fill(false)
-
-};
-
-const ringSegments = {
-    "stick-l": [],
-    "stick-r": []
-};
-
-function createRing(id){
-
-    const svg = document.getElementById(id);
-
-    if(!svg) return;
-
-    const NS = "http://www.w3.org/2000/svg";
-
-    const segments = [];
-
-    const total = 180;
-
-    const inner = 42;
-    const outer = 48;
-
-    for(let i=0;i<total;i++){
-
-        const a = (i / total) * Math.PI * 2 - Math.PI/2;
-
-        const x1 = 50 + Math.cos(a) * inner;
-        const y1 = 50 + Math.sin(a) * inner;
-
-        const x2 = 50 + Math.cos(a) * outer;
-        const y2 = 50 + Math.sin(a) * outer;
-
-        const line = document.createElementNS(NS,"line");
-
-        line.setAttribute("x1",x1);
-        line.setAttribute("y1",y1);
-
-        line.setAttribute("x2",x2);
-        line.setAttribute("y2",y2);
-
-        line.classList.add("checkpoint");
-
-        svg.appendChild(line);
-
-        segments.push(line);
-
-    }
-
-    ringSegments[
-    id === "ring-l"
-        ? "stick-l"
-        : "stick-r"
-] = segments;
 
 }
+
+// =========================================================
+// MAIN LOOP
+// =========================================================
 
 function update() {
+
   if (gamepadIndex !== null) {
-    let gp = navigator.getGamepads()[gamepadIndex];
+
+    const gamepads = navigator.getGamepads();
+
+    const gp = gamepads[gamepadIndex];
 
     if (gp) {
+
       updateButtons(gp);
+
       updateSticks(gp);
+
       updateTriggers(gp);
+
     }
+
   }
 
   requestAnimationFrame(update);
-}
 
-createRing("ring-l");
-createRing("ring-r");
+}
 
 update();
 
-// Botones
+// =========================================================
+// BOTONES
+// =========================================================
+
 function updateButtons(gp) {
-  // Iteramos sobre los índices que usamos (0-16)
+
   for (let i = 0; i <= 16; i++) {
-    let button = gp.buttons[i];
+
+    const button = gp.buttons[i];
+
     if (!button) continue;
-    let element = document.querySelector(`[data-btn="${i}"]`);
+
+    /*
+      Compatible con:
+      data-btn="0"
+      y con el SVG nuevo:
+      data-button="0"
+    */
+
+    const element =
+      document.querySelector(`[data-btn="${i}"]`) ||
+      document.querySelector(`[data-button="${i}"]`);
+
     if (!element) continue;
 
     if (button.pressed) {
+
       element.classList.add("pressed");
+
       markButtonTested(i);
+
     } else {
+
       element.classList.remove("pressed");
+
     }
+
   }
+
 }
 
-/* ===========================
-   STICKS
-=========================== */
+// =========================================================
+// STICKS
+// =========================================================
+
+const stickState = {
+
+  left: {
+    x: 245,
+    y: 218,
+    percent: 0
+  },
+
+  right: {
+    x: 435,
+    y: 218,
+    percent: 0
+  }
+
+};
+
+// ---------------------------------------------------------
+// UPDATE STICKS
+// ---------------------------------------------------------
 
 function updateSticks(gp) {
 
-  updateStick(
-    "stick-l",
-    "knob-l",
-    "dial-l-progress",
-    "dial-l-txt",
+  updateStickSVG(
+    "left",
     gp.axes[0],
     gp.axes[1]
   );
 
-  updateStick(
-    "stick-r",
-    "knob-r",
-    "dial-r-progress",
-    "dial-r-txt",
+  updateStickSVG(
+    "right",
     gp.axes[2],
     gp.axes[3]
   );
 
 }
 
-function updateStick(containerId, knobId, progressId, textId, x, y) {
+// ---------------------------------------------------------
+// UPDATE STICK SVG
+// ---------------------------------------------------------
 
-  const container = document.getElementById(containerId);
-  const knob = document.getElementById(knobId);
+function updateStickSVG(side, rawX, rawY) {
 
-  const progress = document.getElementById(progressId);
-  const text = document.getElementById(textId);
-
-  const dot = document.getElementById(
-    progressId.replace("progress", "dot")
+  const analog = document.querySelector(
+    `.analog[data-stick="${side}"]`
   );
 
-  const line = document.getElementById(
-    progressId.replace("progress", "line")
-  );
+  if (!analog) return;
 
-  if (!container || !knob) return;
+  const knob =
+    analog.querySelector(".analog-knob");
 
-  x = Number.isFinite(x) ? x : 0;
-  y = Number.isFinite(y) ? y : 0;
+  const highlight =
+    analog.querySelector(".analog-highlight");
 
-  const KNOB_RADIUS = 28;
-const RING_RADIUS = 58;
+  const percent =
+    analog.querySelector(".analog-percent");
 
-const maxMove = RING_RADIUS - KNOB_RADIUS;
+  const progress =
+    analog.querySelector(".analog-progress");
 
-const len = Math.hypot(x, y);
+  if (!knob) return;
 
-if (len > 1) {
+  let x = Number.isFinite(rawX)
+    ? rawX
+    : 0;
 
-    x /= len;
-    y /= len;
+  let y = Number.isFinite(rawY)
+    ? rawY
+    : 0;
 
-}
+  // =======================================================
+  // DEAD ZONE
+  // =======================================================
 
-const dx = x * maxMove;
-const dy = y * maxMove;
+  const deadZone = 0.08;
 
-knob.style.transform =
-`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+  if (Math.abs(x) < deadZone) {
+    x = 0;
+  }
 
-  const magnitude = Math.min(
-    Math.sqrt(x * x + y * y),
+  if (Math.abs(y) < deadZone) {
+    y = 0;
+  }
+
+  // =======================================================
+  // MAGNITUD
+  // =======================================================
+
+  let magnitude = Math.hypot(x, y);
+
+  magnitude = Math.min(
+    magnitude,
     1
   );
 
-  text.textContent =
-    Math.round(magnitude * 100) + "%";
+  // =======================================================
+  // CENTRO
+  // =======================================================
 
-  /* progreso circular */
+  const cx =
+    side === "left"
+      ? 245
+      : 435;
+
+  const cy = 218;
+
+  // =======================================================
+  // MOVIMIENTO DEL KNOB
+  // =======================================================
+
+  const travel = 17;
+
+  const knobX =
+    cx + x * travel;
+
+  const knobY =
+    cy + y * travel;
+
+  knob.setAttribute(
+    "cx",
+    knobX
+  );
+
+  knob.setAttribute(
+    "cy",
+    knobY
+  );
+
+  // =======================================================
+  // HIGHLIGHT
+  // =======================================================
+
+  if (highlight) {
+
+    highlight.setAttribute(
+      "cx",
+      knobX - 5
+    );
+
+    highlight.setAttribute(
+      "cy",
+      knobY - 5
+    );
+
+  }
+
+  // =======================================================
+  // PORCENTAJE
+  // =======================================================
+
+  const value =
+    Math.round(
+      magnitude * 100
+    );
+
+  if (percent) {
+
+    percent.textContent =
+      value + "%";
+
+  }
+
+  // =======================================================
+  // ARO DE PROGRESO
+  // =======================================================
 
   if (progress) {
 
-    const circumference = 2 * Math.PI * 46;
+    const radius = 33;
 
-    progress.style.strokeDasharray = circumference;
+    const circumference =
+      2 * Math.PI * radius;
+
+    progress.style.strokeDasharray =
+      circumference;
 
     progress.style.strokeDashoffset =
-      circumference - (circumference * magnitude);
+      circumference -
+      circumference * magnitude;
 
-  }
-
-  /* dirección */
-
-  const angle = Math.atan2(y, x);
-
-const radius = 46;
-
-const cx = 50;
-const cy = 50;
-
-const px = cx + Math.cos(angle) * radius;
-const py = cy + Math.sin(angle) * radius;
-
-if (dot) {
-    dot.setAttribute("cx", px);
-    dot.setAttribute("cy", py);
-}
-
-if (line) {
-
-    line.setAttribute("x1", cx);
-    line.setAttribute("y1", cy);
-
-    line.setAttribute("x2", px);
-    line.setAttribute("y2", py);
-
-}
-
-  /* ===========================
-     NUEVO ANILLO DE CHECKPOINTS
-  ============================ */
-
-const ring = ringSegments[containerId];
-const history = stickHistory[containerId];
-
-if (ring && history) {
-
-    // grado actual
-    const SEGMENTS = 180;
-
-let segment = Math.floor(
-    ((angle + Math.PI) / (Math.PI * 2)) * SEGMENTS
-);
-
-history[segment] = true;
-
-    for (let i = 0; i < ring.length; i++) {
-
-    ring[i].classList.toggle(
-        "visited",
-        history[i]
+    progress.classList.toggle(
+      "active",
+      magnitude > 0.05
     );
 
-    ring[i].classList.remove("current");
+  }
+
+  // =======================================================
+  // GUARDAR ESTADO
+  // =======================================================
+
+  stickState[side] = {
+
+    x: x,
+
+    y: y,
+
+    percent: value
+
+  };
 
 }
 
-ring[segment].classList.add("current");
+// =========================================================
+// TRIGGERS L2 / R2
+// =========================================================
 
-ring[segment].classList.add("current");
-}
-
-// 👇 ESTA LLAVE FALTABA
-}
-
-// Gatillos (L2/R2) analógicos
 function updateTriggers(gp) {
-  const l2 = gp.buttons[6]?.value || 0;
-  const r2 = gp.buttons[7]?.value || 0;
 
-  const l2Btn = document.querySelector('[data-btn="6"]');
-  const r2Btn = document.querySelector('[data-btn="7"]');
+  const l2 =
+    gp.buttons[6]?.value || 0;
+
+  const r2 =
+    gp.buttons[7]?.value || 0;
+
+  updateTriggerSVG(
+    "l2",
+    l2
+  );
+
+  updateTriggerSVG(
+    "r2",
+    r2
+  );
+
+  // Compatibilidad con el sistema anterior
+
+  const l2Btn =
+    document.querySelector(
+      '.trigger-2d.l2'
+    );
+
+  const r2Btn =
+    document.querySelector(
+      '.trigger-2d.r2'
+    );
+
   if (l2Btn) {
-    l2Btn.style.transform = `translateY(${l2 * 6}px)`;
-    if (l2 > 0.1) l2Btn.classList.add("pressed");
-    else l2Btn.classList.remove("pressed");
+
+    l2Btn.style.transform =
+      `translateY(${l2 * 6}px)`;
+
+    l2Btn.classList.toggle(
+      "pressed",
+      l2 > 0.1
+    );
+
   }
+
   if (r2Btn) {
-    r2Btn.style.transform = `translateY(${r2 * 6}px)`;
-    if (r2 > 0.1) r2Btn.classList.add("pressed");
-    else r2Btn.classList.remove("pressed");
+
+    r2Btn.style.transform =
+      `translateY(${r2 * 6}px)`;
+
+    r2Btn.classList.toggle(
+      "pressed",
+      r2 > 0.1
+    );
+
   }
+
 }
 
-// Progreso de botones probados
+// ---------------------------------------------------------
+// TRIGGER SVG
+// ---------------------------------------------------------
+
+function updateTriggerSVG(
+  side,
+  value
+) {
+
+  const widget =
+    document.querySelector(
+      `.trigger-widget[data-trigger="${side}"]`
+    );
+
+  if (!widget) return;
+
+  const fill =
+    widget.querySelector(
+      ".trigger-fill"
+    );
+
+  const percent =
+    widget.querySelector(
+      ".trigger-percent"
+    );
+
+  const normalized =
+    Math.max(
+      0,
+      Math.min(
+        1,
+        value
+      )
+    );
+
+  const valuePercent =
+    Math.round(
+      normalized * 100
+    );
+
+  // =======================================================
+  // BARRA
+  // =======================================================
+
+  if (fill) {
+
+    const maxHeight = 92;
+
+    const height =
+      maxHeight * normalized;
+
+    fill.setAttribute(
+      "height",
+      height
+    );
+
+    fill.setAttribute(
+      "y",
+      130 - height
+    );
+
+  }
+
+  // =======================================================
+  // PORCENTAJE
+  // =======================================================
+
+  if (percent) {
+
+    percent.textContent =
+      valuePercent + "%";
+
+  }
+
+  // =======================================================
+  // ESTADO ACTIVO
+  // =======================================================
+
+  widget.classList.toggle(
+    "active",
+    normalized > 0.01
+  );
+
+}
+
+// =========================================================
+// PROGRESO DE BOTONES
+// =========================================================
+
 function markButtonTested(index) {
-  if (testedButtons.includes(index)) return;
+
+  if (
+    testedButtons.includes(index)
+  ) {
+    return;
+  }
+
   testedButtons.push(index);
 
-  let chip = document.getElementById("chip-" + index);
+  const chip =
+    document.getElementById(
+      "chip-" + index
+    );
+
   if (chip) {
-    chip.classList.add("active");
+
+    chip.classList.add(
+      "active"
+    );
+
   }
 
-  progressSpan.textContent = testedButtons.length;
+  progressSpan.textContent =
+    testedButtons.length;
+
 }
 
-// Vibración con tres intensidades
-document.querySelectorAll(".vibe-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    let gp = navigator.getGamepads()[gamepadIndex];
-    if (!gp || !gp.vibrationActuator) {
-      vibeNote.textContent = "Vibración no soportada";
-      return;
-    }
-    
-    const type = btn.dataset.vibe;
-    let params = { duration: 500, strongMagnitude: 0, weakMagnitude: 0 };
-    if (type === "light") {
-      params.strongMagnitude = 0.3;
-      params.weakMagnitude = 0.3;
-    } else if (type === "heavy") {
-      params.strongMagnitude = 1.0;
-      params.weakMagnitude = 0.3;
-    } else if (type === "full") {
-      params.strongMagnitude = 1.0;
-      params.weakMagnitude = 1.0;
-    }
-    gp.vibrationActuator.playEffect("dual-rumble", params);
-    vibeNote.textContent = "Vibrando...";
-    setTimeout(() => { vibeNote.textContent = ""; }, 500);
+// =========================================================
+// VIBRACIÓN
+// =========================================================
+
+document
+  .querySelectorAll(".vibe-btn")
+  .forEach(btn => {
+
+    btn.addEventListener(
+      "click",
+      async () => {
+
+        if (gamepadIndex === null) {
+
+          vibeNote.textContent =
+            "Conectá un joystick primero";
+
+          return;
+
+        }
+
+        const gp =
+          navigator.getGamepads()
+          [gamepadIndex];
+
+        if (
+          !gp ||
+          !gp.vibrationActuator
+        ) {
+
+          vibeNote.textContent =
+            "Vibración no soportada";
+
+          return;
+
+        }
+
+        const type =
+          btn.dataset.vibe;
+
+        const params = {
+
+          duration: 500,
+
+          strongMagnitude: 0,
+
+          weakMagnitude: 0
+
+        };
+
+        if (
+          type === "light"
+        ) {
+
+          params.strongMagnitude =
+            0.3;
+
+          params.weakMagnitude =
+            0.3;
+
+        } else if (
+          type === "heavy"
+        ) {
+
+          params.strongMagnitude =
+            1.0;
+
+          params.weakMagnitude =
+            0.3;
+
+        } else if (
+          type === "full"
+        ) {
+
+          params.strongMagnitude =
+            1.0;
+
+          params.weakMagnitude =
+            1.0;
+
+        }
+
+        try {
+
+          await gp.vibrationActuator
+            .playEffect(
+              "dual-rumble",
+              params
+            );
+
+          vibeNote.textContent =
+            "Vibrando...";
+
+        } catch (error) {
+
+          console.error(
+            "Error de vibración:",
+            error
+          );
+
+          vibeNote.textContent =
+            "Error de vibración";
+
+        }
+
+        setTimeout(() => {
+
+          vibeNote.textContent =
+            "";
+
+        }, 500);
+
+      }
+    );
+
   });
-});
