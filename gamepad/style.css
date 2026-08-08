@@ -115,9 +115,7 @@ main {
 
 .pad {
     background: #1e293b;
-
     border: 1px solid #0f172a;
-
     border-radius: 6px;
 
     cursor: pointer;
@@ -130,50 +128,7 @@ main {
     box-shadow:
         inset 0 1px 2px rgba(255,255,255,.15),
         0 2px 4px rgba(0,0,0,.18);
-}
 
-/* Formas biseladas del D-Pad */
-
-.pad.up {
-    clip-path: polygon(
-        22% 0,
-        78% 0,
-        100% 22%,
-        100% 78%,
-        78% 100%,
-        22% 100%,
-        0 78%,
-        0 22%
-    );
-}
-
-.pad.down {
-    clip-path: polygon(
-        22% 0,
-        78% 0,
-        100% 22%,
-        100% 78%,
-        78% 100%,
-        22% 100%,
-        0 78%,
-        0 22%
-    );
-}
-
-.pad.left {
-    clip-path: polygon(
-        22% 0,
-        78% 0,
-        100% 22%,
-        100% 78%,
-        78% 100%,
-        22% 100%,
-        0 78%,
-        0 22%
-    );
-}
-
-.pad.right {
     clip-path: polygon(
         22% 0,
         78% 0,
