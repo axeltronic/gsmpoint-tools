@@ -113,8 +113,7 @@ main {
     width: 680px;
     height: 400px;
 
-    transform:
-        translateX(-50%);
+    transform: translateX(-50%);
 
     color: #172033;
 }
@@ -144,7 +143,7 @@ main {
     filter:
         drop-shadow(
             0 8px 18px
-            rgba(15,23,42,.08)
+            rgba(15, 23, 42, .08)
         );
 
     vector-effect: non-scaling-stroke;
@@ -168,7 +167,7 @@ main {
     filter:
         drop-shadow(
             0 0 3px
-            rgba(37,99,235,.35)
+            rgba(37, 99, 235, .35)
         );
 }
 
@@ -195,7 +194,7 @@ main {
     filter:
         drop-shadow(
             0 2px 2px
-            rgba(0,0,0,.25)
+            rgba(0, 0, 0, .25)
         );
 
     transition:
@@ -204,10 +203,12 @@ main {
         filter .08s ease;
 }
 
+
 /*
    Cada zona del D-PAD queda por encima
    de la cruz visual.
 */
+
 .dpad-hit {
     cursor: pointer;
 
@@ -219,14 +220,16 @@ main {
 }
 
 .dpad-hit.pressed {
-    fill: rgba(37,99,235,.35);
+    fill: rgba(37, 99, 235, .35);
 }
+
 
 /*
    Estado general de la cruz.
-   El JS nuevo va a controlar cada dirección
-   individualmente sin pintar las cuatro.
+   El JS controla cada dirección
+   individualmente.
 */
+
 .dpad-main.pressed {
     fill: #2563eb;
 
@@ -235,7 +238,7 @@ main {
     filter:
         drop-shadow(
             0 0 6px
-            rgba(37,99,235,.45)
+            rgba(37, 99, 235, .45)
         );
 }
 
@@ -307,7 +310,7 @@ main {
     filter:
         drop-shadow(
             0 2px 2px
-            rgba(0,0,0,.18)
+            rgba(0, 0, 0, .18)
         );
 
     cursor: pointer;
@@ -326,7 +329,7 @@ main {
     filter:
         drop-shadow(
             0 0 6px
-            rgba(37,99,235,.45)
+            rgba(37, 99, 235, .45)
         );
 }
 
@@ -346,8 +349,7 @@ main {
     transition:
         fill .08s ease,
         stroke .08s ease,
-        filter .08s ease,
-        transform .08s ease;
+        filter .08s ease;
 
     transform-box: fill-box;
     transform-origin: center;
@@ -405,7 +407,7 @@ main {
     filter:
         drop-shadow(
             0 0 6px
-            rgba(34,197,94,.55)
+            rgba(34, 197, 94, .55)
         );
 
     transform:
@@ -442,8 +444,7 @@ main {
     stroke-dasharray:
         1.3 2.3;
 
-    transform-origin:
-        center;
+    transform-origin: center;
 
     transform:
         rotate(-90deg);
@@ -473,7 +474,7 @@ main {
     filter:
         drop-shadow(
             0 3px 3px
-            rgba(0,0,0,.35)
+            rgba(0, 0, 0, .35)
         );
 
     cursor: pointer;
@@ -485,7 +486,7 @@ main {
 
 .analog-highlight {
     fill:
-        rgba(255,255,255,.16);
+        rgba(255, 255, 255, .16);
 
     pointer-events: none;
 }
@@ -581,7 +582,7 @@ main {
     filter:
         drop-shadow(
             0 0 6px
-            rgba(37,99,235,.45)
+            rgba(37, 99, 235, .45)
         );
 }
 
@@ -593,6 +594,13 @@ main {
 
 .trigger-widget {
     pointer-events: none;
+
+    /*
+       IMPORTANTE:
+       El SVG determina la posición,
+       orientación y geometría del gatillo.
+       CSS no lo desplaza.
+    */
 }
 
 .trigger-body {
@@ -606,24 +614,31 @@ main {
     filter:
         drop-shadow(
             0 3px 4px
-            rgba(0,0,0,.25)
+            rgba(0, 0, 0, .25)
         );
 
     pointer-events: none;
 
+    /*
+       No usar translate ni rotate aquí.
+       El movimiento del gatillo lo controla
+       app.js sobre el SVG.
+    */
+
     transition:
-        fill .04s linear,
-        stroke .04s linear,
+        fill .035s linear,
+        stroke .035s linear,
         filter .08s ease;
 }
 
 
 /*
-   Reflejo superior del gatillo.
+   Reflejo superior.
 */
+
 .trigger-highlight {
     fill:
-        rgba(255,255,255,.12);
+        rgba(255, 255, 255, .12);
 
     opacity: .9;
 
@@ -637,6 +652,7 @@ main {
 /*
    Texto L2 / R2.
 */
+
 .trigger-widget .trigger-text {
     fill: #e5e7eb;
 
@@ -650,6 +666,7 @@ main {
 /*
    Porcentaje del gatillo.
 */
+
 .trigger-percent {
     fill: #cbd5e1;
 
@@ -672,12 +689,18 @@ main {
 
 /*
    Gatillo presionado.
+
+   IMPORTANTE:
+   No mover con translateY.
+   El hundimiento real se calcula
+   desde JavaScript/SVG.
 */
+
 .trigger-widget.pressed .trigger-body {
     filter:
         drop-shadow(
             0 0 7px
-            rgba(34,197,94,.35)
+            rgba(34, 197, 94, .35)
         );
 }
 
@@ -687,20 +710,21 @@ main {
 
 
 /*
-   Variables CSS que va a controlar app.js:
+   El color puede ser cambiado
+   directamente por app.js.
 
-   --trigger-progress: 0 → 1
-   --trigger-color-rgb: color generado por JS
+   --trigger-progress:
+   0 → 1
 
-   El JS podrá cambiar directamente el fill
-   del path para que la transición sea continua.
+   --trigger-color-rgb:
+   color generado por JS.
 */
+
 .trigger-body {
     transition:
         fill .035s linear,
         stroke .035s linear,
-        filter .08s ease,
-        transform .035s linear;
+        filter .08s ease;
 }
 
 
@@ -720,7 +744,7 @@ main {
     filter:
         drop-shadow(
             0 3px 4px
-            rgba(0,0,0,.24)
+            rgba(0, 0, 0, .24)
         );
 
     cursor: pointer;
@@ -728,8 +752,12 @@ main {
     transition:
         fill .08s ease,
         stroke .08s ease,
-        filter .08s ease,
-        transform .06s ease;
+        filter .08s ease;
+
+    /*
+       No transform permanente.
+       La posición pertenece al SVG.
+    */
 
     transform-box: fill-box;
     transform-origin: center;
@@ -743,12 +771,17 @@ main {
     filter:
         drop-shadow(
             0 0 7px
-            rgba(37,99,235,.5)
+            rgba(37, 99, 235, .5)
         );
 
-    transform:
-        translateY(2px)
-        scale(.985);
+    /*
+       Eliminado:
+       translateY(2px)
+       scale(.985)
+
+       No queremos que CSS cambie
+       la posición física del bumper.
+    */
 }
 
 .bumper-text {
@@ -798,7 +831,7 @@ main {
     filter:
         drop-shadow(
             0 0 2px
-            rgba(34,197,94,.35)
+            rgba(34, 197, 94, .35)
         );
 }
 
@@ -812,7 +845,7 @@ main {
     filter:
         drop-shadow(
             0 0 4px
-            rgba(16,185,129,.55)
+            rgba(16, 185, 129, .55)
         );
 }
 
@@ -912,7 +945,7 @@ main {
 
     box-shadow:
         0 0 7px
-        rgba(34,197,94,.22);
+        rgba(34, 197, 94, .22);
 }
 
 
@@ -976,6 +1009,7 @@ main {
    Evitamos que los textos interfieran
    con la detección visual.
 */
+
 .bumper-text,
 .trigger-text,
 .trigger-percent,
@@ -983,6 +1017,78 @@ main {
 .ps-button-text,
 .label {
     user-select: none;
+}
+
+
+/* =========================================================
+   TRIGGERS — ESTADOS VISUALES
+========================================================= */
+
+/*
+   El SVG/app.js puede asignar
+   directamente el color del gatillo.
+
+   No se fuerza un color único para
+   evitar perder el cambio gradual.
+*/
+
+.trigger-widget[data-trigger] {
+    pointer-events: none;
+}
+
+.trigger-widget[data-trigger] .trigger-body {
+    vector-effect: non-scaling-stroke;
+}
+
+
+/*
+   Cuando el gatillo está en reposo,
+   conserva su apariencia oscura.
+*/
+
+.trigger-widget:not(.pressed) .trigger-body {
+    filter:
+        drop-shadow(
+            0 3px 4px
+            rgba(0, 0, 0, .25)
+        );
+}
+
+
+/* =========================================================
+   L1 / R1 — ESTADO NORMAL
+========================================================= */
+
+.bumper-svg {
+    vector-effect: non-scaling-stroke;
+}
+
+.bumper-svg:not(.pressed) {
+    filter:
+        drop-shadow(
+            0 3px 4px
+            rgba(0, 0, 0, .24)
+        );
+}
+
+
+/* =========================================================
+   EVITAR DESPLAZAMIENTOS ACCIDENTALES
+========================================================= */
+
+/*
+   Estas reglas son deliberadas:
+   CSS NO modifica la posición de los
+   elementos del SVG.
+
+   La geometría aprobada queda enteramente
+   en gamepad.svg.
+*/
+
+.trigger-body,
+.trigger-highlight,
+.bumper-svg {
+    position: static;
 }
 
 
