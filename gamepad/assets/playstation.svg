@@ -1,1 +1,410 @@
 
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 680 400"
+     width="680"
+     height="400"
+     class="gamepad-svg">
+
+  <defs>
+    <linearGradient id="gpBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f3f6"/>
+    </linearGradient>
+
+    <linearGradient id="touchGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#e8ebef"/>
+    </linearGradient>
+
+    <radialGradient id="stickGradient">
+      <stop offset="0%" stop-color="#454c56"/>
+      <stop offset="70%" stop-color="#252b33"/>
+      <stop offset="100%" stop-color="#10151b"/>
+    </radialGradient>
+
+    <filter id="gpShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6"
+                    flood-color="#64748b" flood-opacity=".16"/>
+    </filter>
+
+    <filter id="buttonShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2"
+                    flood-color="#000000" flood-opacity=".25"/>
+    </filter>
+
+    <style>
+      .gp-body {
+        fill:url(#gpBody);
+        stroke:#c7ccd5;
+        stroke-width:1.5;
+        stroke-linejoin:round;
+      }
+
+      .touchpad {
+        fill:url(#touchGradient);
+        stroke:#c3c8d0;
+        stroke-width:1.5;
+      }
+
+      .touch-light {
+        fill:#2563eb;
+        filter:drop-shadow(0 0 3px rgba(37,99,235,.35));
+      }
+
+      .touch-dots {
+        fill:#cbd0d7;
+        opacity:.45;
+      }
+
+      .dpad-main {
+        fill:#202936;
+        stroke:#111827;
+        stroke-width:1.5;
+        filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));
+      }
+
+      .dpad-arrow {
+        fill:#7c8795;
+        opacity:.8;
+      }
+
+      .label {
+        fill:#273142;
+        font-family:Inter,Arial,sans-serif;
+        font-size:6px;
+        font-weight:600;
+        text-anchor:middle;
+      }
+
+      .small-button {
+        fill:#202936;
+        stroke:#111827;
+        stroke-width:1;
+        filter:drop-shadow(0 2px 2px rgba(0,0,0,.18));
+      }
+
+      .face-button {
+        fill:#202936;
+        stroke:#0f172a;
+        stroke-width:1.5;
+      }
+
+      .symbol {
+        font-family:Arial,sans-serif;
+        font-size:20px;
+        font-weight:500;
+        text-anchor:middle;
+        pointer-events:none;
+      }
+
+      .triangle { fill:#4ade80; }
+      .square { fill:#f472b6; }
+      .circle { fill:#ef4444; }
+      .cross { fill:#60a5fa; }
+
+      .analog-ring {
+        fill:#fafafa;
+        stroke:#d5d9df;
+        stroke-width:1.5;
+      }
+
+      .analog-progress {
+        fill:none;
+        stroke:#d5d8dd;
+        stroke-width:3;
+        stroke-dasharray:1.3 2.3;
+        transform-origin:center;
+        transform:rotate(-90deg);
+      }
+
+      .analog-progress.active {
+        stroke:#16a34a;
+      }
+
+      .analog-knob {
+        fill:url(#stickGradient);
+        stroke:#0f172a;
+        stroke-width:1.2;
+        filter:drop-shadow(0 3px 3px rgba(0,0,0,.35));
+      }
+
+      .analog-highlight {
+        fill:rgba(255,255,255,.16);
+        pointer-events:none;
+      }
+
+      .analog-percent,
+      .touch-percent {
+        fill:#111827;
+        font-family:Inter,Arial,sans-serif;
+        font-size:9px;
+        font-weight:700;
+        text-anchor:middle;
+      }
+
+      .ps-logo {
+        fill:#111827;
+        font-family:Arial,sans-serif;
+        font-size:26px;
+        font-weight:900;
+        text-anchor:middle;
+      }
+
+      .ps-light {
+        fill:#cbd5e1;
+        stroke:#aeb7c3;
+        stroke-width:1;
+      }
+
+      .center-dots {
+        fill:#111827;
+      }
+
+      .ps-button {
+        fill:#202936;
+        stroke:#0f172a;
+        stroke-width:1;
+      }
+
+      .ps-button-text {
+        fill:white;
+        font-family:Arial,sans-serif;
+        font-size:7px;
+        font-weight:700;
+        text-anchor:middle;
+      }
+
+      .trigger-title {
+        fill:#172033;
+      }
+
+      .trigger-track {
+        fill:#e5e7eb;
+      }
+
+      .trigger-fill {
+        fill:#172033;
+      }
+
+      .trigger-percent {
+        fill:#111827;
+        font-family:Inter,Arial,sans-serif;
+        font-size:11px;
+        font-weight:800;
+        text-anchor:middle;
+      }
+
+      .trigger-text {
+        fill:white;
+        font-family:Inter,Arial,sans-serif;
+        font-size:12px;
+        font-weight:800;
+        text-anchor:middle;
+      }
+    </style>
+  </defs>
+
+  <!-- CUERPO -->
+  <path class="gp-body" filter="url(#gpShadow)"
+    d="
+      M340 1
+      C380 1 456 6 487 9
+      C507 11 540 16 556 22
+      C569 27 578 34 586 46
+      C597 63 607 89 616 118
+      C627 152 636 190 638 222
+      C640 247 638 280 636 305
+      C634 331 632 348 627 361
+      C621 376 612 386 601 392
+      C591 397 579 399 564 399
+      C556 399 552 394 548 386
+      C537 360 520 317 506 281
+      C501 268 489 257 476 255
+      C460 253 441 258 426 259
+      H254
+      C239 258 220 253 204 255
+      C191 257 179 268 174 281
+      C160 317 143 360 132 386
+      C128 394 124 399 116 399
+      C101 399 89 397 79 392
+      C68 386 59 376 53 361
+      C48 348 46 331 44 305
+      C42 280 40 247 42 222
+      C44 190 53 152 64 118
+      C73 89 83 63 94 46
+      C102 34 111 27 124 22
+      C140 16 173 11 193 9
+      C224 6 300 1 340 1 Z"/>
+
+  <!-- TOUCHPAD -->
+  <path class="touchpad"
+    d="M235 22
+       C266 17 307 14 340 14
+       C373 14 414 17 445 22
+       C457 24 464 34 465 46
+       L465 132
+       C465 150 453 165 436 169
+       C405 176 375 179 340 179
+       C305 179 275 176 244 169
+       C227 165 215 150 215 132
+       L215 46
+       C216 34 223 24 235 22 Z"/>
+
+  <rect class="touch-light" x="226" y="23" width="228" height="3" rx="1.5"/>
+
+  <!-- PUNTOS TOUCHPAD -->
+  <g class="touch-dots">
+    <g>
+      <circle cx="250" cy="45" r="1.4"/><circle cx="262" cy="45" r="1.4"/>
+      <circle cx="274" cy="45" r="1.4"/><circle cx="286" cy="45" r="1.4"/>
+      <circle cx="298" cy="45" r="1.4"/><circle cx="310" cy="45" r="1.4"/>
+      <circle cx="322" cy="45" r="1.4"/><circle cx="334" cy="45" r="1.4"/>
+      <circle cx="346" cy="45" r="1.4"/><circle cx="358" cy="45" r="1.4"/>
+      <circle cx="370" cy="45" r="1.4"/><circle cx="382" cy="45" r="1.4"/>
+      <circle cx="394" cy="45" r="1.4"/><circle cx="406" cy="45" r="1.4"/>
+      <circle cx="418" cy="45" r="1.4"/><circle cx="430" cy="45" r="1.4"/>
+    </g>
+    <g transform="translate(0 11)">
+      <circle cx="250" cy="45" r="1.4"/><circle cx="262" cy="45" r="1.4"/>
+      <circle cx="274" cy="45" r="1.4"/><circle cx="286" cy="45" r="1.4"/>
+      <circle cx="298" cy="45" r="1.4"/><circle cx="310" cy="45" r="1.4"/>
+      <circle cx="322" cy="45" r="1.4"/><circle cx="334" cy="45" r="1.4"/>
+      <circle cx="346" cy="45" r="1.4"/><circle cx="358" cy="45" r="1.4"/>
+      <circle cx="370" cy="45" r="1.4"/><circle cx="382" cy="45" r="1.4"/>
+      <circle cx="394" cy="45" r="1.4"/><circle cx="406" cy="45" r="1.4"/>
+      <circle cx="418" cy="45" r="1.4"/><circle cx="430" cy="45" r="1.4"/>
+    </g>
+    <g transform="translate(0 22)">
+      <circle cx="250" cy="45" r="1.4"/><circle cx="262" cy="45" r="1.4"/>
+      <circle cx="274" cy="45" r="1.4"/><circle cx="286" cy="45" r="1.4"/>
+      <circle cx="298" cy="45" r="1.4"/><circle cx="310" cy="45" r="1.4"/>
+      <circle cx="322" cy="45" r="1.4"/><circle cx="334" cy="45" r="1.4"/>
+      <circle cx="346" cy="45" r="1.4"/><circle cx="358" cy="45" r="1.4"/>
+      <circle cx="370" cy="45" r="1.4"/><circle cx="382" cy="45" r="1.4"/>
+      <circle cx="394" cy="45" r="1.4"/><circle cx="406" cy="45" r="1.4"/>
+      <circle cx="418" cy="45" r="1.4"/><circle cx="430" cy="45" r="1.4"/>
+    </g>
+    <g transform="translate(0 33)">
+      <circle cx="250" cy="45" r="1.4"/><circle cx="262" cy="45" r="1.4"/>
+      <circle cx="274" cy="45" r="1.4"/><circle cx="286" cy="45" r="1.4"/>
+      <circle cx="298" cy="45" r="1.4"/><circle cx="310" cy="45" r="1.4"/>
+      <circle cx="322" cy="45" r="1.4"/><circle cx="334" cy="45" r="1.4"/>
+      <circle cx="346" cy="45" r="1.4"/><circle cx="358" cy="45" r="1.4"/>
+      <circle cx="370" cy="45" r="1.4"/><circle cx="382" cy="45" r="1.4"/>
+      <circle cx="394" cy="45" r="1.4"/><circle cx="406" cy="45" r="1.4"/>
+      <circle cx="418" cy="45" r="1.4"/><circle cx="430" cy="45" r="1.4"/>
+    </g>
+    <g transform="translate(0 44)">
+      <circle cx="250" cy="45" r="1.4"/><circle cx="262" cy="45" r="1.4"/>
+      <circle cx="274" cy="45" r="1.4"/><circle cx="286" cy="45" r="1.4"/>
+      <circle cx="298" cy="45" r="1.4"/><circle cx="310" cy="45" r="1.4"/>
+      <circle cx="322" cy="45" r="1.4"/><circle cx="334" cy="45" r="1.4"/>
+      <circle cx="346" cy="45" r="1.4"/><circle cx="358" cy="45" r="1.4"/>
+      <circle cx="370" cy="45" r="1.4"/><circle cx="382" cy="45" r="1.4"/>
+      <circle cx="394" cy="45" r="1.4"/><circle cx="406" cy="45" r="1.4"/>
+      <circle cx="418" cy="45" r="1.4"/><circle cx="430" cy="45" r="1.4"/>
+    </g>
+    <g transform="translate(0 55)">
+      <circle cx="250" cy="45" r="1.4"/><circle cx="262" cy="45" r="1.4"/>
+      <circle cx="274" cy="45" r="1.4"/><circle cx="286" cy="45" r="1.4"/>
+      <circle cx="298" cy="45" r="1.4"/><circle cx="310" cy="45" r="1.4"/>
+      <circle cx="322" cy="45" r="1.4"/><circle cx="334" cy="45" r="1.4"/>
+      <circle cx="346" cy="45" r="1.4"/><circle cx="358" cy="45" r="1.4"/>
+      <circle cx="370" cy="45" r="1.4"/><circle cx="382" cy="45" r="1.4"/>
+      <circle cx="394" cy="45" r="1.4"/><circle cx="406" cy="45" r="1.4"/>
+      <circle cx="418" cy="45" r="1.4"/><circle cx="430" cy="45" r="1.4"/>
+    </g>
+  </g>
+
+  <!-- D-PAD -->
+  <g class="dpad">
+    <path class="dpad-main"
+      d="M143 76 H162 C165 76 167 78 167 81 V96 H182
+         C185 96 187 98 187 101 V119 C187 122 185 124 182 124
+         H167 V139 C167 142 165 144 162 144 H143
+         C140 144 138 142 138 139 V124 H123
+         C120 124 118 122 118 119 V101 C118 98 120 96 123 96
+         H138 V81 C138 78 140 76 143 76 Z"/>
+    <path class="dpad-arrow" d="M152 82 L146 90 H158 Z"/>
+    <path class="dpad-arrow" d="M152 138 L146 130 H158 Z"/>
+    <path class="dpad-arrow" d="M124 110 L132 104 V116 Z"/>
+    <path class="dpad-arrow" d="M180 110 L172 104 V116 Z"/>
+  </g>
+
+  <!-- SHARE / OPTIONS -->
+  <text class="label" x="186" y="55">SHARE</text>
+  <rect class="small-button" x="182" y="61" width="18" height="27" rx="9"/>
+
+  <text class="label" x="494" y="55">OPTIONS</text>
+  <rect class="small-button" x="480" y="61" width="18" height="27" rx="9"/>
+
+  <!-- FACE BUTTONS -->
+  <g class="face-buttons">
+    <circle class="face-button" data-button="3" cx="538" cy="75" r="18"/>
+    <text class="symbol triangle" x="538" y="82">△</text>
+
+    <circle class="face-button" data-button="2" cx="506" cy="107" r="18"/>
+    <text class="symbol square" x="506" y="113">□</text>
+
+    <circle class="face-button" data-button="1" cx="570" cy="107" r="18"/>
+    <text class="symbol circle" x="570" y="113">○</text>
+
+    <circle class="face-button" data-button="0" cx="538" cy="139" r="18"/>
+    <text class="symbol cross" x="538" y="146">×</text>
+  </g>
+
+  <!-- STICK IZQUIERDO -->
+  <g class="analog" data-stick="left">
+    <circle class="analog-ring" cx="245" cy="218" r="37"/>
+    <circle class="analog-progress active" cx="245" cy="218" r="33"/>
+    <circle class="analog-knob" cx="245" cy="218" r="17"/>
+    <circle class="analog-highlight" cx="240" cy="213" r="5"/>
+    <text class="analog-percent" x="245" y="257">75%</text>
+  </g>
+
+  <!-- STICK DERECHO -->
+  <g class="analog" data-stick="right">
+    <circle class="analog-ring" cx="435" cy="218" r="37"/>
+    <circle class="analog-progress active" cx="435" cy="218" r="33"/>
+    <circle class="analog-knob" cx="435" cy="218" r="17"/>
+    <circle class="analog-highlight" cx="430" cy="213" r="5"/>
+    <text class="analog-percent" x="435" y="257">62%</text>
+  </g>
+
+  <!-- PLAYSTATION CENTRAL -->
+  <text class="ps-logo" x="340" y="190">PS</text>
+
+  <rect class="ps-light" x="326" y="201" width="28" height="6" rx="3"/>
+
+  <g class="center-dots">
+    <circle cx="323" cy="222" r="2.2"/>
+    <circle cx="332" cy="218" r="2.2"/>
+    <circle cx="340" cy="222" r="2.2"/>
+    <circle cx="348" cy="218" r="2.2"/>
+    <circle cx="357" cy="222" r="2.2"/>
+  </g>
+
+  <circle class="ps-button" cx="340" cy="245" r="11"/>
+  <text class="ps-button-text" x="340" y="249">PS</text>
+
+  <text class="touch-percent" x="340" y="162">100%</text>
+
+  <!-- GATILLO L2 -->
+  <g class="trigger-widget" data-trigger="l2">
+    <rect class="trigger-title" x="8" y="0" width="42" height="28" rx="8"/>
+    <text class="trigger-text" x="29" y="18">L2</text>
+    <rect class="trigger-track" x="14" y="38" width="30" height="92" rx="4"/>
+    <rect class="trigger-fill" x="14" y="97" width="30" height="33" rx="3"/>
+    <text class="trigger-percent" x="29" y="146">35%</text>
+  </g>
+
+  <!-- GATILLO R2 -->
+  <g class="trigger-widget" data-trigger="r2">
+    <rect class="trigger-title" x="630" y="0" width="42" height="28" rx="8"/>
+    <text class="trigger-text" x="651" y="18">R2</text>
+    <rect class="trigger-track" x="636" y="38" width="30" height="92" rx="4"/>
+    <rect class="trigger-fill" x="636" y="58" width="30" height="72" rx="3"/>
+    <text class="trigger-percent" x="651" y="146">78%</text>
+  </g>
+
+</svg>
